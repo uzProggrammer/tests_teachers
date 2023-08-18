@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}{{profile.username|title}} Tahrirlash{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+<li class="breadcrumb-item"><a href="/users/">Foydalanuvchilar</a></li>
+<li class="breadcrumb-item"><a href="{% url 'profile' profile.username %}">{{profile.username}}</a></li>
+<li class="breadcrumb-item active text-white" aria-current="page">Tahrirlash</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    {% include 'users/profile_header.html' %}
+    <h2 class="text-center">Tahrirlash</h2>
+    <form method="post">{% csrf_token %}
+        {{form.as_p}}
+        <button type="submit" class="btn btn-outline-primary">Saqlash</button>
+    </form>
+{% endblock content %}

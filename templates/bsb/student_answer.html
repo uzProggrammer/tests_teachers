@@ -1,0 +1,69 @@
+{% extends 'bsb/base.html' %}
+
+{% block title %}O'quvchi javobi{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/controls/">Nazorat ishlari</a></li>
+    <li class="breadcrumb-item"><a href="/controls/control/{{bsb.id}}">{{bsb.title|title}}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">O'quvchi javobi</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+{% include 'bsb/bsb_header.html' %}
+<div class="card bg-dark text-white">
+    <div class="p-3 card-header">
+        <h4><u>{{bsb.title}}</u>ning <u>{{student_answer.id}}</u> - javobi</h4>
+    </div>
+    <div class="p-3 card-body">
+        {{student_answer.body|safe}}
+    </div>
+    <div class="card-footer">
+        {% if not student_answer.answer_balls.exists %}
+      <div class="accordion my-3 bg-dark text-white" id="accordionExample">
+          <div class="accordion-item bg-dark text-white">
+            <h2 class="accordion-header">
+              <button class="accordion-button bg-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                Ball berish
+              </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse text-right collapse" data-bs-parent="#accordionExample">
+              <div class="accordion-body">
+                    <form method="post">
+                        {% csrf_token %}<input type="hidden" value="{{student_answer.id}}" name="student_answer_id">
+                        <div class="m-3">
+                            <label class="form-label">Ball</label>
+                            <input type="number" required step="0.00000001" name="ball" class="form-control bg-dark text-white">
+                            <div class="form-text text-white">Bergan balingiz</div>
+                        </div>
+                        <div class="m-3">
+                            <button type="submit" class="btn btn-outline-primary">Saqlash</button>
+                        </div>
+                    </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      {% else %}
+      <div class="accordion my-3 bg-dark text-white" id="accordionExample1">
+          {% for ass_ball in ass.answer_balls.all %}
+              <div class="accordion-item bg-dark text-white">
+                <h2 class="accordion-header">
+                  <button class="accordion-button bg-dark text-white" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne1" aria-expanded="true" aria-controls="collapseOne1">
+                    O'quvchi olgan ball - {{ass_ball.ball}} <i>b</i>
+                  </button>
+                </h2>
+                <div id="collapseOne1" class="accordion-collapse text-right collapse" data-bs-parent="#accordionExample1">
+                  <div class="accordion-body">
+                      {{ass_ball.xatolar_va_kamchiliklar|safe}}
+                  </div>
+                </div>
+              </div>
+          {% endfor %}
+
+        </div>
+      {% endif %}
+    </div>
+</div>
+{% endblock content %}

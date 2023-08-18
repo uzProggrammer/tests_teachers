@@ -1,0 +1,14 @@
+{% extends 'tests/base.html' %}
+
+{% block title %}Xato{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Tugagan test</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <div class="card bg-dark text-white">
+        <h1>Xato so'rov siz bu testda siz allaqachon qatnashgansiz. Siz to'plagan {{ball}} ball</h1>
+    </div>
+{% endblock content %}

@@ -1,0 +1,17 @@
+{% extends 'posts/base.html' %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/posts/">E'lonlar</a></li>
+    <li class="breadcrumb-item"><a href="/posts/post/{{post.id}}">{{post.title}}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">O'chirish</li>
+{% endblock breadcrumb %}
+
+{% block title %}Delete Post{% endblock title%}
+{% block content %}
+    <h1>Rostdan ham {{post.title}}ni o'chirmoqchimiz?</h1>
+    <form method="post">{% csrf_token %}
+        <button class="btn btn-outline-danger">Ha</button>
+        <a class="btn btn-outline-primary" href="/">Yo'q</a>
+    </form>
+{% endblock content %}

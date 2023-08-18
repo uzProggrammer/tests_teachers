@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}{{sinf.nom}}{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/classes/">Sinflar</a></li>
+    <li class="breadcrumb-item"><a href="/classes/class/{{sinf.url}}/">{{sinf.nom}}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Jurnal</li>
+{% endblock breadcrumb %}
+
+
+{% block content %}
+    <div class="card bg-dark text-white">
+        <div class="card-header p-3">
+            {% if user == sinf.author_student or user.is_staff or user.is_teacher %}<hr><a href="{% url 'sinf' sinf.url %}" class="btn btn-primary">Sinf haqida</a><a href="{% url 'add_student_sinf' sinf.url %}" class="btn btn-primary mx-2">O'quvchi qo'shish</a><a href="{% url 'edit_sinf' sinf.url %}" class="btn btn-secondary mx-2">Tahrirlash</a><a href="{% url 'remove_student' sinf.url %}" class="btn btn-danger mx-2">O'quvchini chiqarib tashlash</a><a href="{% url 'sinf_balolari' sinf.url %}" class="btn btn-danger mx-2">Jurnal</a>{% endif %}
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table table-bordered">
+                <tr>
+                    <th>#</th>
+                    {% for key in dates %}
+                    <th>{% if value == date_week %}<span class="text-success">{{key}}</span>{% else %}{{key|date:'l | d'}}{% endif %}</th>
+                    {% endfor %}
+                </tr>
+                {% for student in sinf.students.all %}
+                <tr>
+                    <td>{{student.last_name}} {{student.first_name}}</td>
+                    {% for baho in student.baholar.all %}
+                    <td style="text-align:center;color: {% if baho.baho == '5' %}rgb(4,200,0){% elif baho.baho == '4' %}green{% elif baho.baho == '3' %}pink{% elif baho.baho == '2' %}red{% elif baho.baho == '1' %}rgb(100, 3,4){% elif baho.baho == '0' %}rgb(120,2,4){% else %}rgb(200,200,0){% endif %} !important;">{{baho.baho}}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}{{profile.username}}{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+<li class="breadcrumb-item"><a href="{% if profile.is_teacher %}/users/teachers/{% else %}/users/teachers/{% endif %}">{% if profile.is_teacher %}O'qituvchilar{% else %}O'quvchilar{% endif %}</a></li>
+<li class="breadcrumb-item active text-white" aria-current="page">{{profile.username|title}}</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+
+{% include 'users/profile_header.html' %}
+<section class="bg-dark text-white">
+  <div class="container py-5">
+    <div class="row">
+      <div class="col-lg-4">
+        <div class="card mb-4 bg-dark text-white">
+          <div class="card-body text-center">
+            <img src="{% if profile.is_teacher %}https://icon-library.com/images/teacher-icon-png/teacher-icon-png-17.jpg{% else %}https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Student_%28example%29.svg/444px-Student_%28example%29.svg.png?20180722153736{% endif %}" alt="avatar"
+              class="rounded " style="width: 450px;">
+            <h5 class="my-3"><a href="">@{{profile.username}}</a></h5>
+              <span class="user-status"></span>
+            <table class="table table-borderless text-white">
+                <tr>
+                    <th class="m-1">Ismi sharifi</th>
+                    <td>{{profile.first_name}} {{profile.last_name}}</td>
+                </tr>
+                {% if profile.is_teacher %}
+                    <tr>
+                        <th class="m-1">O'qituvchi</th>
+                        <td><i class="bx bx-check text-success" style="font-size:30px;"></i></td>
+                    </tr>
+                    <tr>
+                        <th class="m-1">Fan</th>
+                        <td>{{profile.fan}}</td>
+                    </tr>
+                    <tr>
+                        <th class="m-1">Maktab</th>
+                        <td>Bekobod tuman ixtisoslashgan maktabi</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <th class="m-1">O'quvchi</th>
+                        <td><i class="bx bx-check text-success" style="font-size:30px;"></i></td>
+                    </tr>
+                    <tr>
+                        <th class="m-1">Sinf</th>
+                        <td>{{profile.sinf}}</td>
+                    </tr>
+                    <tr>
+                        <th class="m-1">Maktab</th>
+                        <td>Bekobod tuman ixtisoslashgan maktabi</td>
+                    </tr>
+                {% endif %}
+                {% if user.is_authenticated and user != profile %}
+                <a class="btn-primary btn" href="/chats/with/{{profile.username}}/create/">Suhbatlar</a>
+                {% endif %}
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8 ">
+        <div class="card mb-4 bg-dark text-white">
+            <div class="card-header">
+                <h3>Foydalanuvchi haqida</h3>
+            </div>
+          <div class="card-body">
+            <div class="row mt-3">
+                {{profile.bio|safe}}
+            </div>
+
+          </div>
+        </div>
+        <div class="bg-dark">
+          <div class=" bg-dark">
+            <div class="card mb-4 mb-md-0 bg-dark">
+              <div class="card-header p-3">
+                  <h3>Do'stlari</h3>
+              </div>
+              <div class="card-body p-2">
+                  <div class="row p-3 text-center">
+                      <div class="col-6">
+                        <b>Do'stlar</b>
+                      </div>
+                      <div class="col-6">
+                        <a href="friends/" class="text-info"><b class="h4">{{profile.friends.count}}</b></a>
+                      </div>
+
+                  </div>
+                  {% if user.is_authenticated and user != profile %}
+                  <div class="mb-2">
+                    <a style="width:100%;" class="text-center btn-{% if not profile in user.friends.all %}primary{% else %}danger{% endif %} btn btn-block" href="/users/profile/{{profile.username}}/add_friend/">
+                        {% if not profile in user.friends.all %}<i class="fa fa-user-plus"></i>  Do'stlarga qo'shish{% else %}<i class="fa fa-user-minus"></i>  Do'stlardan chiqarish{% endif %}
+                    </a>
+                  </div>
+                  {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{{profile.last_visit}}
+{% endblock content %}
+
+{% block js %}
+    <script>
+        const status = document.querySelector('.user-status');
+
+        const now = new Date('{{profile.last_visit|date:"M d, H:i:s"}}');
+function checkOnlineStatus() {
+  fetch('{% url 'check_user_status' profile.username %}')
+    .then(response => response.json())
+    .then(data => {
+      if (data.is_online) {
+        status.innerHTML = '<p style="color: green !important;">Online</p>'
+      } else {
+        status.innerHTML = `<p style="color: rgb(230,10,10) !important;">${data.time}</p>`
+      }
+    })
+    .catch(error => console.log(error));
+}
+checkOnlineStatus();
+setInterval(checkOnlineStatus, 5000);
+
+    </script>
+{% endblock js %}

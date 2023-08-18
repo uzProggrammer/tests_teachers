@@ -1,0 +1,40 @@
+{% extends 'bsb/base.html' %}
+
+{% block title %}Masalalar{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/controls/">Nazorat ishlari</a></li>
+    <li class="breadcrumb-item"><a href="/controls/control/{{bsb.id}}">{{bsb.title|title}}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Masalalar</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="card bg-dark text-white">
+    <div class="p-3 card-header">
+        <h3>Masalalar</h3>
+    </div>
+    <div class="card-body p-2 table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th style="color:rgb(30, 30, 30)">#ID</th>
+                    <th>Masalaning nomi</th>
+                    <th>Egasi</th>
+                    <th>Masalaning ball</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for problem in problems %}
+                    <tr>
+                        <td>{{problem.id}}</td>
+                        <td><a href="problem/{{problem.id}}/">{{problem.title|safe}}</a></td>
+                        <td><a href="{% url 'profile' problem.user.username %}">{{problem.user.username|title}}</a></td>
+                        <td>{{problem.ball}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}

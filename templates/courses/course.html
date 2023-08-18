@@ -1,0 +1,148 @@
+{% extends 'courses/base.html' %}
+
+{% block title %}
+{{course.title}}
+{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+<li class="breadcrumb-item"><a href="/courses/">Kurslar</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{course.title|title}}</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-5">
+        <img src="/static/logo/courses.png" class="course-img mb-3"
+            style="border: 1px solid black;width: 100%; border-radius: 10px;padding: 0 20px;" alt="Courses.png">
+    </div>
+    <div class="col-md-7">
+        <div class="card bg-dark p-3">
+            <h3>{{course.title}}</h3>
+            <p>{{course.summary}}</p>
+            <div>{% if user in course.users.all %}{% if course.lessons.first %}<a href="lesson/{{course.lessons.first.slug}}/" class="btn bg-dark">Kursni davom ettirish</a>{% endif %}
+                {% elif user.is_authenticated %}
+                <a href="start/" class="btn btn-outline-success">Kursni boshlash</a>{% else %}<a href="/users/login/"
+                    class="btn btn-outline-primary">Tizmga kirish</a>
+                {% endif %}{% if user.is_staff or user == course.author %} <a href="edit/" class="btn btn-success"><i class="fa fa-pen"></i> Tahrirlash</a> {% endif %}
+            </div>
+        </div>
+        <div class="card bg-dark my-2 p-2">
+            <div class="">
+                <span class="badge bg-success"><i class="fa fa-users"></i> {{course.users.count}}</span>
+                {% if course.tags %}
+                    {% for tag in course.tags.all %}
+                        <span class="badge bg-primary"><i class="fa fa-hashtag"></i> {{tag.title}}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card bg-dark p-3">
+    {{course.about|safe}}
+</div>
+<div class="card bg-dark p-2 mt-3">
+    <div class="card-header">Mavzular 
+        {% if user == course.author or user.is_staff %}<button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-primary mx-2" id="add_lesson"><i class="fa fa-plus"></i> Mavzu qo'shish</button>
+          <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog bg-dark modal-fullscreen">
+                <form method="post" action="/courses/course/{{course.id}}/lesson-add/" class="modal-content bg-dark">
+                    {% csrf_token %}
+                    <input type="hidden" name="url" id="url" url="course">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Mavzu qo'shish</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <label for="title-lesson" class="form-label">Mavzu nomi</label>
+                            <input type="text" class="form-control bg-dark" required placeholder="Dars nomi" id="title-lesson" name="title">
+                        </div>
+                        <div class="mb-2">
+                            <label for="title-lesson" class="form-label">Mavzu haqida ma'lumot</label>
+                            <textarea type="text" class="form-control bg-dark" placeholder="Dars haqida" id="body-lesson" name="body"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yopish</button>
+                        <button type="submit" class="btn btn-primary" id="add_lesson">Saqlash</button>
+                    </div>
+                </form>
+            </div>
+          </div>
+        {% endif %}
+    </div>
+    <div class="card-body p-2">
+        <div class="accordion" id="accordionExample">
+            {% for lesson in course.lessons.all %}
+                <div class="accordion-item bg-dark">
+                    <h2 class="accordion-header bg-dark">
+                        <button class="accordion-button bg-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne{{lesson.id}}"
+                            aria-expanded="true" aria-controls="collapseOne{{lesson.id}}">
+                            {{lesson.title}}
+                        </button>
+                    </h2>
+                    <div id="collapseOne{{lesson.id}}" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div class="accordion-body p-4">
+                            {{lesson.summary|safe}}
+
+                            
+                            {% if user.is_staff or user == course.author %}
+                            <br><br>
+                            <div class="text-end">
+                                <button class="btn btn-success"  data-bs-toggle="modal" data-bs-target="#edit-model{{lesson.id}}"><i class="fa fa-pen"></i> Tahrirlash</button>
+                            </div>
+                              <div class="modal fade" id="edit-model{{lesson.id}}" tabindex="-1" aria-labelledby="exampleModalLabel{{lesson.id}}" aria-hidden="true">
+                                <div class="modal-dialog bg-dark modal-fullscreen">
+                                    <form method="post" class="modal-content bg-dark" action="lesson/{{lesson.slug}}/edit/">
+                                        {% csrf_token %}
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">{{lesson.title}}ni tahrirlash</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            
+                                            <div class="mb-2">
+                                                <label for="title-lesson" class="form-label">Mavzu nomi</label>
+                                                <input type="text" class="form-control bg-dark" required placeholder="Dars nomi" id="title-lesson" name="title" value="{{lesson.title}}">
+                                            </div>
+                                            <input type="hidden" name="url" value="course" id="url">
+                                            <div class="mb-2">
+                                                <label for="title-lesson" class="form-label">Mavzu haqida ma'lumot</label>
+                                                <textarea type="text" class="form-control bg-dark" placeholder="Dars haqida" id="body-lesson" name="body">{{lesson.summary}}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yopish</button>
+                                            <button type="submit" class="btn btn-primary">Saqlash</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                Hali mavzular qo'shilmagan
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
+
+{% block js1 %}
+    <script>
+    tinymce.init({
+        themes: "modern",
+        skin: "oxide-dark",
+        content_css: "dark",
+        selector: 'textarea',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+    });
+    </script>
+{% endblock js1 %}

@@ -1,0 +1,70 @@
+{% extends 'bsb/base.html' %}
+
+{% block title %}{{bsb.title}}{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/controls/">Nazorat ishlari</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{bsb.title|title}}</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    {% include 'bsb/bsb_header.html' %}
+    <div class="card bg-dark text-white">
+        <div class="card-header p-3">
+            <h1>{{bsb.title}}</h1>
+        </div>
+        <div class="card-body">
+            {{bsb.body|safe}}
+            <div class="px-3 table-responsive">
+                <table class="table table-bordered">
+                    <tr>
+                        <th>Holati</th>
+                        <td>
+                            <div style="color: {% if bsb.holati == 'Boshlanmagan' %}rgb(100, 220, 20){% elif bsb.holati == 'Tugagan' %}rgb(200, 10, 20){% else %}rgb(10, 20, 220){% endif %};">{{bsb.holati}}</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th width="300px">Boshlanish vaqti</th>
+                        <td>{{bsb.date_statrted|date:'d.m.Y | H.i'}}</td>
+                    </tr>
+                    <tr>
+                        <th>Tugash vaqti</th>
+                        <td>{{bsb.date_ended|date:'d.m.Y | H.i'}}</td>
+                    </tr>
+
+                    <tr>
+                        <th>Davomiyligi:</th>
+                        <td>{{davomiylig}}</td>
+                    </tr>
+                                        <tr>
+                            <td>Tashkilotchi</td>
+                            <td>
+                                <div>
+                                    <a href="{% url 'profile' bsb.author.username %}">{{bsb.author.username|title}}</a>
+                                </div>
+                            </td>
+                        </tr>
+                                    <tr>
+                        <th>{% if bsb.type == 'Topshiriq' %} Savollar{% elif bsb.type == 'Masala' %} Masalalar {% else %} Testlar{% endif %}</th>
+                        <td>{% if bsb.type == 'Topshiriq' %} {{bsb.assignments.count}}{% elif bsb.type == 'Masala' %} {{bsb.problems.count}} {% else %}{{bsb.quizess.count}} {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Sinf</th>
+                        <td><a href="{% url 'sinf' bsb.sinf.url %}">{{bsb.sinf}}</a></td>
+                    </tr>
+                </table>
+
+            </div>
+            <div class="mt-3">
+                {% if is_userca or user.is_staff or bsb.author == user %}
+                <a href="{% if bsb.type == 'Topshiriq' %}assignments/{% elif bsb.type == 'Masala' %}problems/{% else %}tests/{% endif %}" class="btn btn-secondary">{% if bsb.type == 'Topshiriq' %} Savollar{% elif bsb.type == 'Masala' %} Masalalar {% else %} Testlar{% endif %}</a>
+                {% endif %}
+                {% if tugagan %}
+                <a class="btn btn-primary" href="{% url 'bsb_results' bsb.id %}">Natijalar</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}

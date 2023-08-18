@@ -1,0 +1,36 @@
+{% extends 'bsb/base.html' %}
+
+{% block title %}{{bsb.title}}{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/controls/">Nazorat ishlari</a></li>
+    <li class="breadcrumb-item"><a href="/controls/control/{{bsb.id}}">{{bsb.title|title}}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Topshiriqlar</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    {% include 'bsb/bsb_header.html' %}
+    <div class="px-3 table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Nomi</th>
+                    <th>Ball</th>
+                    <th>Egasi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for assignment in bsb.assignments.all %}
+                    <tr>
+                        <td><a href="assignment/{{assignment.id}}/">{{assignment.title}}</a></td>
+                        <td>{{assignment.ball}}</td>
+                        <td><a href="{% url 'profile' assignment.author.username %}">{{assignment.author.username|title}}</a></td>
+                    </tr>
+
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+{% endblock %}

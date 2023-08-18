@@ -1,0 +1,108 @@
+{% extends 'bsb/base.html' %}
+
+{% block extrahead %}
+<script>window.CKEDITOR_BASEPATH = '/my_static/ckeditor/ckeditor/';</script>
+{{ block.super }}
+{% endblock %}
+{% load static %}
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/controls/">Nazorat ishlari</a></li>
+    <li class="breadcrumb-item"><a href="/controls/control/{{bsb.id}}">{{bsb.title|title}}</a></li>
+    <li class="breadcrumb-item"><a href="/controls/control/{{bsb.id}}/problems">Masalalar</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Masala qo'shish</li>
+{% endblock breadcrumb %}
+
+{% block title %}Masala qo'shish{% endblock title %}
+
+{% block content %}
+    {% include 'bsb/bsb_header.html' %}
+    <div class="card bg-dark text-white">
+        <div class="card-header">
+            Masala qo'shish
+        </div>
+        <div class="card-body">
+            <form method="POST" class="bg-dark text-white" id="my_form">
+                {% csrf_token %}
+                <div class="row mb-3">
+                    <div class="col">
+                        <label class="form-label">Masalaning sarlovhasi</label>
+                        <input required class="form-control bg-dark text-white" name="title" value="{{problem.title}}">
+                        <div class="form-text">Siz yaratgan masalaning sarlovhasi</div>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-4">
+                        <label class="form-label">Masalaning qiyinchiligi</label>
+                        <input required class="form-control bg-dark text-white" name="diff" value="{{problem.difficulty}}">
+                        <div class="form-text">Siz yaratgan masalaning qiyinchilik darajasi</div>
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label">Masalaning vaqt cheklovi</label>
+                        <input required class="form-control bg-dark text-white" name="tl" value="{{problem.time_limit}}">
+                        <div class="form-text">Siz yaratgan masalaning vaqt cheklovi</div>
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label">Masalaning xotira cheklovi</label>
+                        <input required class="form-control bg-dark text-white" name="ml" value="{{problem.memory_limit}}">
+                        <div class="form-text">Siz yaratgan masalaning xotira cheklovi</div>
+                    </div>
+                </div>
+                <div class="col mb-3">
+                    <label class="from-label">Masalaning sharti</label>
+                    <textarea class="form-control bg-dark text-white for_tiny" name="about">{{problem.about|safe}}</textarea>
+                    <div class="form-text">Siz yaratgan masalaning sharti</div>
+                </div>
+                <div class="col mb-3">
+                    <label class="from-label">Masalaning Kirish ma'lumotlari haqida</label>
+                    <textarea class="form-control bg-dark text-white for_tiny" name="in_">{{problem.info_in|safe}}</textarea>
+                    <div class="form-text">Siz yaratgan masalaning kirivchi ma'lumotalari haqida ma'lumot</div>
+                </div>
+                <div class="col mb-3">
+                    <label class="from-label">Masalaning chiqivchi ma'lumotlari</label>
+                    <textarea class="form-control bg-dark text-white for_tiny" name="out">{{problem.info_out|safe}}</textarea>
+                    <div class="form-text">Siz yaratgan masalaning chiquvchi ma'lumotalari haqida ma'lumot</div>
+                </div>
+                <div class="col mb-3">
+                    <label class="from-label">Masalaning simple testlari</label>
+                    <textarea required name="st" class="form-control bg-dark text-white">{{problem.simple_tests}}</textarea>
+                    <div class="form-text">Siz yaratgan masalaning o'quvchichiga ko'rinadigan testlar qismi</div>
+                </div>
+                <div class="col mb-3">
+                    <label class="from-label">Masalaning testlari</label>
+                    <textarea required class="form-control bg-dark text-white" name="tests">{{problem.tests}}</textarea>
+                    <div class="form-text">Siz yaratgan masalaning tekshiriladigan testlari</div>
+                </div>
+                <div class="col mb-3">
+                    <label class="from-label">Masalaning yechimi</label>
+                    <textarea class="form-control bg-dark text-white for_tiny" name="yechim">{{problem.yechim|safe}}</textarea>
+                    <div class="form-text">Siz yaratgan masalaning yechimi. Bunda <i>Nazorat ishi</i>ning vaqti o'tib ketgandan keyin o'quvchiga ko'rinadi</div>
+                </div>
+                <div class="col mb-3">
+                    <label class="form-label">Masalaning bali</label>
+                    <input step="0.000000002" type="number" class="form-control bg-dark text-white" name="ball">
+                    <div class="form-text">Agar o'quvchi masala algoritmini to'g'ri topa olsa shhuncha ball unga beriladi.</div>
+                </div>
+                <div class="m-3">
+                    <button class="btn btn-secondary">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js1 %}
+<script>
+    tinymce.init({
+        themes: "modern",
+        skin: "oxide-dark",
+        content_css: "dark",
+        selector: 'textarea.for_tiny',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+    });
+</script>
+{% endblock %}

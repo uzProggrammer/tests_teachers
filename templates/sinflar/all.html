@@ -1,0 +1,36 @@
+{% extends 'sinflar/base.html' %}
+
+{% block title %}Sinflar{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Sinflar</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Sinf Nomi</th>
+                    <th>Sinf Sardori</th>
+                    <th>Sinf o'quvchilari</th>
+                    <th>Sinfdagi faol o'quvchi</th>
+                    <th>sinfning to'plagan bali</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sinf in sinflar %}
+                <tr>
+                    <td><a href="{% url 'sinf' sinf.url %}">{{sinf.nom}}</a></td>
+                    <td><a href="{% url 'sinf_student' sinf.url sinf.author_student.username %}">{{sinf.author_student.username}}</a></td>
+                    <td>{{sinf.students.count}}</td>
+                    <td><a href="{% url 'sinf_student' sinf.url sinf.active_user.username %}">{{sinf.active_user.username}}</a></td>
+                    <td>{{sinf.ball}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock content %}

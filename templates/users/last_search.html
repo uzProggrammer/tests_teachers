@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+<li class="breadcrumb-item"><a href="{% if profile.is_teacher %}/users/teachers/{% else %}/users/teachers/{% endif %}">{% if profile.is_teacher %}O'qituvchilar{% else %}O'quvchilar{% endif %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'profile' profile.username %}">{{profile.username|title}}</a></li>
+<li class="breadcrumb-item active">Qidiruv tarixi</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+{% include 'users/profile_header.html' %}
+        <div class="card bg-dark text-white">
+            <div class="card-title">
+                <a href="{% url 'all_search_delete' user.username %}" class="btn btn-outline-danger m-3">Hammasini o'chirish</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered text-white">
+                        <tbody>
+                            {% for search in latest_search %}
+                                <tr>
+                                    <th>{{search.body}}</th>
+                                    <td>{{search.date_searched|date:'d.m.Y | h:i'}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+{% endblock content %}

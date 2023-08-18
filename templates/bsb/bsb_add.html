@@ -1,0 +1,72 @@
+{% extends 'bsb/base.html' %}
+
+{% block title %}{{bsb.title}}{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/controls/">Nazorat ishlari</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Yangi yaratish</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <div class="card bg-dark text-white">
+        <div class="card-header p-3">
+            <h2>Yangi Nazorat ishi qo'shish</h2>
+        </div>
+        <div class="card-body">
+            <form method="post" class="row g-3">{% csrf_token %}
+                <div class="mb-3">
+                    <label for="formFileSm" class="form-label">Nazorat ishi ning sarlovhasi</label>
+                    <input required name="title" class="form-control bg-dark text-white" id="formFileSm" type="text" value="{{bsb.title}}">
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-md-6">
+                        <label for="formFileSm1" class="form-label">Nazorat ishi ning boshlanish vaqti</label>
+                        <input required name="d_start" class="form-control bg-dark text-white" id="formFileSm1" type="datetime-local" value="{{bsb.date_statrted|date:'Y-m-d'}}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="formFileSm2" class="form-label">Nazorat ishi ning tugash vaqti</label>
+                        <input required name="d_end" class="form-control bg-dark text-white" id="formFileSm2" type="datetime-local" value="{{bsb.date_ended|date:'Y-m-d'}}">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-md-6">
+                        <label for="formFileSm4" class="form-label">Nazorat ishi turi</label>
+                        <select name="type" class="form-control bg-dark text-white" id="formFileSm4">
+                            <option value="Masala">Masala</option>
+                            <option selected value="Topshiriq">Topshiriq</option>
+                            <option value="Test">Test</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="formFileSm5" class="form-label">Nazorat ishi olinadigan sinf</label>
+                        <select name="sinf" class="form-control bg-dark text-white" id="formFileSm5">
+                            {% for sinf in sinflar %}
+                            <option>{{sinf.nom}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ozroq ma'lumot</label>
+                    <textarea name="info">{{bsb.body}}</textarea>
+                </div>
+                <div class="my-3">
+                    <button class="btn btn-primary">
+                        Saqlash
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+<script>
+    tinymce.init({
+        themes: "modern",
+        skin: "oxide-dark",
+        content_css: "dark",
+        selector: 'textarea',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+    });
+</script>
+{% endblock content %}

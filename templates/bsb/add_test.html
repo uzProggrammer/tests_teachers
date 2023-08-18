@@ -1,0 +1,91 @@
+{% extends 'bsb/base.html' %}
+
+{% block title %}{{bsb.title}}{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/controls/">Nazorat ishlari</a></li>
+    <li class="breadcrumb-item"><a href="/controls/control/{{bsb.id}}">{{bsb.title|title}}</a></li>
+    <li class="breadcrumb-item"><a href="/controls/control/{{bsb.id}}/tests/add">Testlar</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Yangi qo'shish</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    {% include 'bsb/bsb_header.html' %}
+    <div class="card bg-dark text-white">
+        <div class="card-header">
+            Savol qo'shish
+        </div>
+        <div class="card-body">
+            <form method="post">{% csrf_token %}
+                <div class="input">
+                    <div class="card bg-dark text-white">
+                        <div class="card-header">
+                            <label for="id_title" class="form-label">Savol matni</label>
+                            <textarea name="quiz-title" id="id_title" class="form-control bg-dark text-white"></textarea>
+
+                            <div class="my-3">
+                                <label for="id_ball" class="form-label">Savol bali</label>
+                                <input type="number" required name="ball" id="id_ball" class="form-control bg-dark text-white">
+                            </div>
+                        </div>
+                        <div class="card-body" id="answers">
+                            <button type="button" id="add_button" class="btn btn-outline-primary m-3"><i class="bx bx-plus"></i> Variant qo'shish</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="my-3 mx-2">
+                    <button type="submit" class="btn btn-outline-primary">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        tinymce.init({
+        themes: "modern",
+        skin: "oxide-dark",
+        content_css: "dark",
+        selector: 'textarea',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+      });
+    </script>
+    <script>
+        var form_count = 0;
+
+        document.querySelector('#add_button').addEventListener('click', () => {
+                form_count++;
+                var i_g_d = document.createElement('div');
+                i_g_d.className = 'input-group bg-dark text-white mb-3';
+                var i_2_d = document.createElement('div');
+                i_2_d.className = 'input-group-text bg-dark text-white border-dark';
+                i_g_d.appendChild(i_2_d);
+                var radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'is_true';
+                radio.className = 'form-check-input mt-0';
+                radio.value = `${form_count}`;
+                i_2_d.appendChild(radio);
+                var input = document.createElement('textarea');
+                input.name = `answer-${form_count}`
+                input.className = 'form-control bg-dark text-white';
+                i_g_d.appendChild(input);
+                var i_g_t = document.createElement('label');
+                i_g_t.className = 'input-group-text btn btn-danger bx bx-minus';
+                i_g_t.onclick = function() {
+                    return this.parentNode.remove();
+                }
+                i_g_d.appendChild(i_g_t)
+                document.querySelector('#answers').appendChild(i_g_d);
+                tinymce.init({
+                    themes: "modern",
+                    skin: "oxide-dark",
+                    content_css: "dark",
+                    selector: 'textarea',
+                    plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                    toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+                  });
+            })
+    </script>
+
+{% endblock content %}

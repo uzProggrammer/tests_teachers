@@ -1,0 +1,7 @@
+django
+Pillow
+django-ckeditor
+django-user-agents
+pip
+gunicorn==19.7.1
+psycopg2

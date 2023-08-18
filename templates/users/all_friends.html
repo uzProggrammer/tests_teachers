@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}Do'stlar{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+<li class="breadcrumb-item"><a href="{% if profile.is_teacher %}/users/teachers/{% else %}/users/teachers/{% endif %}">{% if profile.is_teacher %}O'qituvchilar{% else %}O'quvchilar{% endif %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'profile' profile.username %}">{{profile.username|title}}</a></li>
+<li class="breadcrumb-item active">Do'stlar</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    {% include 'users/profile_header.html' %}
+
+    <div class="card bg-dark text-white m-2">
+        <div class="card-header p-0">
+            <form method="GET" class="input-group mb-2">
+                <input value="{{search}}" type="text" aria-label="Qidiruv" name="search" class="form-control bg-dark text-white" placeholder="Qidiruv">
+                <select name="sinf" class="form-control bg-dark text-white" id="id_sinf">
+  <option value="5.1">5.1</option>
+
+  <option value="5.2">5.2</option>
+
+  <option value="6.1">6.1</option>
+
+  <option value="6.2">6.2</option>
+
+  <option value="7.1">7.1</option>
+
+  <option value="7.2">7.2</option>
+
+  <option value="7.3">7.3</option>
+
+  <option value="8.1">8.1</option>
+
+  <option value="8.2">8.2</option>
+
+  <option value="8.3">8.3</option>
+
+  <option value="9.1">9.1</option>
+
+  <option value="9.2">9.2</option>
+
+  <option value="9.3">9.3</option>
+
+  <option value="10.1">10.1</option>
+
+  <option value="10.2">10.2</option>
+
+  <option value="10.3">10.3</option>
+
+  <option value="11.1">11.1</option>
+
+  <option value="11.2">11.2</option>
+
+  <option value="11.3">11.3</option>
+
+  <option value="all" selected>Hammasi</option>
+
+</select>
+                <button class="input-group-text btn btn-primary">Qidirish</button>
+            </form>
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table table-bordered border-white bg-dark text-white">
+                <thead>
+                    <tr>
+                        <th scope="col">Foydalanuvchi nomi</th>
+                        <th scope="col">Ismi sharif</th>
+                        <th scope="col">Sinf</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for teacher in object.object_list %}
+                        <tr>
+                            <td><a href="{% url 'profile' teacher.username %}">{{teacher.username}}</a></td>
+                            <td>{{teacher.first_name}} {{teacher.last_name}}</td>
+                            <td>{{teacher.sinf|title}}</td>
+                        </tr>
+                    {% empty %}
+                    <tr class="text-center">
+                        <td class="text-center" colspan="3"><h1>Hech narsa topilmadi</h1></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            {% block paginate %}
+            <div class="d-flex mt-3">
+                <div class="mx-auto">
+                    <div>
+                        <nav>
+                            <ul class="pagination">
+                                <li class="page-item {% if object_list.has_previous  %}{% else %}disabled{% endif %}" aria-disabled="true">
+                                    {% if object.has_previous %}
+                                        <a class="btn btn-success" href="?page={{ object.previous_page_number }}">&laquo; Oldingi</a>
+                                    {% else %}
+                                        <a class="btn btn-success disabled" href="#">&laquo; Oldingi</a>
+                                    {% endif %}
+                                </li>
+                                <li class="page-item {% if object_list.has_next  %}{% else %}disabled{% endif %}">
+                                    {% if object.has_next  %}
+                                        <a class="btn btn-success" href="?page={{ object.next_page_number }}">Keyingi &raquo;</a>
+                                    {% else %}
+                                        <a class="btn btn-success disabled" href="#">Keyingi &raquo;</a>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            {% endblock paginate %}
+        </div>
+    </div>
+{% endblock content %}

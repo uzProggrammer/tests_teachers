@@ -1,0 +1,167 @@
+{% extends 'bsb/base.html' %}
+
+{% load poll_extras %}
+
+{% block title %}{{task.title}}{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/controls/">Nazorat ishlari</a></li>
+    <li class="breadcrumb-item"><a href="/controls/control/{{bsb.id}}">{{bsb.title|title}}</a></li>
+    <li class="breadcrumb-item"><a href="/controls/control/{{bsb.id}}/problems">Masalalar</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{task.title}}</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    {% include 'bsb/bsb_header.html' %}
+    <div class="tab bg-dark text-white">
+        <button class="tablinks text-white" onclick="openCity(event, 'masala')" id="defaultOpen">Masala sharti</button>
+        <button class="tablinks text-white" onclick="openCity(event, 'urinishlar')">Urinishlar</button>
+    </div>
+
+    <div id="masala" class="tabcontent">
+        <div class="card bg-dark text-white" style="border:none;">
+            <div class="card-header text-center">
+                <h1><span style="color: rgb(100,100,100);">#{{task.id}}</span> {{task.title|safe}}</h1>
+                <span><span class="mx-2" style="color:rgb(40,40,40);">Qiyinchiligi: {{task.difficulty}}%</span> <span class="mx-2" style="color:rgb(40,240,40);">Vaqt chegarasi: {{task.time_limit}} ms</span> <span class="text-info mx-2">Xotira cheklovi: {{task.memory_limit}} MB</span></span>{% if task.author == user or user.is_authenticated %}<a href="edit/" class="btn btn-success"><i class="bx bx-pen"></i> Tahrirlash</a>{% endif %}
+            </div>
+            <div class="card-body">
+
+                <h4 class="text-danger">Sharti:</h4>
+                {{task.about|safe}}
+                <hr>
+                <h4 class="text-danger">Kiruvchi ma'lumotlar:</h4><span>{{task.info_out|safe}}</span><hr>
+                <h4 class="text-danger">Chiquvchi ma'lumotlar:</h4><span>{{task.info_in|safe}}</span><hr>
+                <h4 class="text-danger">Misollar:</h4>
+                <table class="table bg-dark table-responsive text-white table-bordered border-light">
+                    <thead>
+                        <tr>
+                            <th scope="col">input.txt</th>
+                            <th scope="col">output.txt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for simple_test_key, simple_test_value in task.simple_tests.items %}
+                            <tr>
+                                <th>{{simple_test_key|to_and|safe}}</th>
+                                <th>{{simple_test_value|to_and|safe}}</th>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% if user not in task.accepteds.all and request.user.sinf == bsb.sinf.nom %}
+        <div class="card bg-dark text-white">
+            <div class="card-header">
+                <h3 class="text-danger">Javobini yuborish</h3>
+            </div>
+            <div class="card-body p-0 m-0">
+                <form method="POST">{% csrf_token %}
+                    {{formca.as_p}}
+                    <div class="mx-4 my-4">
+
+                        {% if formca is None %}<a href="{% url 'login' %}" class="btn btn-outline-primary m-3">Kiirsh</a> <a class="btn btn-outline-success m-3" href="{% url 'signup' %}">Ro'yxatdan o'tish</a>{% else %}<button class="btn btn-outline-primary my-2" type="submit">Yuborish</button>{% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+        {% endif %}
+        {% if user not in task.accepteds.all and request.user.sinf == bsb.sinf.nom %}
+        <div class="card bg-dark text-white my-3">
+            <div class="card-header">
+                <h3 class="text-danger">So'ngi urinishlar</h3>
+            </div>
+            <div class="card-body table-responsive-xxl">
+                <table class="table table-responsive-xxl bg-dark text-white">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Foydalanuvchi</th>
+                            <th scope="col">Masala</th>
+                            <th scope="col">Holati</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for task_attempt1 in task_attempts %}
+                            <tr>
+                                <td scope="col">{{task_attempt1.id}}</td>
+                                <td scope="col"><a href="{% url 'profile' task_attempt1.user.username %}">{{task_attempt1.user.username|title}}</a></td>
+                                <td scope="col"><a href="#">{{task_attempt1.bsb_problem}}</a></td>
+                                <td scope="col"><span class="{% if task_attempt1.type == 'Accepted' %}text-primary{% else %}text-danger{% endif %}">{{task_attempt1.type}}</span></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div id="urinishlar" class="tabcontent">
+        <div class="card bg-dark text-white my-3">
+            <div class="card-header">
+                <h3 class="text-danger">So'ngi urinishlar</h3>
+            </div>
+            <div class="card-body table-responsive-xxl">
+                <table class="table table-responsive-xxl bg-dark text-white">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Foydalanuvchi</th>
+                            <th scope="col">Masala</th>
+                            <th scope="col">Holati</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for task_attempt1 in task_attempts1 %}
+                            <tr>
+                                <td scope="col">{{task_attempt1.id}}</td>
+                                <td scope="col"><a href="{% url 'profile' task_attempt1.user.username %}">{{task_attempt1.user.username|title}}</a></td>
+                                <td scope="col"><a href="#">{{task_attempt1.bsb_problem}}</a></td>
+                                <td scope="col"><span class="{% if task_attempt1.type == 'Accepted' %}text-primary{% else %}text-danger{% endif %}">{{task_attempt1.type}}</span></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.3/mode/python/python.min.js"
+        integrity="sha512-/mavDpedrvPG/0Grj2Ughxte/fsm42ZmZWWpHz1jCbzd5ECv8CB7PomGtw0NAnhHmE/lkDFkRMupjoohbKNA1Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+    function openCity(evt, cityName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(cityName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click();
+    document.querySelector('#code-editor').required=false;
+    </script>
+    <script>
+        {% if user not in task.accepteds.all %}
+        var config = {
+          lineNumbers: true,
+          indentUnit: 4,
+          mode: 'python',
+          theme: 'monokai'
+        }
+        var body = CodeMirror.fromTextArea(document.querySelector('#code-editor'), config);
+        {% endif %}
+
+
+    </script>
+{% endblock %}

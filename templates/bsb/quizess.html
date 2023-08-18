@@ -1,0 +1,60 @@
+{% extends 'bsb/base.html' %}
+
+{% block title %}{{bsb.title}}{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/controls/">Nazorat ishlari</a></li>
+    <li class="breadcrumb-item"><a href="/controls/control/{{bsb.id}}">{{bsb.title|title}}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Savollar</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    {% include 'bsb/bsb_header.html' %}
+    <div class="card bg-dark text-white">
+        <div class="card-header">
+            <h5>Testlar</h5>
+        </div>
+        <div class="card-body">
+            <style>
+                p{
+                    display:inline;
+                    padding:5px;
+                }
+            </style>
+            <form method="POST" action="post/">{% csrf_token %}
+                <ol>
+                    {% for question in quizes %}
+                        <li>
+                        <p style="display:inline-block;">{{question.body|safe}}</p><br>
+                        {% for answer in question.tests.all %}
+                            <input required type="radio" name="{{question.id}}" id="{{answer.id}}" value="{{answer.id}}" class="form-check-input mx-2"><label for="{{answer.id}}">{{answer.body|safe}}</label><br>
+                        {% endfor %}
+                            <br>
+                            <p>{{question.ball}}</p> ball
+                        </li>
+                    <hr>
+                    {% endfor %}
+                </ol>
+                <div class="modal" id="exampleModal{{question.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-s bg-dark text-white">
+                            <div class="modal-content bg-dark text-white">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5 text-danger" id="exampleModalLabel">Eslatma!</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body p-3">
+                                    <p>Haqiqatdan ham javobni yubormoqchimiz</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary" type="submit">Ha</button>
+                                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal" aria-label="Close">Yo'q</button>
+                                </div>
+                            </div>
+                      </div>
+                </div>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{question.id}}">Yuborish</button>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

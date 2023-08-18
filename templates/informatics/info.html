@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Informatika haqida{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/informatics/problems/">Masalalar</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Haqida</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <div class="card bg-dark text-white">
+        <div class="card-header">
+            Masalalar haqida
+        </div>
+        <div class="card-body">
+            Siz masala uchun avval algoritm tuzasiz va uni python ko'diga o'zgartirasiz. Misol uchun:<br>
+            <p><pre><code class="language-python">print("Salom dunyo")</code></pre></p>
+            Bu ko'd ekranga <i>Salom dunyo</i> so'zini chop etadi.
+            <p></p>
+            Undan tashqari python orqali bir qatorda ikkita sonni olish uchun ishlatilanadigan kod
+            <p><pre><code class="language-python">a,b=map(int,input().split())</code></pre></p>
+            <p></p>
+            Agarda dastur uzundan uzun bo'lib ketadigan bo'lsa qisqartmalar ham mavjud:
+            <p><pre><code class="language-python"># Bir qatorda if else
+print(True if 3>5 else False)
+
+# Bir qatorda for operatori
+suz='12345'
+l = [i for i in suz]
+# output: ['1','2','3','4','5']
+
+# List malumot turidagi elementlarni bir qatorda yig'indisini hisoblash
+l = [1,2,3,4,5,6,7,8,9,10]
+print(sum(l))
+# output: 45
+
+# if else operatorlarini qisqachayozilishi:
+if 4==0:print("Xato")
+else:print("To'g'ri")
+
+# ....
+</code></pre></p>
+        </div>
+    </div>
+
+    <div class="card bg-dark text-white">
+        <div class="card-herder">
+            <h3>Masalardan qaytgan javoblar:</h3>
+        </div>
+        <div class="card-body table-responsive">
+            <table class="table table-bordered text-white scrollbar table-sm align-middle">
+                <tr class="p-3" style="padding:10px;">
+                    <th class="text-success p-3">Accepted</th>
+                    <td class="text-success p-3">Siz tuzgan dastur barcha testlarning qiymatlariga to'g'ri tushdi. Ya'ni siz tuzgan algaritm masala javobiga tog'ri tushdi.</td>
+                    <td class="text-success p-3">Sizda yetarli ma'lumot bor ekan!</td>
+                </tr>
+                <tr class="p-3" style="padding:10px;">
+                    <th class="text-danger p-3">WrongAnswer(test_soni)</th>
+                    <td class="text-danger p-3">Sizning dasturingizda <i>test_soni</i>dagi qiymatga chiquvchi ma'lumotingiz to'g'ri tushmadi!</td>
+                    <td class="text-danger p-3">Sizning algoritmingiz xoto ishladi. Yoki shunchaki tekshirish uchun qildingiz. Yoki o'zingiz bilmagan holda.</td>
+                </tr>
+                <tr class="p-3" style="padding:10px;">
+                    <th class="text-danger p-3">TimeLimit(test_soni)</th>
+                    <td class="text-danger p-3">Sizning dasturingizda <i>test_soni</i>da cheklangan vaqtdan o'tib ketdi.</td>
+                    <td class="text-danger p-3">DAsturingiz samarasiz yechimga ega. Yoki algoritmingiz xato</td>
+                </tr>
+                <tr class="p-3" style="padding:10px;">
+                    <th class="text-danger p-3">MemoryLimit(test_soni)</th>
+                    <td class="text-danger p-3">Sizning dasturingizda <i>test_soni</i>da cheklanga xotiradan o'tib ketdi</td>
+                    <td class="text-danger p-3">Siz tuzgan algoritm xato!</td>
+                </tr>
+                <tr class="p-3" style="padding:10px;">
+                    <th class="text-danger p-3">ImportError</th>
+                    <td class="text-danger p-3">Siz dasturingizda taqiqlangan kutubxonani ishlatingiz.</td>
+                    <td class="text-danger p-3">Sizning dasturingiz tizim uchun xafli bo'lishi mumkin. Shu sababdan bu Error chiqdi. Siz bunda dasturning qayerida ishlatgan bo'lsangizda xato chiqaveradi. Bular: <i>os</i> <i>sys</i> va boshqalar</td>
+                </tr>
+                <tr class="p-3" style="padding:10px;">
+                    <th class="text-danger p-3">CE</th>
+                    <td class="text-danger p-3">Sizning dasturingiz xato</td>
+                    <td class="text-danger p-3">Siz tuzgan dasturning qaysidir qatori xato. Bunda sizga maslahat dasturni kompyuteringizda qaytadan tekshirib, keyin qaytadan urinib ko'rish maslahat beriladi</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block js %}
+
+<script>
+    document.querySelector('li.s-item.active').classList.remove('active');
+    document.querySelector('#problems').classList.add('active');
+</script>
+
+{% endblock js %}

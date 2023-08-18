@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Register{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+<li class="breadcrumb-item active text-white" aria-current="page">Ro'yxatdan o'tish</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <h2 class="text-center">Ro'yxatdan o'tish</h2>
+    <form method="post">{% csrf_token %}
+        {{form.as_p}}
+        <button type="submit" class="btn btn-outline-primary">Yuborish</button>
+        <p>Siz tizimda allaqachon bormisiz? - <a href="{% url 'login' %}">Kirish</a></p>
+    </form>
+{% endblock content %}

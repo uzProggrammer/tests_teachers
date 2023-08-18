@@ -1,0 +1,85 @@
+{% extends 'courses/base.html' %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/courses/">Kurslar</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Qo'shish</li>
+{% endblock breadcrumb %}
+
+{% block title %}
+    Kurs qo'shish
+{% endblock title %}
+
+{% block content %}
+<form method="post">{% csrf_token %}
+    <div class="row">
+        <div class="col-md-5">
+            <img src="/static/logo/courses.png" class="course-img mb-3"
+                style="border: 1px solid black;width: 100%; border-radius: 10px;padding: 0 20px;" alt="Courses.png">
+        </div>
+        <div class="col-md-7">
+            <div class="card bg-dark p-3">
+                <label for="title" class="form-label m-0 p-0 fs-6">Kurs nomi</label><h3 class="mb-2"><input required type="text" value="{{course.title}}" name="title" class="form-control bg-dark" id="title" placeholder="Kurs nomi"></h3>
+                <p><label for="summary" class="form-label m-0">Qisqacha ma'lumot</label><input required type="text" name="summary" id="summary" value="{{course.summary}}" class="form-control bg-dark m-0" placeholder="Qisqacha ma'lumot"></p>
+            </div>
+            <div class="card bg-dark my-2 p-2">
+                <div class="card-header p-2">Teglar</div>
+                <div class="card-body">
+                    
+                    <div id="tegs">
+                        {% if course.tags %}
+                                {% for tag in course.tags.all %}
+                                    <span class="badge bg-primary"><i class="fa fa-hashtag"></i> {{tag.title}}</span>
+                                {% endfor %}
+                            
+                        {% endif %}
+                    </div>  
+                    <button class="btn btn-primary" style="font-size: 10px;" type="button" id="tag_add_btn"><i class="fa fa-plus"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card bg-dark p-3">
+        <label for="body" class="form-label">Ma'lumot</label>
+        <textarea name="body" id="body" class="bg-dark form-control tiny">{{course.about|safe}}</textarea>
+    </div>
+
+    <button class="btn btn-primary my-3" type="submit">Saqlash</button>
+</form>
+{% endblock content %}
+
+{% block js1 %}
+<script>
+tinymce.init({
+    themes: "modern",
+    skin: "oxide-dark",
+    content_css: "dark",
+    selector: 'textarea.tiny',
+    plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+    toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+});
+
+var count = 0
+document.querySelector('#tag_add_btn').addEventListener('click', ()=>{
+    count += 1;
+    var html = `
+    <div class="input-group mb-3">
+        <input type="text" placeholder="Teg nomi" class="form-control bg-dark" name="teg" style="display: inline-block;margin:0px 2px 2px 0;">
+        <button type="button" class="input-group-text bg-danger remove-input" id="basic-addon2" style="padding: 3px 5px;"><i class="fa fa-minus" style="font-size: 9px;"></i></button>
+    </div>
+    `;
+    var div = document.createElement('div');
+    div.innerHTML = html;
+    div.style.width = '35%';
+    div.style.display = 'inline-block';
+    document.querySelector('#tegs').appendChild(div);
+    document.querySelectorAll('.remove-input').forEach(
+        el=>{
+            el.addEventListener('click', e=>{
+                el.parentElement.parentElement.remove()
+            });
+        }
+    );
+});
+</script>
+{% endblock js1 %}

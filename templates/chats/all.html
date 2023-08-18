@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block title %}Barcha suhbatlar{% endblock title %}
+
+
+{% block content %}
+<div class="container p-0">
+
+
+    <div class="card bg-dark text-white">
+        <div class="row g-0">
+            <div class="col-12 col-lg-5 col-xl-3 border-right chat-left">
+
+                <div class="px-4 d-none d-md-block">
+                    <div class="align-items-center chat-search">
+                        <div class="flex-grow-1">
+                            <input type="text" class="form-control my-3 bg-dark text-white" placeholder="Search...">
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-users">
+
+                    <div class="pinned-users">
+                        {% for chat in chats %}
+                            {% if chat.author == user %}
+                                {% if chat.is_pinned %}
+                                <a href="{% url 'user_chat' chat.recipient.username %}#message_sender" class="list-group-item list-group-item-action border-0  pinned-user" id="chat{{chat.id}}">
+                                    <div class="d-flex align-items-start">
+                                        <img src="https://bootdey.com/img/Content/avatar/avatar5.png" class="rounded-circle mr-2 m-2" alt="Vanessa Tucker" width="45" height="45">
+                                        <div class="flex-grow-1 ml-3">
+                                            {{ chat.recipient.username }}
+                                            <div class="small">{% if chat.last_message_text.user == user %}Siz: {{chat.last_message_text.message|cut:'<p'|cut:'</p>'|slice:':4'|safe}}{% else %}U: {{chat.last_message_text.message|cut:'<p'|cut:'</p>'|slice:':4'|safe}}{% endif %}</div>
+                                        </div>
+                                    </div>
+                                </a>
+                                {% endif %}
+                            {% else %}
+                                {% if chat.is_pinned_recipient %}
+                                <a href="{% url 'user_chat' chat.author.username %}#message_sender" class="list-group-item list-group-item-action border-0  pinned-user" id="chat{{chat.id}}">
+                                    <div class="d-flex align-items-start">
+                                        <img src="https://bootdey.com/img/Content/avatar/avatar5.png" class="rounded-circle mr-2 m-2" alt="Vanessa Tucker" width="45" height="45">
+                                        <div class="flex-grow-1 ml-3">
+                                            {{ chat.author.username }}
+                                            <div class="small">{% if chat.last_message_text.user == user %}Siz: {{chat.last_message_text.message|cut:'<p>'|cut:'</p>'|slice:':4'|safe}}{% else %}U: {{chat.last_message_text.message|cut:'<p>'|cut:'</p>'|slice:':4'|safe}}{% endif %}</div>
+                                        </div>
+                                    </div>
+                                </a>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+
+                    {% for chat in chats %}
+                        {% if chat.author == user %}
+                            {% if not chat.is_pinned %}
+                            <a href="{% url 'user_chat' chat.recipient.username %}#message_sender" class="list-group-item list-group-item-action border-0" id="chat{{chat.id}}">
+                                <div class="d-flex align-items-start">
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar5.png" class="rounded-circle mr-2 m-2" alt="Vanessa Tucker" width="45" height="45">
+                                    <div class="flex-grow-1 ml-3">
+                                        {{ chat.recipient.username }}
+                                    </div>
+                                </div>
+                            </a>
+                            {% endif %}
+                        {% else %}
+                            {% if not chat.is_pinned_recipient %}
+                            <a href="{% url 'user_chat' chat.author.username %}#message_sender" class="list-group-item list-group-item-action border-0" id="chat{{chat.id}}">
+                                <div class="d-flex align-items-start">
+                                    <img src="https://bootdey.com/img/Content/avatar/avatar5.png" class="rounded-circle mr-2 m-2" alt="Vanessa Tucker" width="45" height="45">
+                                    <div class="flex-grow-1 ml-3">
+                                        {{ chat.author.username }}{{unread_messages}}
+                                    </div>
+                                </div>
+                            </a>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="add_chat">
+                    <button class="add_chat_btn btn btn-primary" style="border-radius: 50%;font-size: 20px;" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="bx bx-plus"></i></button>
+                </div>
+                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog bg-dark text-white">
+                        <div class="modal-content bg-dark text-white">
+                            <div class="modal-header bg-dark text-white">
+                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Yangi chat yaratish</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card bg-dark text-white p-0 m-0">
+                                    <input type="text" class="form-control bg-dark text-white" id="add_chat_search" onkeyup="add_chat_search(this)">
+                                    <div class='form-text text-white'>Iltimos biron bir foydalanuvchi nomini kiriting</div>
+                                </div>
+
+                                <div class="users-list"></div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yopish</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="d-block d-lg-none mt-1 mb-0">
+            </div>
+            {% block chat %}
+            <div class="col-12 col-lg-7 col-xl-9 bg-noner">
+                <div class="text-center" style="font-size: 30px;font-family: Verdana, Geneva, Tahoma, sans-serif !important;background-color: rgba(200,200,200,0.2);border-radius:20px;margin-top:30%;">Iltimos biron bir chatni tanlang</div>
+            </div>
+            {% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+
+<script>
+    $.ajax(
+            {
+                type: "GET",
+                url: `users/`,
+                success: (data) => {
+                    var users = data;
+                },
+                error: (e) => {
+                    console.log(e)
+                }
+            }
+        );
+
+        function autoComplete(inputValue) {
+            users1 = {{all_users|safe}};
+            return users1.filter(
+            (value) => value.toLowerCase().includes(inputValue.toLowerCase())
+            );
+        }
+        function add_chat_search(field){
+            var users_list = document.querySelector('.users-list');
+            var s = autoComplete(field.value);
+            if (field.value !== ''){
+                code = ''
+                for (let [value, key] of Object.entries(s)){
+                        code += `
+                        <a href="/chats/with/${key}/create/"><div class="card bg-dark text-white p-2">
+                            <div class="bg-dark text-white user-status">
+                                <div class="card-body d-inline p-1">
+                                    <img src="https://icon-library.com/images/teacher-icon-png/teacher-icon-png-17.jpg" class="header__img">
+                                    <span style="font-size:20px;">${key}</span><br><span class="fw-lighter px-3 text-white-50" style="font-size:15px;">${key}</span>
+                                </div>
+                            </div>
+                        </div></a>
+                        `;
+                };
+                users_list.innerHTML=code;
+            } else{
+                code = ''
+                for (let [value, key] of Object.entries(users)){
+                    code += `
+                    <a href="#"><div class="card bg-dark text-white p-2">
+                        <div class="bg-dark text-white user-status">
+                            <div class="card-body d-inline p-1">
+                                <img src="https://icon-library.com/images/teacher-icon-png/teacher-icon-png-17.jpg" class="header__img">
+                                <span style="font-size:20px;">${key[0]}</span><br><span class="fw-lighter px-3 text-white-50" style="font-size:15px;">${key[1]}</span>
+                            </div>
+                        </div>
+                    </div></a>
+                    `;
+            }
+            users_list.innerHTML=code;
+            };
+        }
+        add_users();
+</script>
+
+{% block js1 %}
+{% endblock js1 %}
+{% endblock %}

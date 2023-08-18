@@ -1,0 +1,68 @@
+{% extends 'attempts/base.html' %}
+
+{% block title %}Urinishlar{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Urinishlar</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <h1>Urinishlar</h1>
+    <div class="table-responsive">
+        <table class="table m-0 table-hover table-borderless table-striped text-left slim-table">
+            <thead>
+                <tr>
+                    <th class="text-white">#</th>
+                    <th class="text-white">Foydlanuvchi</th>
+                    <th class="text-white">Masala</th>
+                    <th class="text-white">Holati</th>
+                    <th class="text-white">Vaqt</th>
+                    <th class="text-white">Xotira</th>
+                    <th class="text-white">Urinish vaqti</th>
+                </tr>
+            </thead>
+            <tbody class="text-white">
+                {% for article in object_list.object_list %}
+                    <tr>
+                        <td class="text-white">{% if article.author == user %}<a href="#">{{ article.id }}</a>{% else %}{{ article.id }}{% endif %}</td>
+                        <td class="text-white"><a href="{% url 'profile' article.author.username %}">{{ article.author }}</a></td>
+                        <td class="text-white"><a href="{% url 'problem_detail' article.problem.id %}">{{ article.problem }}</a></td>
+                        <td class="{% if article.holat == 'Accepted' %}text-success{% else %}text-danger{% endif %}">{{article.holat}}</td>
+                        <td class="text-white">{{article.time}} ms</td>
+                        <td class="text-white">{{article.memory}} KB</td>
+                        <td class="text-white">{{article.date_created|date:"d.m.Y | H:i"}}</td>
+                    </tr>
+                {% empty %}
+                    Hali biron bitta urinish bo'lgani yo'q
+                {% endfor %}
+            </tbody>
+        </table>
+        {% block paginate %}
+            <div class="d-flex mt-3">
+                <div class="mx-auto">
+                    <div>
+                        <nav>
+                            <ul class="pagination">
+                                <li class="page-item {% if object_list.has_previous  %}{% else %}disabled{% endif %}" aria-disabled="true">
+                                    {% if object_list.has_previous %}
+                                        <a class="btn btn-success" href="?page={{ object_list.previous_page_number }}">&laquo; Oldingi</a>
+                                    {% else %}
+                                        <a class="btn btn-success disabled" href="#">&laquo; Oldingi</a>
+                                    {% endif %}
+                                </li>
+                                <li class="page-item {% if object_list.has_next  %}{% else %}disabled{% endif %}">
+                                    {% if object_list.has_next  %}
+                                        <a class="btn btn-success" href="?page={{ object_list.next_page_number }}">Keyingi &raquo;</a>
+                                    {% else %}
+                                        <a class="btn btn-success disabled" href="#">Keyingi &raquo;</a>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        {% endblock paginate %}
+    </div>
+{% endblock content %}

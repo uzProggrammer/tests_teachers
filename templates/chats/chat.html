@@ -1,0 +1,289 @@
+{%extends 'chats/all.html'  %}
+
+{% block title %}{% if chat1.author == user %}
+                                        {{chat1.recipient.username|title}}{% else %}
+                                        {{chat1.author.username|title}}{% endif %}{% endblock %}
+
+{% block chat %}
+<style>
+    @media screen and (min-width: 100px) and (max-width:990px) {
+    #messages{
+        width: 100%;
+    }
+    .chat-left{
+        display: none !important;
+    }
+    .chat-header{
+        display: block;
+
+    }
+    #back-button{
+        display: block !important;
+    }
+}
+
+</style>
+
+<div class="col-12 col-lg-7 col-xl-9" id="messages">
+        <div class="py-2 px-4 border-bottom d-lg-block chat-header">
+            <div class="d-flex align-items-center py-1">
+                <button id="back-button" class="bg-transparent text-white" style="border: none;font-size: 30px;margin-right: 10px;display: none;"><i class="bx bx-left-arrow-alt"></i></button>
+                <div class="position-relative">
+                    <img src="{% if chat1.author == user %}{% if chat.recipient.is_teacher %}https://icon-library.com/images/teacher-icon-png/teacher-icon-png-17.jpg{% else %}https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Student_%28example%29.svg/444px-Student_%28example%29.svg.png?20180722153736{% endif %}{% else %}{% if chat.recipient.is_teacher %}https://icon-library.com/images/teacher-icon-png/teacher-icon-png-17.jpg{% else %}https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Student_%28example%29.svg/444px-Student_%28example%29.svg.png?20180722153736{% endif %}{% endif %}" class="rounded-circle mr-1" alt="Sharon Lessman" width="40" height="40">
+                </div>
+                <div class="flex-grow-1 pl-3">
+                    <strong>{% if chat1.author == user %}
+                        {{chat1.recipient.username|title}}{% else %}
+                        {{chat1.author.username|title}}{% endif %}</strong>
+                    <div class="small"><em>{% if chat1.author == user %}{{chat1.recipient.email}}{% else %}{{chat1.author.email}}{% endif %}</em></div>
+                </div>
+                <div>
+                    <button class="btn btn-primary btn-lg mr-1 px-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-phone feather-lg"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></button>
+                    <button class="btn btn-info btn-lg mr-1 px-3 d-none d-md-inline-block"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-video feather-lg"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg></button>
+                    <button class="btn btn-light border btn-lg px-3"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal feather-lg"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="position-relative">
+            <div class="chat-messages p-4">
+                <div class="chat-messages1">
+                    {% if chat1.author == user %}
+                        {% for m in chat1.messages.all %}
+                            {% if m.is_recipient %}
+                            <section class="answer left" id="message-{{m.id}}">
+                                <div class="avatar">
+                                    <img class="header__img" src="{% if m.user.is_teacher %}https://icon-library.com/images/teacher-icon-png/teacher-icon-png-17.jpg{% else %}https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Student_%28example%29.svg/444px-Student_%28example%29.svg.png?20180722153736{% endif %}" alt="User name">
+                                    <div class="status online"></div>
+                                </div>
+                                <div class="name">{{m.user.username|title}}</div>
+                                <div class="text">
+                                    {{m.message|safe}}
+                                </div>
+                                <div class="time">{{m.date_created|date:"d.m.Y | H:i"}}</div>
+                            </section>
+                            {% else %}
+                            <section class="answer right" id="message-{{m.id}}">
+                                <div class="avatar">
+                                    <img class="header__img" src="{% if m.user.is_teacher %}https://icon-library.com/images/teacher-icon-png/teacher-icon-png-17.jpg{% else %}https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Student_%28example%29.svg/444px-Student_%28example%29.svg.png?20180722153736{% endif %}" alt="User name">
+                                    <div class="status off"></div>
+                                </div>
+                                <div class="name">{{m.user.username}}</div>
+                                <div class="text">
+                                    {{m.message|safe}}
+                                </div>
+                                <div class="time">{{m.date_created|date:"d.m.Y | H:i"}}</div>
+                            </section>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                    {% for m in chat1.messages.all %}
+                      {% if m.is_recipient %}
+                        <section class="answer right bg-transparent" style="max-width:500px;" id="message{{m.id}}">
+                          <div class="avatar">
+                            <img class="header__img" src="{% if m.user.is_teacher %}https://icon-library.com/images/teacher-icon-png/teacher-icon-png-17.jpg{% else %}https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Student_%28example%29.svg/444px-Student_%28example%29.svg.png?20180722153736{% endif %}" alt="User name">
+                          </div>
+                          <div class="name">{{m.user.username|title}}</div>
+                          <div class="dropdown">
+                            <button class="text text{{m.id}}" style="border:none;outline:none;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{m.message|safe}}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-dark position-fixed t-0 bg-dark" style="z-index:1;">
+                              <li><button class="dropdown-item delete_message" onclick="delete_message({{m.id}})">O'chirish</button></li>
+                            </ul>
+                          </div>
+                          <div class="time">{{m.date_created|date:"d.m.Y | H.i"}}</div>
+                        </section>
+                      {% else %}
+                        <section class="answer left bg-transparent" style="max-width:500px;" id="message{{m.id}}">
+                          <div class="avatar">
+                            <img class="header__img" src="{% if m.user.is_teacher %}https://icon-library.com/images/teacher-icon-png/teacher-icon-png-17.jpg{% else %}https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Student_%28example%29.svg/444px-Student_%28example%29.svg.png?20180722153736{% endif %}" alt="User name">
+                          </div>
+                          <div class="name">{{m.user.username|title}}</div>
+                          <div class="dropdown">
+                            <button class="text text{{m.id}}" style="border:none;outline:none;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{m.message|safe}}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-dark position-fixed t-0 bg-dark" style="z-index:1;">
+                              <li><button class="dropdown-item delete_message" onclick="delete_message({{m.id}})">O'chirish</button></li>
+                            </ul>
+                          </div>
+                          <div class="time">{{m.date_created|date:"d.m.Y | H.i"}}</div>
+                        </section>
+                      {% endif %}
+
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="last">
+                    <button id="last-message-button" href="#" class="btn btn-primary" style="border-radius: 50px;font-size: 20px;"><i class="bx bx-arrow-to-bottom"></i></button>
+                </div>
+                <section id="last_message" class="answer"></section>
+            </div>
+        </div>
+
+        <div class="flex-grow-0 py-3 px-4 border-top">
+            <div class="input-group">
+                {% if chat1.author != user %}
+                <input type="hidden" name="is_recipient" value="True" id="is_recipient">
+                {% endif %}
+                <div  class="form-control bg-dark text-white" id="message" style="max-height: 90px;border-bottom: 1px solid black;"></div>
+                <button class="btn btn-primary" id="sender"><i class='bx bx-send'></i></button>
+            </div>
+        </div>
+
+    </div>
+{% endblock  %}
+
+{% block js1 %}
+
+
+
+
+
+
+
+<script src="https://cdn.ckeditor.com/ckeditor5/37.1.0/balloon/ckeditor.js"></script>
+    <script>
+
+        var editor = BalloonEditor
+        .create( document.querySelector( '#message' ) )
+        .then( editor => {
+            myEditor = editor;
+        } )
+        .catch( error => {
+            alert(error);
+        } );
+
+
+        try {
+            var is_recipient = document.querySelector('#is_recipient').value += 'Salom alekum';
+            var is_recipient = true;
+        } catch (err) {
+            var is_recipient = false;
+        };
+
+        document.querySelector('#sender').addEventListener('click',
+            () => {
+                if (!is_recipient){
+                    var message = document.querySelector('#message').innerHTML;
+                    $.ajax({
+                        type: "POST",
+                        url: `${window.location.origin+window.location.pathname}add_message/`,
+                        data: {'csrfmiddlewaretoken':'{{csrf_token}}', 'message': message, 'chat_id': {{chat1.id}},},
+                        success: (data) => {
+                          var data = Object.entries(data)
+                          data1 = [];
+                          for (var [key, value] of data) {
+                            data1.push(key);
+                            data1.push(value);
+                          }
+                          data2 = data1;
+
+                          html_code = `
+                            <section class="answer right bg-transparent text-white" style="max-width:500px;" id="${data2[0]}">
+                            <div class="avatar">
+                              <img src="{% if user.is_teacher %}https://icon-library.com/images/teacher-icon-png/teacher-icon-png-17.jpg{% else %}https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Student_%28example%29.svg/444px-Student_%28example%29.svg.png?20180722153736{% endif %}" alt="User name">
+                            </div>
+                            <div class="name">${data2[5]}</div>
+                            <div class="text">
+                              ${data2[1]}
+                            </div>
+                            <div class="time">${data2[3]}</div>
+                          </section>
+                          `;
+
+                          document.querySelector('.chat-messages1').innerHTML += html_code;
+                          document.querySelector(`#${data2[0]}`).scrollIntoView();
+                        },
+                    });
+
+                } else{
+                var message = document.querySelector('#message').innerHTML;
+                    $.ajax({
+                        type: "POST",
+                        url: `${window.location.origin+window.location.pathname}add_message/`,
+                        data: {'csrfmiddlewaretoken':'{{csrf_token}}', 'message': message, 'chat_id': {{chat1.id}}, 'is_recipient': true},
+                        success: (data) => {
+                          var data = Object.entries(data)
+                          data1 = [];
+                          for (var [key, value] of data) {
+                            data1.push(key);
+                            data1.push(value);
+                          }
+                          data2 = data1;
+
+                          html_code = `
+                            <section class="answer right bg-transparent text-white" style="max-width:500px;" id="${data2[0]}">
+                            <div class="avatar">
+                              <img src="{% if user.is_teacher %}https://icon-library.com/images/teacher-icon-png/teacher-icon-png-17.jpg{% else %}https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Student_%28example%29.svg/444px-Student_%28example%29.svg.png?20180722153736{% endif %}" alt="User name">
+                            </div>
+                            <div class="name">${data2[5]}</div>
+                            <div class="text">
+                              ${data2[1]}
+                            </div>
+                            <div class="time">${data2[3]}</div>
+                          </section>
+                          `;
+
+                          document.querySelector('.chat-messages1').innerHTML += html_code;
+                          document.querySelector(`#${data2[0]}`).scrollIntoView();
+                        },
+                    });
+                }
+            },
+        );
+        document.querySelector('#last-message-button').addEventListener('click',
+            () => {
+                document.querySelector('#last_message').scrollIntoView({'behavior':'smooth'})
+            }
+        )
+        document.querySelector('#back-button').addEventListener('click',
+            () => {
+                document.querySelector('#messages').style = 'display: none !important;';
+                document.querySelector('.chat-left').style = 'width: 100%; display: block !important;'
+            },
+        )
+
+        function get_unread_message(){
+            $.ajax({
+                type: "GET",
+                url: `${window.location.origin+window.location.pathname}get_unread_message/`,
+                success: (data) => {
+                    all_text = ''
+                    for(let [key, value] of Object.entries(data)){
+                        var element = document.querySelector(`#message-${key}`)
+                        if (!document.body.contains(element)){
+                            htmlca = `
+                            <section class="answer left" id="message-${key}">
+                                <div class="avatar">
+                                    <img src="{% if m.user.is_teacher %}https://icon-library.com/images/teacher-icon-png/teacher-icon-png-17.jpg{% else %}https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Student_%28example%29.svg/444px-Student_%28example%29.svg.png?20180722153736{% endif %}" alt="User name">
+                                    <div class="status off"></div>
+                                </div>
+                                <div class="name">${value['user']}</div>
+                                <div class="text">
+                                    ${value['message']}
+                                </div>
+                                <div class="time">${value['date_send']}</div>
+                            </section>
+                            `;
+                            all_text+=htmlca;
+                        }
+                    }
+                    document.querySelector('.chat-messages1').innerHTML += all_text
+                }
+            })
+        };
+
+        setInterval(get_unread_message, 2000)
+
+
+
+
+
+
+
+        document.querySelector('#chat{{chat1.id}}').style='background-color: blue !important;color:white !important;';
+        document.querySelector('#chat{{chat1.id}}').href = '';
+    </script>
+{% endblock js1 %}

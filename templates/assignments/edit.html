@@ -1,0 +1,47 @@
+{% extends 'assignments/base.html' %}
+
+{% block title %}Tahrirlash{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/assignments/">Topshiriqlar</a></li>
+    <li class="breadcrumb-item"><a href="/assignments/assignment/{{ass.id}}/">{{ass.title}}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Tahrirlash</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css">
+    <div class="card bg-dark text-white">
+        <div class="card-header p-3">
+            <h2>Tahrirlash</h2>
+        </div>
+        <div class="card-body">
+            <form method="post">{% csrf_token %}
+                {{form.as_p}}
+                <button type="submit" class="btn btn-primary">Saqlash</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+
+        tinymce.init({
+        themes: "modern",
+        skin: "oxide-dark",
+        content_css: "dark",
+        selector: 'textarea',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+      });
+    </script>
+{% endblock content %}
+
+{% block js1 %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.full.min.js"></script>
+<script>
+    $(function () {
+          $("select").select2({
+          });
+    });
+</script>
+{% endblock %}

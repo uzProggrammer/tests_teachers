@@ -1,0 +1,44 @@
+{% extends 'courses/base.html' %}
+
+{% block title %}
+    Kurslar
+{% endblock title %}
+
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Kurslar</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="row">
+    {% for course in courses %}
+    {% if course.is_public or user == course.author or user.is_staff %}
+        <div class="col-md-6 mb-3">
+            <a href="course/{{course.id}}/" class="card bg-dark">
+                <img src="/static/logo/courses.png" class="card-img-top course-img" alt="Courses.png">
+                
+                <div class="card-body">
+                    <h5>{{course.title}}</h5>
+                    <p class="card-text">{{course.summary|safe}}</p>
+                </div>
+            </a>
+        </div>
+    {% else %}
+        <div class="col-md-6 mb-3">
+            <div class="card bg-dark">
+                <img src="/static/logo/courses.png" class="card-img-top course-img" alt="Courses.png">
+                
+                <div class="card-body">
+                    <h5>{{course.title}}</h5>
+                    <p class="card-text">{{course.summary|safe}}</p>
+                </div>
+                <div class="card-footer">
+                    <div class="badge bg-danger">REJADA</div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+    {% endfor %}
+</div>
+{% endblock content %}

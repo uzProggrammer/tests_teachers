@@ -1,0 +1,497 @@
+{% extends 'courses/base.html' %}
+
+{% block title %}
+{{lesson.title}}
+{% endblock title %}
+
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+<li class="breadcrumb-item"><a href="/courses/">Kurslar</a></li>
+<li class="breadcrumb-item"><a href="/courses/course/{{course.id}}">{{course.title|title}}</a></li>
+<li class="breadcrumb-item active" aria-current="page">{{lesson.title|title}}</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+
+<style>
+    .question,
+    .answer {
+        padding: 10px;
+        border: 1px solid var(--sidebar-active-bg);
+        border-radius: 5px;
+        margin: 5px;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .quiz {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .answers {
+        display: flex;
+        flex-direction: column;
+    }
+</style>
+<div class="row">
+    <div class="col-md-3">
+        <div class="card bg-dark p-2 mb-2">
+            <img src="/static/logo/courses.png" class="course-img mb-3"
+                    style="width: 100%; border-radius: 10px;padding: 0 20px;" alt="Courses.png">
+            <div class="text-center card-header">
+                {{course.title|safe}}<br>
+                {{course.summary|safe}}
+                {% if user.is_admin or user == course.author %}
+                    <a href="/courses/course/{{course.id}}/edit/" class="btn btn-success"><i class="fa fa-pen"></i> Tahrirlash</a>
+                {% endif %}
+            </div>
+            <div class="card-body p-1">
+                Natija: {{answers_count}} / {{course_items}}
+                <div class="progres-bar"
+                    style="border-radius: 25px;font-size: 10px;padding: 0;background-color: var(--sidebar-active-bg);border: 25px;height: 14px;">
+                    <div id="progress-item" class="item-progres-bar"
+                        style="background: linear-gradient(40deg, blue, red);text-align: center;border-radius: 10px;margin:0;height: 100%;border: 0;">
+                        {% if foiz != 0 %}{{foiz}}%{% endif %}</div>
+                </div>
+            </div>
+        </div>
+        <div class="card bg-dark p-2">
+            <div class="card-header p-2">O'quv rejasi</div>
+            <div class="card-body p-0">
+                <ol id="lessons">
+                </ol>
+            </div>
+            <div class="card-footer text-end">
+                {% if user == course.author or user.is_staff %}<button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-primary mx-2" id="add_lesson"><i class="fa fa-plus"></i> Mavzu qo'shish</button>
+                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog text-start bg-dark modal-fullscreen">
+                        <form method="post" action="/courses/course/{{course.id}}/lesson-add/" class="modal-content bg-dark">
+                            {% csrf_token %}
+                            <input type="hidden" name="url" id="url" url="lessons">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Mavzu qo'shish</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-2">
+                                    <label for="title-lesson" class="form-label">Mavzu nomi</label>
+                                    <input type="text" class="form-control bg-dark" required placeholder="Dars nomi" id="title-lesson" name="title">
+                                </div>
+                                <div class="mb-2">
+                                    <label for="title-lesson" class="form-label">Mavzu haqida ma'lumot</label>
+                                    <textarea type="text" class="form-control bg-dark" placeholder="Dars haqida" id="body-lesson" name="body"></textarea>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yopish</button>
+                                <button type="submit" class="btn btn-primary" id="add_lesson">Saqlash</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="mb-2">
+            {% if not is_lesson %}
+                {% for lekture in lektures %}
+
+                <a href="/courses/course/{{course.id}}/lesson/{{lesson.slug}}/lecture/{{lekture.slug}}/"
+                    class="btn {% if user in lekture.users.all %}btn-outline-success{% else %}btn-outline-secondary{% endif %} "
+                    style="font-size: 8px;"><i class="fa fa-book"></i></a>
+                {% endfor %}
+                {% for lekture in drag_and_drops %}
+
+                <a href="/courses/course/{{course.id}}/lesson/{{lesson.slug}}/drag-and-drop/{{lekture.slug}}/"
+                    class="btn {% if user in lekture.users.all %}btn-outline-success{% else %}btn-outline-secondary{% endif %}"
+                    style="font-size: 8px;"><i style="font-size: 9px;" class="fa fa-question"></i></a>
+                {% endfor %}
+                {% for lekture in yopiq_test %}
+
+                <a href="/courses/course/{{course.id}}/lesson/{{lesson.slug}}/closed-test/{{lekture.slug}}/"
+                    class="btn {% if user in lekture.users.all %}btn-outline-success{% else %}btn-outline-secondary{% endif %}"
+                    style="font-size: 8px;"><i style="font-size: 9px;" class="fa fa-question"></i></a>
+                {% endfor %}
+                {% for lekture in quizess %}
+
+                <a href="/courses/course/{{course.id}}/lesson/{{lesson.slug}}/quiz/{{lekture.slug}}/"
+                    class="btn {% if user in lekture.users.all %}btn-outline-success{% else %}btn-outline-secondary{% endif %}"
+                    style="font-size: 8px;"><i style="font-size: 9px;" class="fa fa-question"></i></a>
+                {% endfor %}
+                {% for lekture in multi_quizes %}
+
+                <a href="/courses/course/{{course.id}}/lesson/{{lesson.slug}}/multi-quiz/{{lekture.slug}}/"
+                    class="btn {% if user in lekture.users.all %}btn-outline-success{% else %}btn-outline-secondary{% endif %}"
+                    style="font-size: 8px;"><i style="font-size: 9px;" class="fa fa-question"></i></a>
+                {% endfor %}
+
+
+                {% if user.is_staff or user == course.author %}
+                    <button style="font-size: 8px;" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1">
+                        <i style="font-size: 9px;" class="fa fa-plus"></i>
+                    </button>
+                    
+                    <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <form action="/courses/course/{{course.id}}/lesson/{{lesson.slug}}/add-item" method="get" class="modal-content bg-dark">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Ma'lumot qo'shish</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Ushbu darsga nima qo'shmoqchisiz?
+                                    <div class="m-3">
+                                        <label for="one">
+                                            <input type="radio" id="one" name="type" value="one" class="form-check-input"> Ma'lumot
+                                        </label>
+                                    </div>
+                                    <div class="m-3">
+                                        <label for="two">
+                                            <input type="radio" id="two" name="type" value="two" class="form-check-input"> Test
+                                        </label>
+                                    </div>
+                                    <div class="m-3">
+                                        <label for="three">
+                                            <input type="radio" id="three" name="type" value="three" class="form-check-input"> Yopiq test
+                                        </label>
+                                    </div>
+                                    <div class="m-3">
+                                        <label for="four">
+                                            <input type="radio" id="four" name="type" value="four" class="form-check-input"> Ko'p variantli test
+                                        </label>
+                                    </div>
+                                    <div class="m-3">
+                                        <label for="five">
+                                            <input type="radio" id="five" name="type" value="five" class="form-check-input"> Moslashtiriladigan test
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yopish</button>
+                                    <button type="submit" class="btn btn-primary">Yaratish</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+            {% endif %}
+        </div>
+        <div class="card bg-dark">
+            <div class="card-header text-center">
+                {{lesson.title|safe}}
+            </div>
+            <div class="card-body">
+                {% if is_lesson %}
+                    {% for lekture in lektures %}
+
+                    <a href="/courses/course/{{course.id}}/lesson/{{lesson.slug}}/lecture/{{lekture.slug}}/"
+                        class="btn {% if user in lekture.users.all %}btn-outline-success{% else %}btn-outline-secondary{% endif %} "
+                        style="font-size: 8px;"><i style="font-size: 9ox;" class="fa fa-book"></i></a>
+                    {% endfor %}
+                    {% for lekture in drag_and_drops %}
+
+                    <a href="/courses/course/{{course.id}}/lesson/{{lesson.slug}}/drag-and-drop/{{lekture.slug}}/"
+                        class="btn {% if user in lekture.users.all %}btn-outline-success{% else %}btn-outline-secondary{% endif %}"
+                        style="font-size: 8px;"><i style="font-size: 9px;" class="fa fa-question"></i></a>
+                    {% endfor %}
+                    {% for lekture in yopiq_test %}
+
+                    <a href="/courses/course/{{course.id}}/lesson/{{lesson.slug}}/closed-test/{{lekture.slug}}/"
+                        class="btn {% if user in lekture.users.all %}btn-outline-success{% else %}btn-outline-secondary{% endif %}"
+                        style="font-size: 8px;"><i style="font-size: 9px;" class="fa fa-question"></i></a>
+                    {% endfor %}
+                    {% for lekture in quizess %}
+
+                    <a href="/courses/course/{{course.id}}/lesson/{{lesson.slug}}/quiz/{{lekture.slug}}/"
+                        class="btn {% if user in lekture.users.all %}btn-outline-success{% else %}btn-outline-secondary{% endif %}"
+                        style="font-size: 8px;"><i style="font-size: 9px;" class="fa fa-question"></i></a>
+                    {% endfor %}
+                    {% for lekture in multi_quizes %}
+
+                    <a href="/courses/course/{{course.id}}/lesson/{{lesson.slug}}/multi-quiz/{{lekture.slug}}/"
+                        class="btn {% if user in lekture.users.all %}btn-outline-success{% else %}btn-outline-secondary{% endif %}"
+                        style="font-size: 8px;"><i style="font-size: 9px;" class="fa fa-question"></i></a>
+                    {% endfor %}
+
+                    {% if user.is_staff or user == course.author %}
+                    <button style="font-size: 8px;" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1">
+                        <i style="font-size: 9px;" class="fa fa-plus"></i>
+                    </button>
+                    
+                    <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <form action="/courses/course/{{course.id}}/lesson/{{lesson.slug}}/add-item" method="get" class="modal-content bg-dark">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Ma'lumot qo'shish</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Ushbu darsga nima qo'shmoqchisiz?
+                                    <div class="m-3">
+                                        <label for="one">
+                                            <input type="radio" id="one" name="type" value="one" class="form-check-input"> Ma'lumot
+                                        </label>
+                                    </div>
+                                    <div class="m-3">
+                                        <label for="two">
+                                            <input type="radio" id="two" name="type" value="two" class="form-check-input"> Test
+                                        </label>
+                                    </div>
+                                    <div class="m-3">
+                                        <label for="three">
+                                            <input type="radio" id="three" name="type" value="three" class="form-check-input"> Yopiq test
+                                        </label>
+                                    </div>
+                                    <div class="m-3">
+                                        <label for="four">
+                                            <input type="radio" id="four" name="type" value="four" class="form-check-input"> Ko'p variantli test
+                                        </label>
+                                    </div>
+                                    <div class="m-3">
+                                        <label for="five">
+                                            <input type="radio" id="five" name="type" value="five" class="form-check-input"> Moslashtiriladigan test
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yopish</button>
+                                    <button type="submit" class="btn btn-primary">Yaratish</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endif %}
+                {% if lecture %}
+                <form method="post">{% csrf_token %}
+                    <textarea name="body" id="body">{{lecture.body|safe}}</textarea>
+                    <button class="btn btn-primary my-3" type="submit" >Saqlash</button>
+                </form>
+                {% endif %}
+                {% if quiz %}
+                <div class="mb-3">{{quiz.body|safe}}</div>
+                <form method="post">{% csrf_token %}
+                    {% for variant in quiz.get_random %}
+                    <div class="mb-2">
+                        <label style="display: flex !important;justify-content: start;">
+
+                            <input type="radio" name="variant-quiz" class="form-check-input mx-2" value="{{variant.id}}" {% if variant.id == answer.variant.id %}checked{% endif %}> {{variant.body|safe}}
+                        </label>
+                    </div>
+                    {% endfor %}
+                    <button class="btn btn-primary my-3" type="submit">Yuborish</button>
+                </form>
+                {% endif %}
+                {% if quiz_yopiq %}
+                <div class="mb-3">{{quiz_yopiq.body|safe}}</div>
+                <form method="post">{% csrf_token %}
+                    <label for="closed-test-body">Javobingiz</label>
+                    <input required type="text" name="closed-test-body" id="closed-test-body" value="{{answer_yopiq.answer}}"
+                        class="form-control bg-dark mb-3">
+                    <button class="btn btn-primary my-3" type="submit">Yuborish</button>
+                </form>
+                {% endif %}
+                {% if drag_and_drop %}
+                    {{drag_and_drop.body}}
+                    {% if quizes1 %}
+                        {% for key, value in quizes1.items %}
+                            <div class="answer col-12" id="answer{{key.id}}" data-key-id="{{key.id}}">{{key.body|safe}}
+                                <div class="question" id="question{{value.id}}" draggable="true" data-value-id="{{value.id}}"><i class="fa fa-hand-point-left"></i> {{value.body|safe}}</div>
+                            </div>
+                            
+                        {% endfor %}
+                    {% else %}
+                        <div class="row">
+                            <div class="answers col-md bg-dark" id="keys">
+                                {% for key in drag_and_drop.get_keys %}
+                                    <div class="answer" id="answer{{key.id}}" data-key-id="{{key.id}}">{{key.body|safe}}</div>
+                                {% endfor %}
+                            </div>
+                            <div class="quiz col-md bg-dark" id="values">{% for value in drag_and_drop.get_values %}<div class="question" id="question{{value.id}}" draggable="true" data-value-id="{{value.id}}"><i class="fa fa-hand-point-left"></i> {{value.body|safe}}</div>{% endfor %}</div>
+                        </div>
+                    {% endif %}
+                    <button class="btn btn-primary my-3" id="drag_and_drop_btn">Yuborish</button>
+                {% endif %}
+
+                {% if multi_quiz %}
+                    {{multi_quiz.body|safe}}
+                    <form method="post" class="my-3">
+                        {% for variant in multi_quiz.quizes %}
+                                {% csrf_token %}
+                                <div class="mb-2 mx-3" style="display: flex !important;">
+                                    <div>
+                                        <input type="checkbox" class="form-check-input mx-3" name="variant" value="{{variant.id}}" id="variant{{variant.id}}" style="width: 18px;" {% if variant in multi_answer.variants.all %}checked{% endif %}>
+                                    </div>
+                                    <label for="variant{{variant.id}}" class="form-check-label"> {{variant.body|safe}}</label>
+                                </div>
+                        {% endfor %}
+                        <button class="btn btn-primary mt-3" type="submit">Yuborish</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block js1 %}
+<script>
+    $.ajax(
+        {
+            type: 'GET',
+            url: '/courses/course/{{course.id}}/get-lessons/',
+            success: (data) => {
+                var html = '';
+                var lessons = document.querySelector('#lessons');
+                for (let [key, value] of Object.entries(data)) {
+                    html += `
+                            <li><a style='color: var(--main-color);' href='/courses/course/{{course.id}}/lesson/${value[1]}/'>${key}
+                                <div class="progres-bar" style="border-radius: 25px;font-size: 10px;padding: 0;background-color: var(--sidebar-active-bg);border: 25px;height: 14px;">
+                                    <div class="item-progres-bar" style="background: linear-gradient(40deg, blue, red);text-align: center;border-radius: 10px;margin:0;height: 100%;border: 0;width: ${value[0]}%;">${(value[0] !== 0) ? value[0].toString() + '%' : ''}</div>
+                                </div>
+                            </a>{% if user.is_staff or user == course.author %}
+                            <div class="text-end">
+                                <button class="bg-dark" style="border:none;" data-bs-toggle="modal" data-bs-target="#edit-model${value[1]}"><i class="fa fa-pen"></i> Tahrirlash</button>
+                            </div>
+                              <div class="modal fade" id="edit-model${value[1]}" tabindex="-1" aria-labelledby="exampleModalLabel${value[1]}" aria-hidden="true">
+                                <div class="modal-dialog bg-dark modal-fullscreen">
+                                    <form method="post" class="modal-content bg-dark" action="/courses/course/{{course.id}}/lesson/${value[1]}/edit/">
+                                        {% csrf_token %}
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">${key}ni tahrirlash</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            
+                                            <div class="mb-2">
+                                                <label for="title-lesson" class="form-label">Mavzu nomi</label>
+                                                <input type="text" class="form-control bg-dark" required placeholder="Dars nomi" id="title-lesson" name="title" value="${key}">
+                                            </div>
+                                            <input type="hidden" name="url" value="lesson" id="url">
+                                            <div class="mb-2">
+                                                <label for="title-lesson" class="form-label">Mavzu haqida ma'lumot</label>
+                                                <textarea type="text" class="form-control bg-dark" placeholder="Dars haqida" id="body-lesson" name="body">${value[2]}</textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yopish</button>
+                                            <button type="submit" class="btn btn-primary">Saqlash</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            {% endif %}</li><hr>
+                        `;
+                };
+                lessons.innerHTML = html;
+                tinymce.init({
+                    themes: "modern",
+                    skin: "oxide-dark",
+                    content_css: "dark",
+                    selector: 'textarea',
+                    plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                    toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+                });
+            },
+            error: e => console.error(e)
+        }
+    );
+    var a = document.querySelector(`a[href="${window.location.pathname}"]`);
+    if (a) {
+        a.classList.remove('btn-outline-success');
+        a.classList.remove('btn-outline-secondary');
+        a.classList.add('btn-success');
+    }
+</script>
+{% if drag_and_drop %}
+<script>
+    document.querySelector('#drag_and_drop_btn').addEventListener('click', ()=>{
+        data = {'csrfmiddlewaretoken':'{{csrf_token}}'};
+        document.querySelectorAll('.question').forEach(el=>{
+            if(el.parentElement.getAttribute('data-key-id') in data){
+                data[el.parentElement.getAttribute('data-key-id')].push(parseInt(el.getAttribute('data-value-id')));
+            }else{
+                data[el.parentElement.getAttribute('data-key-id')] = [parseInt(el.getAttribute('data-value-id'))]
+            };
+        });
+        $.ajax(
+            {
+                type: 'post',
+                url: 'post/',
+                data: data,
+                success: (data)=>{
+                    window.location.reload();
+                },
+                error: (e)=>{console.error(data)}
+            }
+        );
+    });
+
+    var interval = setInterval(()=>{
+        try {
+            var a = document.querySelector('#values');
+            var b = document.querySelector('#keys');
+            if (a.innerHTML==='') {
+                a.remove()
+            };
+        } catch (e) {
+            clearInterval(interval);
+        };
+    }, 100);
+
+    const questions = document.querySelectorAll('.question');
+    const answers = document.querySelectorAll('.answer');
+
+    questions.forEach(question => {
+        question.addEventListener('dragstart', dragStart);
+    });
+
+    answers.forEach(answer => {
+        answer.addEventListener('dragover', dragOver);
+        answer.addEventListener('dragenter', dragEnter);
+        answer.addEventListener('dragleave', dragLeave);
+        answer.addEventListener('drop', drop);
+    });
+
+    function dragStart(e) {
+        e.dataTransfer.setData('text/plain', e.target.id);
+
+    }
+
+    function dragOver(e) {
+        e.preventDefault();
+    }
+
+    function dragEnter(e) {
+        e.preventDefault();
+        this.classList.add('hovered');
+    }
+
+    function dragLeave() {
+        this.classList.remove('hovered');
+
+    }
+
+    function drop(e) {
+        e.preventDefault();
+        const draggedElementId = e.dataTransfer.getData('text/plain');
+        const draggedElement = document.getElementById(draggedElementId);
+        this.classList.remove('hovered');
+        this.appendChild(draggedElement);
+    }
+
+    tinymce.init({
+        themes: "modern",
+        skin: "oxide-dark",
+        content_css: "dark",
+        selector: 'textarea',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+    });
+</script>
+{% endif %}
+{% endblock js1 %}

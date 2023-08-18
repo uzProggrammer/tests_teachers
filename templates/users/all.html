@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}
+    O'qituvchilar
+{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+<li class="breadcrumb-item active text-white" aria-current="page">O'qituvchilar</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <div class="table-responsive">
+        <table class="table table-bordered border-white bg-dark text-white">
+            <thead>
+                <tr>
+                    <th scope="col">Foydalanuvchi nomi</th>
+                    <th scope="col">Ismi sharif</th>
+                    <th scope="col">Fan</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for teacher in teachers %}
+                    <tr>
+                        <td><a href="{% url 'profile' teacher.username %}">{{teacher.username}}</a></td>
+                        <td>{{teacher.first_name}} {{teacher.last_name}}</td>
+                        <td>{{teacher.fan|title}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock content %}

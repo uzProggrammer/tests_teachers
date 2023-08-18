@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}E'lonlar{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+<li class="breadcrumb-item"><a href="{% if profile.is_teacher %}/users/teachers/{% else %}/users/teachers/{% endif %}">{% if profile.is_teacher %}O'qituvchilar{% else %}O'quvchilar{% endif %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'profile' profile.username %}">{{profile.username|title}}</a></li>
+<li class="breadcrumb-item active">E'lonlar</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+{% include 'users/profile_header.html' %}
+    <div class="card bg-dark text-white">
+        <div class="card-header p-2">
+            <h3>E'lonlar</h3>
+        </div>
+        <div class="table-responsive card-body">
+            <form method="GET" class="input-group mb-2">
+                <input value="{{search}}" type="text" aria-label="Qidiruv" name="search" class="form-control bg-dark text-white" placeholder="Qidiruv">
+
+                <button class="input-group-text btn btn-primary">Qidirish</button>
+            </form>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>E'lon</th>
+                        <th>Izohlar soni</th>
+                        <th>Yoqtirganlar soni</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for assignment in object.object_list %}
+                    <tr>
+                        <td><a href="{% url 'post' assignment.id %}">{{assignment.title}}</a></td>
+                        <td>{{assignment.comment.count}}</td>
+                        <td>{{assignment.likes.count}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            {% block paginate %}
+            <div class="d-flex mt-3">
+                <div class="mx-auto">
+                    <div>
+                        <nav>
+                            <ul class="pagination">
+                                <li class="page-item {% if object_list.has_previous  %}{% else %}disabled{% endif %}" aria-disabled="true">
+                                    {% if object.has_previous %}
+                                        <a class="btn btn-success" href="?page={{ object.previous_page_number }}">&laquo; Oldingi</a>
+                                    {% else %}
+                                        <a class="btn btn-success disabled" href="#">&laquo; Oldingi</a>
+                                    {% endif %}
+                                </li>
+                                <li class="page-item {% if object_list.has_next  %}{% else %}disabled{% endif %}">
+                                    {% if object.has_next  %}
+                                        <a class="btn btn-success" href="?page={{ object.next_page_number }}">Keyingi &raquo;</a>
+                                    {% else %}
+                                        <a class="btn btn-success disabled" href="#">Keyingi &raquo;</a>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            {% endblock paginate %}
+        </div>
+    </div>
+{% endblock %}

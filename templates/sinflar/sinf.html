@@ -1,0 +1,123 @@
+{% extends 'sinflar/base.html' %}
+
+{% block title %}{{sinf.nom}}{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/classes/">Sinflar</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{sinf.nom}}</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <div class="card bg-dark text-white m-2">
+        <div class="card-header p-3">
+            <h3>{{sinf.nom}} - sinf</h3>{% if user == sinf.author_student or user.is_staff or user.is_teacher %}<hr><a href="{% url 'sinf' sinf.url %}" class="btn btn-primary">Sinf haqida</a><a href="{% url 'add_student_sinf' sinf.url %}" class="btn btn-primary mx-2">O'quvchi qo'shish</a><a href="{% url 'edit_sinf' sinf.url %}" class="btn btn-secondary mx-2">Tahrirlash</a><a href="{% url 'remove_student' sinf.url %}" class="btn btn-danger mx-2">O'quvchini chiqarib tashlash</a>{% endif %}
+        </div>
+        <div class="card-body p-2 table-responsive m-2">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>O'quvchi nomi</th>
+                        <th>O'quvchi ismi sharifi</th>
+                        <th>O'quvchi bali</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td><a href="{% url 'sinf_student' sinf.url student.username %}">{{student.username|title}}</a></td>
+                        <td>{{student.first_name}} {{student.last_name}}</td>
+                        <td>{{student.ball}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer p-3 m-2">
+            <h3 class="m-2">Faol o'quvchi</h3>
+            <table class="table m-2">
+                <thead>
+                    <tr>
+                        <th>O'quvchi nomi</th>
+                        <th>O'quvchi ismi sharifi</th>
+                        <th>O'quvchi bali</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><a href="{% url 'sinf_student' sinf.url sinf.active_user.username %}">{{sinf.active_user.username|title}}</a></td>
+                        <td>{{sinf.active_user.first_name}} {{sinf.active_user.last_name}}</td>
+                        <td>{{sinf.active_user.ball}}</td>
+                    </tr>
+                </tbody>
+            </table><hr>
+            <h3 class="m-2 mt-2 ">Nafaol o'quvchi</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>O'quvchi nomi</th>
+                        <th>O'quvchi ismi sharifi</th>
+                        <th>O'quvchi bali</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><a href="{% url 'sinf_student' sinf.url studentca1.username %}">{{studentca1.username|title}}</a></td>
+                        <td>{{studentca1.first_name}} {{studentca1.last_name}}</td>
+                        <td>{{studentca1.ball}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="card bg-dark text-white m-2">
+        <div class="card-header p-3">
+            Online o'quvchilar
+        </div>
+        <div class="card-body p-2 table-responsive">
+            <table class="table bg-dark text-white">
+                <thead>
+                    <tr>
+                        <th>O'quvchi nomi</th>
+                        <th>O'quvchi ismi sharifi</th>
+                    </tr>
+                </thead>
+                <tbody class="text-white online-users">
+                    <tr>
+                        <td colspan="2" class="text-center">Hech kim online emas</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block js1 %}
+    <script>
+        function get_online_students(){
+            var online_users = document.querySelector('.online-users');
+
+            $.ajax(
+                {
+                    type: 'GET',
+                    url: `/users/users_status/{{sinf.id}}/`,
+                    success: (data) => {
+                        var html = '';
+                        for(let [key, value] of Object.entries(data)){
+                            html+=`
+                                <tr>
+                                    <td><a href="/users/profile/${key}/">${key}</a></td>
+                                    <td>${value.full}</td>
+                                </tr>
+                            `
+                            console.log(value);
+                        };
+                        online_users.innerHTML = html;
+                    },
+                },
+            );
+        }
+        get_online_students();
+    </script>
+{% endblock js1 %}

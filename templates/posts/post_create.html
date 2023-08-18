@@ -1,0 +1,48 @@
+{% extends 'posts/base.html' %}
+
+{% block extrahead %}
+<script>window.CKEDITOR_BASEPATH = '/my_static/ckeditor/ckeditor/';</script>
+{{ block.super }}
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/posts/">E'lonlar</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Yangi yaratish</li>
+{% endblock breadcrumb %}
+
+{% block title %}{{post.title|slice:':17'}} Update{% endblock title %}
+{% load static %}
+<script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+<script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
+
+{% block content %}
+<h3 class="text-white">New post</h3>
+<hr>
+
+<form method="POST" class="bg-dark text-white" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.media }}
+    {% if messages %}
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+    <div>
+        {% for field in form %}
+            <div class="mb-3">
+                <span class="m-05" style="margin-top:20px;">{{ field.label }}</span>
+                {{ field }}
+                {% for error in field.errors %}
+                    <small style="color: red">{{ error }}</small>
+                {% endfor %}
+            </div>
+
+        {% endfor %}
+        <button class="btn btn-outline-primary" style="margin-left:50px;">Saqlash</button>
+    </div>
+    <script>
+        CKEDITOR.addCss('.cke_editable { background-color: #222327; color: white }');
+    </script>
+</form>
+{% endblock content %}

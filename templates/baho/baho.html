@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}{{profile.username}}ning baholari{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+<li class="breadcrumb-item"><a href="{% if profile.is_teacher %}/users/teachers/{% else %}/users/teachers/{% endif %}">{% if profile.is_teacher %}O'qituvchilar{% else %}O'quvchilar{% endif %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'profile' profile.username %}">{{profile.username|title}}</a></li>
+<li class="breadcrumb-item active text-white" aria-current="page">Baholar</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="card bg-dark text-white">
+    <div class="card-header p-2">
+        <h2>Baholar</h2>
+    </div>
+    <div class="card-body p-2 table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Sana</th>
+                    <th>Baho</th>
+                    <th>Nazorat ishi</th>
+                    <th>Topshiriq</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for baho in object.object_list %}
+                <tr>
+                    <td>{{baho.date_create|date:'d.m.Y'}}</td>
+                    <td><span style="color: {% if baho.baho == '5' %}rgb(4,200,0){% elif baho.baho == '4' %}green{% elif baho.baho == '3' %}pink{% elif baho.baho == '2' %}red{% elif baho.baho == '1' %}rgb(100, 3,4){% elif baho.baho == '0' %}rgb(120,2,4){% else %}rgb(200,200,0){% endif %} !important;">{{baho.baho}}</span></td>
+                    <td>{% if baho.bsb %}<a href="{% url 'bsb' baho.bsb.id %}">{{baho.bsb.title}}</a>{% else %}<i class="bx bx-x text-danger"></i>{% endif %}</td>
+                    <td>{% if baho.assignment %}<a href="{% url 'bsb' baho.assignment.id %}">{{baho.assignment.title}}</a>{% else %}<i class="bx bx-x text-danger"></i>{% endif %}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% block paginate %}
+            <div class="d-flex mt-3">
+                <div class="mx-auto">
+                    <div>
+                        <nav>
+                            <ul class="pagination">
+                                <li class="page-item {% if object_list.has_previous  %}{% else %}disabled{% endif %}" aria-disabled="true">
+                                    {% if object.has_previous %}
+                                        <a class="btn btn-success" href="?page={{ object.previous_page_number }}">&laquo; Oldingi</a>
+                                    {% else %}
+                                        <a class="btn btn-success disabled" href="#">&laquo; Oldingi</a>
+                                    {% endif %}
+                                </li>
+                                <li class="page-item {% if object_list.has_next  %}{% else %}disabled{% endif %}">
+                                    {% if object.has_next  %}
+                                        <a class="btn btn-success" href="?page={{ object.next_page_number }}">Keyingi &raquo;</a>
+                                    {% else %}
+                                        <a class="btn btn-success disabled" href="#">Keyingi &raquo;</a>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        {% endblock paginate %}
+</div>
+{% endblock %}

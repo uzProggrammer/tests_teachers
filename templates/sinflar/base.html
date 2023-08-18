@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block js %}
+
+<script>
+    document.querySelector('li.s-item.active').classList.remove('active');
+    document.querySelector('#classes').classList.add('active');
+</script>
+
+{% block js1 %}
+    
+{% endblock js1 %}
+
+{% endblock js %}

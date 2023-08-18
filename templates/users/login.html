@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Login{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+<li class="breadcrumb-item active text-white" aria-current="page">Kirish</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <div class="card bg-dark text-white">
+        <div class="card-header">
+            <h2 class="text-center">Login</h2>
+        </div>
+        <div class="card-body">
+            <form method="post">{% csrf_token %}
+                  <div class="mb-3">
+                    <label for="username" class="form-label">Foydalanuvchi nomi</label>
+                    <input type="text" class="form-control bg-dark text-white" id="username" name="username">
+                    <div id="usernamehelp" class="form-text text-white">Saytdagi foydalanuvchi nomingizni kiriting</div>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label">Parol</label>
+                    <input type="password" class="form-control bg-dark text-white" id="password" name="password">
+                </div>
+                <button type="submit" class="btn btn-outline-primary">Kirish</button>
+                <p>Siz yangimisiz? - <a href="{% url 'signup' %}">Ro'yxatdan o'tish</a></p>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

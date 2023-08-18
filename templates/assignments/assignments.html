@@ -1,0 +1,52 @@
+{% extends 'assignments/base.html' %}
+
+{% block title %}Topshiriqlar{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Topshiriqlar</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3">
+        {% for assignment in object.object_list %}
+            <div class="card bg-dark text-white m-2">
+                <div class="card-header p-2">
+                    <p><a href="{% url 'assignment' assignment.id %}" style="font-size:23px;">{{assignment.title|safe}}</a>{% if user.us_student and assignment.is_readed == False %}<span class="translate-middle badge rounded-pill bg-danger m-1">1</span>{% elif user.is_teacher %}<span class="translate-middle badge rounded-pill bg-danger m-1">{{assignment.assigment_answer.count}}</span>{% endif %}</p>
+                </div>
+                <div class="card-body">
+                    {{assignment.qachongacha|date:"d.m.Y | H.i"}} - shu vaqtgacha
+                </div>
+                <div class="card-footer">
+                    {% if assignment.sinf %}{{assignment.sinf}} - sinf uchun{% else %}<a href="{% url 'profile' assignment.student.username %}">{{assignment.student|title}}</a> uchun{% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+        {% block paginate %}
+            <div class="d-flex mt-3">
+                <div class="mx-auto">
+                    <div>
+                        <nav>
+                            <ul class="pagination">
+                                <li class="page-item {% if object_list.has_previous  %}{% else %}disabled{% endif %}" aria-disabled="true">
+                                    {% if object.has_previous %}
+                                        <a class="btn btn-success" href="?page={{ object.previous_page_number }}">&laquo; Oldingi</a>
+                                    {% else %}
+                                        <a class="btn btn-success disabled" href="#">&laquo; Oldingi</a>
+                                    {% endif %}
+                                </li>
+                                <li class="page-item {% if object_list.has_next  %}{% else %}disabled{% endif %}">
+                                    {% if object.has_next  %}
+                                        <a class="btn btn-success" href="?page={{ object.next_page_number }}">Keyingi &raquo;</a>
+                                    {% else %}
+                                        <a class="btn btn-success disabled" href="#">Keyingi &raquo;</a>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        {% endblock paginate %}
+{% endblock content %}

@@ -1,0 +1,48 @@
+{% extends 'tests/base.html' %}
+
+{% block title %}{{quiz.title}} Natijalar{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/tests/">Testlar</a></li>
+    <li class="breadcrumb-item"><a href="/tests/test/{{quiz.id}}/">{{quiz.title}}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Natijalar</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    {% if user.is_staff or user.is_teacher %}
+        <div class="card bg-dark text-white">
+            <div class="card-body">
+                <a href="{% url 'test_detail' quiz.id %}" class="btn btn-outline-primary mx-2">Test haqida</a>
+                <a class="btn btn-outline-primary mx-2" href="{%  url 'add_test_question' quiz.id %}">Savol qo'shish</a>
+                {% if quiz.is_active %}
+                {% else %}
+                    <a href="{% url 'actived_test' quiz.id %}" class="btn btn-outline-primary">Chop etish</a>
+                {% endif %}
+                <a href="{% url 'edit_test' quiz.id %}" class="btn btn-outline-primary mx-2">Tahrirlash</a>
+                <a href="{% url 'test_results' quiz.id %}" class="btn btn-outline-primary mx-2">Natijalar</a>
+            </div>
+        </div>
+    {% endif %}
+    <div class="card bg-dark text-white mt-3">
+        <div class="card-header m-2">
+            <h2>Natijalar</h2>
+        </div>
+        <div class="card-body table-responsive p-2">
+            <table class="table m-0 table-hover table-borderless table-striped text-left text-white">
+                <tr class="text-white">
+                    <th class="text-white">№</th>
+                    <th class="text-white">Foydalanuvchi</th>
+                    <th class="text-white">To'plagan ball</th>
+                </tr>
+                {% for result in results %}
+                    <tr class="text-white">
+                        <th class="text-white">{{result.id}}</th>
+                        <th class="text-white">{{result.user}}</th>
+                        <th class="text-white">{{result.scope}}</th>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endblock content %}

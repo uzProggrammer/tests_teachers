@@ -1,0 +1,46 @@
+<div class="card bg-dark text-white p-1 m-2">
+    <div class="card-body">
+        <a href="{% url 'profile' profile.username %}" class="btn btn-primary mx-1"><i class="bx bx-user" style="font-size:20px;"></i>  {{profile.username}}</a>
+        {% if not profile.is_teacher or not profile.is_staff %}
+        <div class="dropdown bg-dark tex-white mx-1" style="display:inline;">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bx bx-football" style="font-size:20px;"></i> Ballar
+            </button>
+            <ul class="dropdown-menu bg-dark text-white">
+                <li><a class="dropdown-item bg-transparent" href="{% url 'assignment_baho' profile.username %}">Topshiriqlardan</a></li>
+                <li><a class="dropdown-item bg-transparent" href="{% url 'bsb_ball_user' profile.username %}">Nazoratlardan</a></li>
+            </ul>
+        </div>
+        {% else %}
+        <div class="dropdown bg-dark tex-white mx-1" style="display:inline;">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bx bx-pen" style="font-size:20px;"></i> Harakatlar
+            </button>
+            <ul class="dropdown-menu bg-dark text-white">
+                <li><a class="dropdown-item bg-transparent" href="{% url 'own_assignment' profile.username %}">Topshiriqlari</a></li>
+                <li><a class="dropdown-item bg-transparent" href="{% url 'own_problems' profile.username %}">Masalalari</a></li>
+                <li><a class="dropdown-item bg-transparent" href="{% url 'own_tests' profile.username %}">Testlar</a></li>
+                <li><a class="dropdown-item bg-transparent" href="{% url 'own_posts' profile.username %}">E'lonlar</a></li>
+                <li><a class="dropdown-item bg-transparent" href="{% url 'own_controls' profile.username %}">Nazoratlar</a></li>
+            </ul>
+        </div>
+        {% endif %}
+        {% if profile.username == user.username %}
+        <div class="dropdown bg-dark tex-white mx-1" style="display:inline;">
+            <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="bx bx-cog" style="font-size:20px;"></i> Sozlamalar
+            </button>
+            <ul class="dropdown-menu bg-dark text-white">
+                <li><a class="dropdown-item bg-transparent" href="{% url 'last_searchs' profile.username %}">Qidiruv tarixi</a></li>
+                <li><a class="dropdown-item bg-transparent" href="{% url 'update_profile' %}">Tahrirlash</a></li>
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</div>
+<div class="test"></div>
+<script>
+    url = document.location;
+    document.querySelector(`a[href='${url.pathname}']`).classList.add('btn-outline-primary');
+    document.querySelector(`a[href='${url.pathname}']`).parentElement.parentElement.parentElement.children[0].classList.add('btn-outline-primary');
+</script>

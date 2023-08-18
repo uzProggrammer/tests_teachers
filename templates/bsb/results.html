@@ -1,0 +1,61 @@
+{% extends 'bsb/base.html' %}
+
+{% block title %}
+    Natijalar
+{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/controls/">Nazorat ishlari</a></li>
+    <li class="breadcrumb-item"><a href="/controls/control/{{bsb.id}}">{{bsb.title|title}}</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Natijalar</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+{% include 'bsb/bsb_header.html' %}
+<div class="card bg-dark text-white">
+    <div class="card-header p-3">
+        <h2>Natijalar</h2>
+    </div>
+    <div class="card-body p-2 table-responsive">
+        <table class="table table">
+            <thead>
+                <tr>
+                    <th>#ID</th>
+                    <th>O'quvchi</th>
+                    <th>Ball</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if bsb.type != 'Test' %}
+                    {% for answer in answers %}
+                            {% if bsb.type == 'Topshiriq' %}
+                            <tr>
+                                <td>{% if user.is_staff or user.is_teacher %}<a>{{answer.id}}</a>{% else %}{{answer.id}}{% endif %}</td>
+                                <td><a href="{% url 'profile' answer.user.username %}">{{answer.user.username|safe}}</a></td>
+                                <td>{{answer.ball}}</td>
+                            </tr>
+                            {% elif bsb.type == 'Masala' %}
+                                <tr>
+                                    <td>{% if user.is_staff or user.is_teacher %}<a>{{answer.id}}</a>{% else %}{{answer.id}}{% endif %}</td>
+                                    <td><a href="{% url 'profile' answer.user.username %}">{{answer.user.username|safe}}</a></td>
+                                    <td>{{answer.ball}}</td>
+                                </tr>
+                            {% endif %}
+                    {% endfor %}
+                {% else %}
+                    {% for answer in answers %}
+                        <tr>
+                            <td>{% if user.is_staff or user.is_teacher %}<a href="{% url 'bsb_quiz_answer' bsb.id answer.id %}">{{answer.id}}</a>{% else %}{{answer.id}}{% endif %}</td>
+                            <td><a href="{% url 'profile' answer.user.username %}">{{answer.user.username|safe}}</a></td>
+                            <td>{{answer.scope}}</td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+{% endblock content %}

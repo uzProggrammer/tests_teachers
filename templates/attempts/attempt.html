@@ -1,0 +1,8 @@
+{% extends 'attempts/base.html' %}
+
+{% block title %}{{attempt.problem.title}}{% endblock title %}
+
+{% block content %}
+    <pre><code class="language-python">{{attempt.code}}</code></pre>
+    <h1>{{attempt.problem.title}}</h1>
+{% endblock content %}

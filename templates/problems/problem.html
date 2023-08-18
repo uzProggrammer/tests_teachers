@@ -1,0 +1,222 @@
+{% extends 'problems/base.html' %}
+
+{% load static %}
+
+{% load poll_extras %}
+
+{% block title %}{{task.title}}{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/informatics/problems/">Masalalar</a></li>
+    <li class="breadcrumb-item active" aria-current="page">{{task.title}}</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <div class="tab bg-dark text-white">
+        <button class="tablinks text-white btn bg-dark" onclick="openCity(event, 'masala')" id="defaultOpen">Masala sharti</button>
+        <button class="tablinks text-white  btn bg-dark" onclick="openCity(event, 'urinishlar')">Urinishlar</button>
+        <button class="tablinks text-white  btn bg-dark" onclick="openCity(event, 'comments')">Kommentlar</button>
+    </div>
+
+    <div id="masala" class="tabcontent">
+        <div class="card bg-dark text-white" style="border:none;">
+            <div class="card-header text-center">
+                <h3><span style="color: rgb(100,100,100);">#{{task.id}}</span> {{task.title}}</h3>
+                <span><span class="mx-2" style="color:rgb(194, 194, 194);">Qiyinchiligi: {{task.difficulty}}%</span> <span class="mx-2" style="color:rgb(194, 14, 194);">Vaqt chegarasi: {{task.time_limit}} ms</span> <span class="mx-2" style="color:rgb(94, 14, 234);">Xotira cheklovi: {{task.memory_limit}} MB</span></span>{% if task.author == user or user.is_authenticated %}<a href="{% url 'edit_task' task.id %}" class="btn btn-success"><i class="bx bx-pen"></i> Tahrirlash</a>{% endif %}
+            </div>
+            <div class="card-body">
+                <hr class="bg-light"><a href="{% url 'profile' task.author.username %}"><div class="card-middle">
+                    <div class="bg-dark text-white user-status">
+                        <div class="card-body d-inline p-1">
+                            <img src="{% if task.author.is_teacher %}https://icon-library.com/images/teacher-icon-png/teacher-icon-png-17.jpg{% else %}https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Student_%28example%29.svg/444px-Student_%28example%29.svg.png?20180722153736{% endif %}" width="40" class="header__img">
+                            <span style="font-size:20px;">{{task.author.username|title}}</span><br><span class="fw-lighter px-3 text-white-50" style="font-size:15px;">{{task.author.email}}</span>
+                        </div>
+                    </div>
+                </div></a><hr>
+                <h4 class="text-primary">Sharti:</h4>
+                {{task.about|safe}}
+                <hr>
+                {% if task.info_out %}<h4 class="text-primary">Kiruvchi ma'lumotlar:</h4><span>{{task.info_out|safe}}</span><hr>{% endif %}
+                {% if task.info_in %}<h4 class="text-primary">Chiquvchi ma'lumotlar:</h4><span>{{task.info_in|safe}}</span><hr>{% endif %}
+                {% if task.simple_tests %}
+                    <h4 class="text-primary">Misollar:</h4>
+                    <table class="table bg-dark table-responsive text-white table-bordered border-light">
+                        <thead>
+                            <tr>
+                                <th scope="col">input.txt</th>
+                                <th scope="col">output.txt</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for simple_test_key, simple_test_value in task.simple_tests.items %}
+                                <tr>
+                                    <th>{{simple_test_key|to_and|safe}}</th>
+                                    <th>{{simple_test_value|to_and|safe}}</th>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+        </div>
+        <div class="card bg-dark text-white">
+            <div class="card-header">
+                <h3 class="text-primary">Javobini yuborish</h3>
+            </div>
+            <div class="card-body p-0 m-0">
+                <form method="POST">{% csrf_token %}
+                    {{formca.as_p}}
+                    <div class="mx-4 my-4">
+
+                        {% if formca is None %}<a href="{% url 'login' %}" class="btn btn-outline-primary m-3">Kiirsh</a> <a class="btn btn-outline-success m-3" href="{% url 'signup' %}">Ro'yxatdan o'tish</a>{% else %}<button class="btn btn-outline-primary my-2" type="submit">Yuborish</button>{% endif %}
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card bg-dark text-white my-3">
+            <div class="card-header">
+                <h3 class="text-primary">So'ngi urinishlar</h3>
+            </div>
+            <div class="card-body table-responsive-xxl">
+                <table class="table table-responsive bg-dark text-white">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Masala</th>
+                            <th scope="col">Holati</th>
+                            <th scope="col">Vaqt</th>
+                            <th scope="col">Xotira</th>
+                            <th scope="col">Sana va vaqt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for task_attempt in task_attempts %}
+                            <tr>
+                                <td scope="col">{{task_attempt.id}}</td>
+                                <td scope="col">{{task_attempt.problem}}</td>
+                                <td scope="col"><span class="{% if task_attempt.holat == 'Accepted' %}text-success{% else %}text-danger{% endif %}">{{task_attempt.holat}}</span></td>
+                                <td scope="col">{{task_attempt.time}} ms</td>
+                                <td scope="col">{{task_attempt.memory}} KB</td>
+                                <td scope="col">{{task_attempt.date_created|date:"d.m.Y | H.i"}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="urinishlar" class="tabcontent">
+        <div class="card bg-dark text-white my-3">
+            <div class="card-header">
+                <h3 class="text-primary">So'ngi urinishlar</h3>
+            </div>
+            <div class="card-body table-responsive-xxl">
+                <table class="table table-responsive-xxl bg-dark text-white">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Foydalanuvchi</th>
+                            <th scope="col">Masala</th>
+                            <th scope="col">Holati</th>
+                            <th scope="col">Vaqt</th>
+                            <th scope="col">Xotira</th>
+                            <th scope="col">Sana va vaqt</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for task_attempt1 in task_attempts1 %}
+                            <tr>
+                                <td scope="col">{{task_attempt1.id}}</td>
+                                <td scope="col"><a href="#">{{task_attempt1.author}}</a></td>
+                                <td scope="col"><a href="#">{{task_attempt1.problem}}</a></td>
+                                <td scope="col"><span class="{% if task_attempt1.holat == 'Accepted' %}text-success{% else %}text-danger{% endif %}">{{task_attempt1.holat}}</span></td>
+                                <td scope="col">{{task_attempt1.time}} ms</td>
+                                <td scope="col">{{task_attempt1.memory}} KB</td>
+                                <td scope="col">{{task_attempt1.date_created|date:"d.m.Y | H.i"}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div id="comments" class="tabcontent">
+        <div>
+            <div class="card bg-dark" style="border:none;">
+                <div class="card-header">
+                    <h1>Izohlar:</h1>
+                </div>
+                <div class="form">
+                    <form method="POST">{% csrf_token %}
+                        <h4 class="mx-5 my-2">Izoh qo'shish:</h4>
+                        <div class="mb-3 mx-5">
+                            <textarea class="form-control bg-dark text-white" name="comment_body"></textarea>
+                        </div>
+                        <button type="submit" class="btn mx-5 my-2 bg-secondary text-dark">Yuborish</button>
+                    </form>
+                </div>
+                <div class="card-body comments-div">
+                    {% for comment in task.problem_comment.all %}
+                        <div class="card bg-dark text-white mb-3">
+                            <div class="card-header">
+                                <a href="{% url 'profile' comment.user.username %}"><div class="card bg-dark text-white user-status" style="border:none;">
+                                    <div class="card-body d-inline p-1">
+                                        <img src="https://icon-library.com/images/teacher-icon-png/teacher-icon-png-17.jpg" class="header__img">
+                                        <span style="font-size:20px;">{{comment.user.username|title}}<span class="small mx-4 text-primary-emphasis">Biz bilan birga: <mark class="bg-dark">{{comment.user.date_joined|date:'d.m.Y'}}</mark>dan buyon</span></span><br><span class="fw-lighter px-3 text-white-50" style="font-size:15px;">{{comment.user.email}}</span>
+                                    </div>
+                                </div></a><hr>
+                                <div class="card-body">
+                                    <figcaption class="blockquote-footer">
+                                        {{comment.body|safe}}
+                                    </figcaption>
+
+                                </div>
+                                <div class="card--footer">
+                                    Joylashtirilgan-kun: {{comment.date_created|date:'d.m.Y'}}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.3/mode/python/python.min.js"
+        integrity="sha512-/mavDpedrvPG/0Grj2Ughxte/fsm42ZmZWWpHz1jCbzd5ECv8CB7PomGtw0NAnhHmE/lkDFkRMupjoohbKNA1Q=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script>
+    function openCity(evt, cityName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(cityName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click();
+    document.querySelector('#code-editor').required=false;
+    </script>
+    <script>
+        var langs = document.getElementById('langs')
+        var config = {
+          lineNumbers: true,
+          indentUnit: 4,
+          mode: 'python',
+          theme: 'monokai'
+        }
+        var body = CodeMirror.fromTextArea(document.querySelector('#code-editor'), config);
+
+
+
+    </script>
+{% endblock content %}

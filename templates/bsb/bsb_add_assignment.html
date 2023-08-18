@@ -1,0 +1,58 @@
+{% extends 'bsb/base.html' %}
+
+{% block title %}Yangi Topshiriq{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/controls/">Nazorat ishlari</a></li>
+    <li class="breadcrumb-item"><a href="/controls/control/{{bsb.id}}">{{bsb.title|title}}</a></li>
+    <li class="breadcrumb-item"><a href="/controls/control/{{bsb.id}}/assignments">Topshiriqlar</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Yangi topshiriq qo'shish</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    {% include 'bsb/bsb_header.html' %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css">
+    <div class="card bg-dark text-white">
+        <div class="card-header p-3">
+            <h2>Yangi topshiriq</h2>
+        </div>
+        <div class="card-body">
+            <form method="post">{% csrf_token %}
+                <div class="m-3">
+                    <label for="title">Topshiriq nomi</label>
+                    <input type="text" name="title" class="form-control bg-dark text-white" id="title" aria-describedby="titleHelp">
+                    <div id="titleHelp" class="form-text text-white">Siz o'quvchi yoki sinf uchun taynlayotgan topshiriqning nomi</div>
+                </div>
+                <div class="m-3">
+                    <label for="info">Topshiriq nomi</label>
+                    <textarea name="info" class="form-control" id="info" aria-describedby="infoHelp"></textarea>
+                    <div id="infoHelp" class="form-text text-white">Siz o'quvchi yoki sinf uchun taynlayotgan topshiriqning matni</div>
+                </div>
+                <div class="m-3">
+
+                    <div class="col">
+                        <label class="form-label">Ball</label>
+                        <input type="number" name="max_ball" class="form-control bg-dark text-white" step="0.00001">
+                        <div class="form-text text-white">O'quvchi maksimal olishi mumkin bo'lgan ball</div>
+                    </div>
+                </div>
+                <div class="m-3">
+                    <button type="submit" class="btn btn-outline-success">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+
+        tinymce.init({
+        themes: "modern",
+        skin: "oxide-dark",
+        content_css: "dark",
+        selector: 'textarea',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+      });
+    </script>
+{% endblock content %}

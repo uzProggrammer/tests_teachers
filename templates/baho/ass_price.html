@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}{{profile.username}}{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+<li class="breadcrumb-item"><a href="{% if profile.is_teacher %}/users/teachers/{% else %}/users/teachers/{% endif %}">{% if profile.is_teacher %}O'qituvchilar{% else %}O'quvchilar{% endif %}</a></li>
+<li class="breadcrumb-item"><a href="{% url 'profile' profile.username %}">{{profile.username|title}}</a></li>
+<li class="breadcrumb-item active text-white" aria-current="page">Topshiriqdagi ballar</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+{% include 'users/profile_header.html' %}
+    <div class="card bg-dark text-white">
+        <div class="card-header p-2">
+            <h3>Baholar</h3>
+        </div>
+        <div class="card-body p-2 table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Topshiriq</th>
+                        <th>Ball</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for answer in object.object_list %}
+                    <tr>
+                        <td><a href="{% url 'assignment' answer.assignment.id %}">{{answer.assignment}}</a></td>
+                        <td>{{answer.student_answer_ball.first.ball}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            {% block paginate %}
+            <div class="d-flex mt-3">
+                <div class="mx-auto">
+                    <div>
+                        <nav>
+                            <ul class="pagination">
+                                <li class="page-item {% if object_list.has_previous  %}{% else %}disabled{% endif %}" aria-disabled="true">
+                                    {% if object.has_previous %}
+                                        <a class="btn btn-success" href="?page={{ object.previous_page_number }}">&laquo; Oldingi</a>
+                                    {% else %}
+                                        <a class="btn btn-success disabled" href="#">&laquo; Oldingi</a>
+                                    {% endif %}
+                                </li>
+                                <li class="page-item {% if object_list.has_next  %}{% else %}disabled{% endif %}">
+                                    {% if object.has_next  %}
+                                        <a class="btn btn-success" href="?page={{ object.next_page_number }}">Keyingi &raquo;</a>
+                                    {% else %}
+                                        <a class="btn btn-success disabled" href="#">Keyingi &raquo;</a>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            {% endblock paginate %}
+        </div>
+    </div>
+{% endblock %}

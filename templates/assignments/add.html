@@ -1,0 +1,107 @@
+{% extends 'assignments/base.html' %}
+
+{% block title %}Yangi Topshiriq{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/assignments/">Topshiriqlar</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Qo'shish</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css">
+    <div class="card bg-dark text-white">
+        <div class="card-header p-3">
+            <h2>Yangi topshiriq</h2>
+        </div>
+        <div class="card-body">
+            <form method="post">{% csrf_token %}
+                <div class="m-3">
+                    <label for="title">Topshiriq nomi</label>
+                    <input type="text" name="title" class="form-control bg-dark text-white" id="title" aria-describedby="titleHelp">
+                    <div id="titleHelp" class="form-text text-white">Siz o'quvchi yoki sinf uchun taynlayotgan topshiriqning nomi</div>
+                </div>
+                <div class="m-3">
+                    <label for="info">Topshiriq matni</label>
+                    <textarea name="info" class="form-control" id="info" aria-describedby="infoHelp"></textarea>
+                    <div id="infoHelp" class="form-text text-white">Siz o'quvchi yoki sinf uchun taynlayotgan topshiriqning matni</div>
+                </div>
+                <div class="m-3 row g-2">
+                    <div class="col">
+                        <label for="sinf">Sinf</label>
+                        <select id="sinf" name="sinf" class="bg-dark form-select" style="width:100%;">
+                            <option value="" selected>------</option>
+                            <option value="5.1">5.1</option>
+                            <option value="5.2">5.2</option>
+                            <option value="6.1">6.1</option>
+                            <option value="6.2">6.2</option>
+                            <option value="7.1">7.1</option>
+                            <option value="7.2">7.2</option>
+                            <option value="7.3">7.3</option>
+                            <option value="8.1">8.1</option>
+                            <option value="8.2">8.2</option>
+                            <option value="8.3">8.3</option>
+                            <option value="9.1">9.1</option>
+                            <option value="9.2">9.2</option>
+                            <option value="9.3">9.3</option>
+                            <option value="10.1">10.1</option>
+                            <option value="10.2">10.2</option>
+                            <option value="10.3">10.3</option>
+                            <option value="11.1">11.1</option>
+                            <option value="11.2">11.2</option>
+                            <option value="11.3">11.3</option>
+                        </select>
+                        <div class="form-text text-danger">Sizning topshirig'ingizni sinfi. Agar sinfni tanlagan bo'lsangiz o'quvchini tashlab keting!</div>
+                    </div>
+                    <div class="col">
+                        <label for="student">O'quvchi</label>
+                        <select id="student" name="student" class="bg-dark form-select">
+                            <option value="" selected>------</option>
+                            {% for user1 in users %}
+                            <option value="{{user1.id}}">{{user1.username}}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text text-danger">Sizning topshirig'ingiz bajaruvchi o'quvchi. Agar o'quvchini tanlagan bo'lsangiz sinfni tashlab keting!</div>
+                    </div>
+                </div>
+                <div class="m-3 row g-2">
+                    <div class="col">
+                        <label class="form-label">Topshirish sanasi</label>
+                        <input type="datetime-local" name="qachongacha" class="form-control bg-dark text-white">
+                        <div class="form-text text-white">O'quvchi mana shu vaqtdan keyin topshirsa ball kamayib keta veradi</div>
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Ball</label>
+                        <input type="number" name="max_ball" class="form-control bg-dark text-white" step="0.00001">
+                        <div class="form-text text-white">O'quvchi maksimal olishi mumkin bo'lgan ball</div>
+                    </div>
+                </div>
+                <div class="m-3">
+                    <button type="submit" class="btn btn-outline-success">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+
+        tinymce.init({
+        themes: "modern",
+        skin: "oxide-dark",
+        content_css: "dark",
+        selector: 'textarea',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+      });
+    </script>
+{% endblock content %}
+
+{% block js1 %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.full.min.js"></script>
+<script>
+    $(function () {
+          $("select").select2({
+          });
+    });
+</script>
+{% endblock %}
