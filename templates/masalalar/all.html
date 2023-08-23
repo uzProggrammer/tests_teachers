@@ -1,0 +1,111 @@
+{% extends 'masalalar/base.html' %}
+
+{% block title %}
+Algoritmik Masalalar
+{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item active bg-dark" aria-current="page">Algoritmik Masalalar</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="card bg-dark p-3">
+    <form class="row">
+        <div class="col-md-4 mb-3">
+            <label for="q">Nomi</label>
+            <input id="q" type="text" class="form-control bg-dark" name="q" value="{{search}}" placeholder="Qidirish">
+        </div>
+        <div class="col-md-4 mb-3">
+            <label for="type">Holati</label>
+            <select id="type" class="form-control bg-dark" name="type" value="{{search_type}}">
+                
+                <option value="0" {% if type == "0" %}selected{% endif %}>Hammasi</option>
+                <option value="1" {% if type == 1 %}selected{% endif %}>Xato ishlangan</option>
+                <option value="2" {% if type == 2 %}selected{% endif %}>Ishlangan</option>
+                <option value="3" {% if type == 3 %}selected{% endif %}>Noaniq</option>
+            </select>
+        </div>
+        <div class="col-md-4 mb-3 text-center">
+            <button class="btn btn-success" style="margin-top: 25px;"><i class="fa fa-search"></i> Qidirish</button>
+        </div>
+    </form>
+</div>
+<div class="table-responsive card p-1 bg-dark mt-2">
+    <table class="table" id="not-stripted">
+        <thead>
+            <tr>
+                <th>Nomi</th>
+                <th>Muallif</th>
+                <th>Qiyinchiligi</th>
+                <th>Vaqt chegarasi</th>
+                <th>Xotira chegarasi</th>
+                <th>Teglar</th>
+                <th>Urinishlar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for masala in page_obj.object_list %}
+                <tr class="{% if user in masala.accepteds %}border-success{% elif user in wrong_answers %}border-danger{% else %}{% endif %}">
+                    <td><a href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/">{{masala.title}}</a> &nbsp;&nbsp;&nbsp; <i class="fa fa-{% if user in masala.accepteds.all %}check text-success{% elif user in masala.wrong_answers %}x text-danger{% else %}minus text-warning    {% endif %}"></i></td>
+                    <td><a href="/users/profile/{{masala.author.username}}">{{masala.author.first_name}} {{masala.author.last_name}}</a></td>
+                    <td><span class="badge" style="background-color: {{masala.get_diff_color}} !important;color: white !important;">{{masala.get_diff}}</span></td>
+                    <td>{{masala.time_limit}} ms</td>
+                    <td>{{masala.memory_limit}} MB</td>
+                    <td>{% for teg in masala.get_2_teg %}<span class="badge bg-primary">{{teg}}</span> {% endfor %}</td>
+                    <td><span class="badge bg-primary"><span class="text-success">{{masala.accepteds.count}}</span> / <span class="text-info">{{masala.urinishlar.count}}</span></span></td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center">
+                        <i class="fa fa-x bg-danger" style="font-size: 90px;padding: 25px 30px;border-radius: 50px;"></i><br><br> Afsuski Hech narsa Topilmadi
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            {% if object.num_pages != 1 %}
+            <tr>
+                <th colspan="8">
+                    <div class="pages text-center">
+
+                        <nav aria-label="Page navigation example" class="text-center">
+                            <ul class="pagination bg-dark text-center justify-content-center my-3">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item bg-dark"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Orqaga</a></li>
+    
+                                    {% if page_obj.number > 3 %}
+                                        <li class="page-item"> <a class="page-link" href="?page=1">1</a></li>
+                                            {% if page_obj.number > 4 %}
+                                                <li class="page-item"><span class="page-link">...</span></li>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+    
+                                    {% for num in page_obj.paginator.page_range %}
+                                        {% if page_obj.number == num %}
+                                            <li class="page-item"><a class="page-link active disabled bg-dark" href="?page={{ num }}">{{ num }}</a></li>
+                                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+    
+                                    {% if page_obj.has_next %}
+                                        {% if page_obj.number < page_obj.paginator.num_pages|add:'-3' %} <span class="page-link">...</span>
+                                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+                                        {% elif page_obj.number < page_obj.paginator.num_pages|add:'-2' %} <li class="page-item"><a class="page-link"
+                                                href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+                                    {% endif %}
+    
+                                    <li class="page-item"><a href="?page={{ page_obj.next_page_number }}" class="page-link">Oldinga</a></li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                    {% endif %}
+                </th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+{% endblock content %}

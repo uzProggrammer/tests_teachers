@@ -1,0 +1,229 @@
+{% extends 'masalalar/base.html' %}
+
+{% load replace_text from replace_text_n %}
+
+{% block title %}
+{{masala.title|title}}
+{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/informatics/{% if not masala.is_archived %}un{% endif %}problems/">Algoritmik Masalalar</a></li>
+    <li class="breadcrumb-item active bg-dark" aria-current="page">{{masala.title|title}}</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <div class="card bg-dark p-2">
+        <ul class="nav nav-tabs bg-dark mb-3">
+            <li class="nav-item">
+                <a class="nav-link bg-primary text-light"><i class="fa fa-book"></i> Masala</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/attempts/"><i class="fab fa-strava"></i> Urinishlar</a>
+            </li>
+            {% if masala.have_yechim or user == masala.author or user.is_staff %}
+            <li class="nav-item">
+                <a class="nav-link" href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/solve/"><i class="fa fa-pen"></i> Yechim</a>
+            </li>
+            {% endif %} 
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"><i class="fa fa-star"></i> Reyting</a>
+                <ul class="dropdown-menu bg-dark">
+                    <li><a class="dropdown-item bg-dark" href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/rating/len/">Ko'd uzunligi</a></li>
+                    <li><a class="dropdown-item bg-dark" href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/rating/time/">Vaqt</a></li>
+                    <li><a class="dropdown-item bg-dark"  href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/rating/memory/">Xotira</a></li>
+                </ul>
+            </li>
+            {% if user.is_staff or user == masala.author %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% if masala.is_archived %}/informatics/problems/problem/{{masala.slug}}/testcases{% else %}/informatics/problems/unproblem/{{masala.slug}}/testcases{% endif %}"><i class="fa fa-question"></i> Testcaselar</a>
+            </li>
+            <li>
+                <a href="{% if masala.is_archived %}/informatics/problems/problem/{{masala.slug}}/edit/{% else %}/informatics/problems/unproblem/{{masala.slug}}/edit/{% endif %}" class="nav-link"><i class="bx bx-pen"></i> Tahriralsh</a>
+            </li>
+            {% endif %}
+            {% if user.is_staff and not masala.is_archived %}
+            <li class="nav-item">
+                <a class="nav-link" href="/informatics/problems/unproblem/{{masala.slug}}/to-archive/"><i class="fa fa-check"></i> Ommaviy qilish</a>
+            </li>
+            {% endif %}
+            {% if not masala.have_yechim and masala.yechim and user.is_staff %}
+            <li class="nav-item">
+                <a class="nav-link" href="/informatics/problems/unproblem/{{masala.slug}}/add-solve/"><i class="fa fa-check"></i> Javobini ko'rsatish</a>
+            </li>
+            {% endif %}
+        </ul>
+        <h4>{{masala.title}}</h4>
+        <p><span class="badge p-1" style="background-color: {{masala.get_diff_color}};">{{masala.get_diff}}</span> | <span class="bg-info badge p-1"><a href="/users/profile/{{masala.author.username}}/">{{masala.author.first_name}} {{masala.author.last_name}}</a></span>
+            | <span class="badge bg-success p-1">{{masala.time_limit}} ms</span> | <span class="badge p-1 bg-secondary">{{masala.memory_limit}} MB</span> | {% for teg in masala.get_1_teg %} <span class="badge p-1 bg-primary"> {{teg}}</span>{% endfor %}
+        </p>
+        <p><button class="btn btn-{% if not user_like %}outline-{% endif %}primary" id="like_btn"><i class="fa fa-thumbs-up"></i> <span class="likes_count">{{masala.get_likes}}</span></button> <button class="btn btn-{% if not user_dislike %}outline-{% endif %}danger" id="dislike_btn"><i class="fa fa-thumbs-down"></i> <span class="dislikes_count">{{masala.get_dislikes}}</span></button></p>
+        <hr>
+        <div class="p-3">
+            <div>
+                {{masala.body|safe}}
+            </div>
+            <hr>
+            {% if masala.info_in %}
+            <div>
+                {{masala.info_in|safe}}
+            </div>
+            <hr>
+            {% endif %}
+            {% if masala.out %}
+            <div>
+                {{masala.out|safe}}
+            </div>
+            <hr>
+            {% endif %}
+            {% if masala.get_simple_tests %}
+                <div class="table-responsive">
+                    <table class="table p-3">
+                        <thead>
+                            <tr>
+                                <th>Kiruvchi</th>
+                                <th>Chiquvchi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for simple in masala.get_simple_tests %}
+                                <tr>
+                                    <td>{{simple.t_in|replace_text|safe}}</td>
+                                    <td>{{simple.out|replace_text|safe}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="card bg-dark p-3 my-3">
+        {% if user.is_authenticated %}
+            <form method="post">{% csrf_token %}
+                <h4>Javobini yuborish</h4>
+                <textarea name="code" id="editor" class="bg-dark form-control">{{attempts.first.body}}</textarea>
+                
+                <label for="lang" class="mt-3 form-label" >Tilni tanlang:</label>
+                <select name="lang" id="lang" class="mb-3 form-select bg-dark" required>
+                    <option value="python" id="python">Python</option>
+                    <option value="node" id="node">Javascript</option>
+                </select>
+                {% if not masala.is_archived %}
+                <input type="hidden" value="1" name="is_unproblem">
+                {% endif %}
+                <button type="submit" class="btn btn-primary my-3"><i class="fa fa-paper-plane"></i> Yuborish</button>
+            </form>
+        {% else %}
+            <a href="/users/login/" class="btn btn-primary">Tizimga kirish</a> <a href="/users/signup/" class="btn btn-success mx-3">Ro'yxatdan o'tish</a>
+        {% endif %}
+    </div>
+    <div class="card bg-dark p-3 my-3">
+        <h4>Oxirgi urinishlarigiz:</h4>
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Holati</th>
+                        <th>Til</th>
+                        <th>Vaqt</th>
+                        <th>Xotira</th>
+                        <th>Ko'd uzinligi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for urinish in attempts %}
+                        <tr class="">
+                            <td><a href="/informatics/attempts/attempt/{{urinish.id}}/">{{urinish.id}}</a></td>
+                            <td><span class="{% if urinish.turi == 'Qabul Qilindi' %}text-success{% elif urinish.turi == 'Tekshirilmoqda' %}text-info{% elif urinish.turi == 'Navbatda' %}text-white{% else %}text-danger{% endif %}">{{urinish.turi}}</span></td>
+                            <td><img src="{% if urinish.til == 'python' %}https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/121px-Python-logo-notext.svg.png{% elif urinish.til == 'node' %}https://algorithmshub.uz/static/javascript.png{% endif %}" width="30" style="border-radius: 15px;" alt="language"></td>
+                            <td>{{urinish.time|floatformat:'2'}} ms</td>
+                            <td>{{urinish.memory|floatformat:'2'}} KB</td>
+                            <td>{{urinish.olcham}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block js1 %}
+    {% if user.is_authenticated %}
+        <script>
+            var lang = document.querySelector('#lang');
+            if (lang.value==='node') til = 'javascript';
+            if (lang.value==='python') til = 'python'
+            var editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
+                mode: til,
+                lineNumbers: true,
+                tabSize: 4,
+                theme: 'dracula',
+                lineWrapping: false
+            });
+            lang.addEventListener('change', ()=>{
+                localStorage.setItem('lang', lang.value);
+                if (lang.value==='node') til = 'javascript';
+                if (lang.value==='python') til = 'python'
+                editor.setOption('mode', til);
+            });
+            editor.save()
+            document.querySelector(`#${localStorage.getItem('lang')}`).selected = true;
+        </script>
+        <script>
+            var likes = document.querySelector('.likes_count');
+            var btn_like = document.querySelector('#like_btn');
+            var dislikes_count = document.querySelector('.dislikes_count');
+            var dislike_btn = document.querySelector('#dislike_btn');
+            btn_like.addEventListener('click', ()=>{
+                $.ajax(
+                    {
+                        type: 'get',
+                        url: '/informatics/problems/problem/sIHwmkb5EReAu9lOGpF8LYoS4nMWgc2Pxt1ja6zB/like-toggle?type=like',
+                        success: (data)=>{
+                            if(data['status']==='ok'){
+                                likes.innerHTML = data['likes'];
+                                dislikes_count.innerHTML = data['count1'];
+                                if(btn_like.classList.contains('btn-outline-primary')){
+                                    btn_like.classList.remove('btn-outline-primary');
+                                    btn_like.classList.add('btn-primary');
+                                    dislike_btn.classList.remove('btn-danger');
+                                    dislike_btn.classList.add('btn-outline-danger');
+                                }
+                            };
+                        },
+                        error: (e)=>{
+                            console.error(e);
+                        }
+                    }
+                )
+            });
+
+            dislike_btn.addEventListener('click', ()=>{
+                $.ajax(
+                    {
+                        type: 'get',
+                        url: '/informatics/problems/problem/sIHwmkb5EReAu9lOGpF8LYoS4nMWgc2Pxt1ja6zB/like-toggle?type=dislike',
+                        success: (data)=>{
+                            if(data['status']==='ok'){
+                                likes.innerHTML = data['likes'];
+                                dislikes_count.innerHTML = data['count1'];
+                                if(dislike_btn.classList.contains('btn-outline-danger')){
+                                    dislike_btn.classList.remove('btn-outline-danger');
+                                    dislike_btn.classList.add('btn-danger');
+                                    btn_like.classList.remove('btn-primary');
+                                    btn_like.classList.add('btn-outline-primary');
+                                }
+                            };
+
+                        },
+                        error: (e)=>{
+                            console.error(e);
+                        }
+                    }
+                )
+            });
+        </script>
+    {% endif %}
+{% endblock js1 %}

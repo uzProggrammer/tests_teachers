@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponseNotFound, HttpResponseForbidden
 from django.shortcuts import render, get_object_or_404
 from assignments.models import Assignment
-from problems.complier import Complier
+from Masalalar.complier.main import Complier
 from sinflar.models import Sinf
 from users.models import MyUser
 from .forms import EditForm, AttemptForm

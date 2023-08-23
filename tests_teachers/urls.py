@@ -19,12 +19,12 @@ from django.shortcuts import render
 
 from bsb.models import BSB
 from posts.models import Post
-from problems.models import Problem
 from users.models import MyUser
 from quizess.models import Task
 from assignments.models import Assignment, StudentAnswer
 from django.conf.urls.static import static
 from searchs.views import permission_denied, server_error, bad_request
+
 
 def home(request):
     unread_assign = None
@@ -44,8 +44,7 @@ def home(request):
     posts = Post.objects.all()
     controls = BSB.objects.all().count()
     assignments = Assignment.objects.count()
-    problems = Problem.objects.count()
-    return render(request, 'home.html', {'users': users, 'tasks': tasks, 'posts': posts, 'unread_assign': unread_assign, 'unread_answerca': len(unread_answerca2), 'controls': controls, 'assignments': assignments, 'problems': problems})
+    return render(request, 'home.html', {'users': users, 'tasks': tasks, 'posts': posts, 'unread_assign': unread_assign, 'unread_answerca': len(unread_answerca2), 'controls': controls, 'assignments': assignments})
 
 def notFound(request, exception):
     unread_assign = None

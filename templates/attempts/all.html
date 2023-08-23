@@ -13,28 +13,28 @@
         <table class="table m-0 table-hover table-borderless table-striped text-left slim-table">
             <thead>
                 <tr>
-                    <th class="text-white">#</th>
-                    <th class="text-white">Foydlanuvchi</th>
-                    <th class="text-white">Masala</th>
-                    <th class="text-white">Holati</th>
-                    <th class="text-white">Vaqt</th>
-                    <th class="text-white">Xotira</th>
-                    <th class="text-white">Urinish vaqti</th>
+                    <th>#</th>
+                    <th>Foydalanuvchi</th>
+                    <th>Masala</th>
+                    <th>Holati</th>
+                    <th>Til</th>
+                    <th>Vaqt</th>
+                    <th>Xotira</th>
+                    <th>Ko'd uzinligi</th>
                 </tr>
             </thead>
-            <tbody class="text-white">
-                {% for article in object_list.object_list %}
-                    <tr>
-                        <td class="text-white">{% if article.author == user %}<a href="#">{{ article.id }}</a>{% else %}{{ article.id }}{% endif %}</td>
-                        <td class="text-white"><a href="{% url 'profile' article.author.username %}">{{ article.author }}</a></td>
-                        <td class="text-white"><a href="{% url 'problem_detail' article.problem.id %}">{{ article.problem }}</a></td>
-                        <td class="{% if article.holat == 'Accepted' %}text-success{% else %}text-danger{% endif %}">{{article.holat}}</td>
-                        <td class="text-white">{{article.time}} ms</td>
-                        <td class="text-white">{{article.memory}} KB</td>
-                        <td class="text-white">{{article.date_created|date:"d.m.Y | H:i"}}</td>
+            <tbody>
+                {% for urinish in object_list.object_list %}
+                    <tr class="{% if user == urinish.user %}border-success{% endif %}">
+                        <td><a {% if urinish.user == user or user.is_staff %}href="/informatics/attempts/attempt/{{urinish.id}}/"{% endif %}>{{urinish.id}}</a></td>
+                        <td><a href="/users/profile/{{ urinish.user.username }}/">{{ urinish.user.first_name }} {{ urinish.user.last_name }}</a></td>
+                        <td><a href="/informatics/problems/{% if not urinish.masala.is_archived %}un{% endif %}problem/{{urinish.masala.slug}}/">{{urinish.masala.title}}</a></td>
+                        <td><span class="{% if urinish.turi == 'Qabul Qilindi' %}text-success{% elif urinish.turi == 'Tekshirilmoqda' %}text-info{% elif urinish.turi == 'Navbatda' %}text-white{% else %}text-danger{% endif %}">{{urinish.turi}}</span></td>
+                        <td><img src="{% if urinish.til == 'python' %}https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/121px-Python-logo-notext.svg.png{% elif urinish.til == 'node' %}https://algorithmshub.uz/static/javascript.png{% endif %}" width="30" style="border-radius: 15px;" alt="language"></td>
+                        <td>{{urinish.time|floatformat:'2'}} ms</td>
+                        <td>{{urinish.memory|floatformat:'2'}} KB</td>
+                        <td>{{urinish.olcham}}</td>
                     </tr>
-                {% empty %}
-                    Hali biron bitta urinish bo'lgani yo'q
                 {% endfor %}
             </tbody>
         </table>

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin yaratish{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+<li class="breadcrumb-item active text-white" aria-current="page">Admin yaratish</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="username">Foydalanuvchi nomini kiriting</label>
+            <input type="text" id="username" name="username" class="bg-dark form-control" placeholder="Foydalanuvchi nomi misol uchun: admin">
+        </div>
+        <div class="mb-3">
+            <input type="checkbox"  id="is_staff" name="is_staff" class="form-check-input">
+            <label for="is_staff">Foydalanuvchi Admin Ham qilib tayinlaysizmi?</label>
+        </div>
+        <div class="mb-3">
+            <button class="btn btn-primary"><i class="fa fa-plus"></i> Admin qilib tayinlash</button>
+        </div>
+    </form>
+{% endblock content %}

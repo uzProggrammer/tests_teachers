@@ -49,8 +49,6 @@ INSTALLED_APPS = [
     'posts',
     'quizess',
     'searchs',
-    'problems',
-    'attempts',
     'infotmatika',
     'assignments',
     'my_messages',
@@ -58,6 +56,7 @@ INSTALLED_APPS = [
     'bsb',
     'baholar',
     'courses',
+    'Masalalar',
 ]
 
 MIDDLEWARE = [
@@ -90,11 +89,15 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
             ],
             'libraries':{
-                'simple_tags': 'problems.templatetags.poll_extras',
+                'simple_tags': 'Masalalar.templatetags.replace_text_n',
             },
         },
     },
 ]
+
+TEMPLATE_LOADERS = (
+    'django.template.loaders.app_directories.load_template_source',
+)
 
 WSGI_APPLICATION = 'tests_teachers.wsgi.application'
 

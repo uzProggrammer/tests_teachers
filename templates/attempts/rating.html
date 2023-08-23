@@ -1,0 +1,123 @@
+{% extends 'attempts/base.html' %}
+
+{% block title %}
+    {{masala.title|title}} Urinishlar
+{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/informatics/{% if not masala.is_archived %}un{% endif %}problems/">Masalalr</a></li>
+    <li class="breadcrumb-item"><a href="/informatics/{% if not masala.is_archived %}un{% endif %}problems/{{masala.slug}}">{{masala.title|title}}</a></li>
+    <li class="breadcrumb-item active text-light" aria-current="page">Reyting</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<ul class="nav nav-tabs bg-dark mb-3">
+    <li class="nav-item">
+        <a class="nav-link"  href="{% if masala.is_archived %}/informatics/problems/problem/{{masala.slug}}/{% else %}/informatics/problems/unproblem/{{masala.slug}}/{% endif %}"><i class="fa fa-book"></i> Masala</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/attempts/"><i class="fab fa-strava"></i> Urinishlar</a>
+    </li>
+    {% if masala.have_yechim or user == masala.author or user.is_staff %}
+            <li class="nav-item">
+                <a class="nav-link" href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/solve/"><i class="fa fa-pen"></i> Yechim</a>
+            </li>
+    {% endif %}
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle tex-white bg-primary" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"><i class="fa fa-star"></i> Reyting</a>
+        <ul class="dropdown-menu bg-dark">
+            <li><a class="dropdown-item bg-dark" href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/rating/len/">Ko'd uzunligi</a></li>
+            <li><a class="dropdown-item bg-dark" href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/rating/time/">Vaqt</a></li>
+            <li><a class="dropdown-item bg-dark"  href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/rating/memory/">Xotira</a></li>
+        </ul>
+    </li>
+    {% if user.is_staff or user == masala.author %}
+    <li class="nav-item">
+        <a class="nav-link" href="{% if masala.is_archived %}/informatics/problems/problem/{{masala.slug}}/testcases{% else %}/informatics/problems/unproblem/{{masala.slug}}/testcases{% endif %}"><i class="fa fa-question"></i> Testcaselar</a>
+    </li>
+    <li>
+        <a href="{% if masala.is_archived %}/informatics/problems/problem/{{masala.slug}}/edit/{% else %}/informatics/problems/unproblem/{{masala.slug}}/edit/{% endif %}" class="nav-link"><i class="bx bx-pen"></i> Tahriralsh</a>
+    </li>
+    {% endif %}
+    {% if user.is_staff and not masala.is_archived %}
+    <li class="nav-item">
+        <a class="nav-link" href="/informatics/problems/unproblem/{{masala.slug}}/to-archive/"><i class="fa fa-check"></i> Ommaviy qilish</a>
+    </li>
+    {% endif %}
+    {% if not masala.have_yechim and masala.yechim and user.is_staff %}
+    <li class="nav-item">
+        <a class="nav-link" href="/informatics/problems/unproblem/{{masala.slug}}/add-solve/"><i class="fa fa-check"></i> Javobini ko'rsatish</a>
+    </li>
+    {% endif %}
+</ul>
+
+    <div class="card bg-dark p-3 table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Foydalanuvchi</th>
+                    <th>Holati</th>
+                    <th>Til</th>
+                    <th>Vaqt</th>
+                    <th>Xotira</th>
+                    <th>Ko'd uzinligi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for urinish in page_obj.object_list %}
+                    <tr class="{% if user == urinish.user %}border-success{% endif %}">
+                        <td>{% if user == urinish.user %}<a href="/informatics/attempts/attempt/{{urinish.id}}/">{{urinish.id}}</a>{% else %}{{urinish.id}}{% endif %}</td>
+                        <td><a href="/users/profile/{{urinish.user.username}}/">{{urinish.user.first_name}} {{urinish.user.last_name}}</a></td>
+                        <td><span class="{% if urinish.turi == 'Qabul Qilindi' %}text-success{% elif urinish.turi == 'Tekshirilmoqda' %}text-info{% elif urinish.turi == 'Navbatda' %}text-white{% else %}text-danger{% endif %}">{{urinish.turi}}</span></td>
+                        <td><img src="{% if urinish.til == 'python' %}https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/121px-Python-logo-notext.svg.png{% elif urinish.til == 'node' %}https://algorithmshub.uz/static/javascript.png{% endif %}" width="30" style="border-radius: 15px;" alt="language"></td>
+                        <td>{{urinish.time|floatformat:'2'}} ms</td>
+                        <td>{{urinish.memory|floatformat:'2'}} KB</td>
+                        <td>{{urinish.olcham}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                {% if object.num_pages != 1 %}
+            <tr>
+                <th colspan="7">
+                    <div class="pages text-center">
+
+                        <nav aria-label="Page navigation example" class="text-center">
+                            <ul class="pagination bg-dark text-center justify-content-center my-3">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item bg-dark"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Orqaga</a></li>
+    
+                                    {% if page_obj.number > 3 %}
+                                        <li class="page-item"> <a class="page-link" href="?page=1">1</a></li>
+                                            {% if page_obj.number > 4 %}
+                                                <li class="page-item"><span class="page-link">...</span></li>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+    
+                                    {% for num in page_obj.paginator.page_range %}
+                                        {% if page_obj.number == num %}
+                                            <li class="page-item"><a class="page-link active disabled bg-dark" href="?page={{ num }}">{{ num }}</a></li>
+                                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+    
+                                    {% if page_obj.has_next %}
+                                        {% if page_obj.number < page_obj.paginator.num_pages|add:'-3' %} <span class="page-link">...</span>
+                                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+                                        {% elif page_obj.number < page_obj.paginator.num_pages|add:'-2' %} <li class="page-item"><a class="page-link"
+                                                href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+                                    {% endif %}
+    
+                                    <li class="page-item"><a href="?page={{ page_obj.next_page_number }}" class="page-link">Oldinga</a></li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                    {% endif %}
+            </tfoot>
+        </table>
+    </div>
+{% endblock content %}

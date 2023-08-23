@@ -1,0 +1,61 @@
+{% extends 'masalalar/base.html' %}
+
+{% block title %}
+{{masala.title|title}}
+{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/informatics/{% if not masala.is_archived %}un{% endif %}problems/">Algoritmik Masalalar</a></li>
+    <li class="breadcrumb-item active bg-dark" aria-current="page">{{masala.title|title}}</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <div class="card bg-dark p-2">
+        <ul class="nav nav-tabs bg-dark mb-3">
+            <li class="nav-item">
+                <a class="nav-link" href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/"><i class="fa fa-book"></i> Masala</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/attempts/"><i class="fab fa-strava"></i> Urinishlar</a>
+            </li>
+            {% if masala.have_yechim or user == masala.author or user.is_staff %}
+            <li class="nav-item">
+                <a class="nav-link bg-primary text-white" ><i class="fa fa-pen"></i> Yechim</a>
+            </li>
+            {% endif %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"><i class="fa fa-star"></i> Reyting</a>
+                <ul class="dropdown-menu bg-dark">
+                    <li><a class="dropdown-item bg-dark" href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/rating/len/">Ko'd uzunligi</a></li>
+                    <li><a class="dropdown-item bg-dark" href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/rating/time/">Vaqt</a></li>
+                    <li><a class="dropdown-item bg-dark"  href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/rating/memory/">Xotira</a></li>
+                </ul>
+            </li>
+            {% if user.is_staff or user == masala.author %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% if masala.is_archived %}/informatics/problems/problem/{{masala.slug}}/testcases{% else %}/informatics/problems/unproblem/{{masala.slug}}/testcases{% endif %}"><i class="fa fa-question"></i> Testcaselar</a>
+            </li>
+            <li>
+                <a href="{% if masala.is_archived %}/informatics/problems/problem/{{masala.slug}}/edit/{% else %}/informatics/problems/unproblem/{{masala.slug}}/edit/{% endif %}" class="nav-link"><i class="bx bx-pen"></i> Tahriralsh</a>
+            </li>
+            {% endif %}
+            {% if user.is_staff and not masala.is_archived %}
+            <li class="nav-item">
+                <a class="nav-link" href="/informatics/problems/unproblem/{{masala.slug}}/to-archive/"><i class="fa fa-check"></i> Ommaviy qilish</a>
+            </li>
+            {% endif %}
+            {% if not masala.have_yechim and masala.yechim and user.is_staff %}
+            <li class="nav-item">
+                <a class="nav-link" href="/informatics/problems/unproblem/{{masala.slug}}/add-solve/"><i class="fa fa-check"></i> Javobini ko'rsatish</a>
+            </li>
+            {% endif %}
+        </ul>
+        <div class="card-header">
+            <h4>{{masala.title}}</h4>
+        </div>
+        <div class="card-body">
+            {{masala.yechim|safe}}
+        </div>
+    </div>
+{% endblock content %}

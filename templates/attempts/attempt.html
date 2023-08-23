@@ -1,8 +1,74 @@
 {% extends 'attempts/base.html' %}
 
-{% block title %}{{attempt.problem.title}}{% endblock title %}
+{% block title %}{{urinish.masala.title}}{% endblock title %}
 
 {% block content %}
-    <pre><code class="language-python">{{attempt.code}}</code></pre>
-    <h1>{{attempt.problem.title}}</h1>
+    <div class="card bg-dark p-3">
+        <div class="row">
+            <div class="col-md-9">
+                <textarea id="code" class="form-control scrollbar" style="display: none;">{{urinish.body|safe}}</textarea>
+            </div>
+            <div class="col-md-3">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th class="text-center py-3" colspan="2">
+                                <span class="fs-3 my-3 {% if urinish.turi == 'Qabul Qilindi' %}text-success{% elif urinish.turi == 'Tekshirilmoqda' %}text-info{% else %}text-danger{% endif %}">{{urinish.turi}}</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Masala</td>
+                            <td>{{urinish.masala.title|safe}}</td>
+                        </tr>
+                        <tr>
+                            <td>Dasturlash tili</td>
+                            <td><img src="{% if urinish.til == 'python' %}https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/121px-Python-logo-notext.svg.png{% elif urinish.til == 'node' %}https://algorithmshub.uz/static/javascript.png{% endif %}" width="30" style="border-radius: 15px;" alt="language"></td>
+                        </tr>
+                        <tr>
+                            <td>Vaqt</td>
+                            <td>{{urinish.time|floatformat:"2"}} ms</td>
+                        </tr>
+                        <tr>
+                            <td>Xotira</td>
+                            <td>{{urinish.memory|floatformat:'2'}} KB</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% if urinish.error %}
+        <br><br>
+        <pre>
+            <code lang="bash">{{urinish.error}}</code>
+        </pre>
+        {% endif %}
+        <br>
+        
+    </div>
+    <div class="card bg-dark p-3 mt-3">
+        Testlar:
+        <div class="row">
+        {% for key, value in urinish.tests.items %}
+            <div class="col-md-1 mx-3">
+                <span class="badge {% if value.status == 'Qabul qilindi' %}bg-success{% else %}bg-danger{% endif %} p-2">{{key}}. {{value.time|floatformat:"2"}} ms, {{value.memory|floatformat:"2"}} KB</span>
+            </div>
+        {% endfor %}
+        </div>
+    </div>
 {% endblock content %}
+
+
+{% block js1 %}
+    <script>
+        var editor = CodeMirror.fromTextArea(document.getElementById('code'), {
+            mode: '{% if urinish.til == "python" %}python{% elif urinish.til == "node" %}javascript{% endif %}',
+            theme:  'dracula',
+            indentUnit: 4,
+            matchBrackets: true,
+            readOnly: true
+        });
+        editor.setSize(null, 340);
+    </script>
+{% endblock js1 %}

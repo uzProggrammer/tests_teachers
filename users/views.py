@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.core.paginator import Paginator
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 
@@ -375,3 +375,23 @@ def get_top_users(request):
                 'ball': user.ball
             }
         return JsonResponse(data)
+
+def add_admin_view(request, type=None):
+    if request.user.is_authenticated:
+        if request.user.is_staff:
+            username = ''
+            is_staff = False
+            if request.method == 'POST':
+                username = request.POST.get('username')
+                if 'is_staff' in request.POST:
+                    is_staff=True
+                user = get_object_or_404(MyUser, username=username)
+                user.is_staff = is_staff
+                user.is_teacher = True
+                messages.success(request, f'{user.username} muvoffiqiyatli o\'qituvchi qilib tayinlandi')
+                return HttpResponseRedirect(f'/users/profile/{user.username}/')
+            return render(request, 'users/add_super_user1.html', {'is_user': True})
+        else:
+            return HttpResponseNotFound()
+    else:
+        return HttpResponseNotFound()

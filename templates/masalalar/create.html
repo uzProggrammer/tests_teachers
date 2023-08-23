@@ -1,0 +1,129 @@
+{% extends 'masalalar/base.html' %}
+
+{% block title %}Masala yaratish{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/informatics/{% if not masala.is_archived %}un{% endif %}problems/">Algoritmik Masalalar</a></li>
+    <li class="breadcrumb-item active bg-dark" aria-current="page">Yaratish</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <div class="card p-3 bg-dark">
+        <form method='post'>
+            <div class="mb-3">
+                <label for="title" class="form-label">Masala nomi</label>
+                <input id="title" name="title" class="form-control bg-dark" value="{{masala.title}}" placeholder="Masala nomi" required>
+            </div>
+            <div class="mb-3">
+                <label for="diff" class="form-label">Masala qiyinchiligi</label>
+                <select id="diff" class="form-control bg-dark" name="diff" required>
+                    <option value="1" {% if masala.difficulty == 1 %}selected{% endif %}>Bo'shlang'ish</option>
+                    <option value="2" {% if masala.difficulty == 2 %}selected{% endif %}>Asoslar</option>
+                    <option value="3" {% if masala.difficulty == 3 %}selected{% endif %}>Normal</option>
+                    <option value="4" {% if masala.difficulty == 4 %}selected{% endif %}>O'rtacha</option>
+                    <option value="5" {% if masala.difficulty == 5 %}selected{% endif %}>Ilg'or</option>
+                    <option value="6" {% if masala.difficulty == 6 %}selected{% endif %}>Qiyin</option>
+                    <option value="7" {% if masala.difficulty == 7 %}selected{% endif %}>Juda Qiyin</option>
+                    <option value="8" {% if masala.difficulty == 8 %}selected{% endif %}>Ekspert uchun</option>
+                </select>
+            </div>
+            <div class="mb-3 row">
+                <div class="col-md-6">
+                    <label for="memory" class="form-label">Masala xotira cheklovi</label>
+                    <div class="input-group">
+                        <input type="number"  name="memory" max="256" required value="6" id="memory" class="bg-dark form-control">
+                        <span class="input-group-text bg-dark">MB</span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="time" class="form-label">Masala vaqt cheklovi</label>
+                    <div class="input-group">
+                        <input type="number" name="time" max="8000" required value="1000" id="time" class="bg-dark form-control">
+                        <span class="input-group-text bg-dark">ms</span>
+                    </div>
+                </div>
+                
+            </div>
+            <div class="mb-3">
+                <label for="body" class="form-label">Masala sharti</label>
+                <textarea name="body" id="body" class="form-control bg-dark tiny">{{masala.body}}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="in" class="form-label">Masala Kirish ma'lumotlari</label>
+                <textarea name="in" id="in" class="form-control bg-dark tiny">{{masala.info_in}}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="out" class="form-label">Masala Chiqish ma'lumotlari</label>
+                <textarea name="out" id="out" class="form-control bg-dark tiny">{{masala.out}}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="checker" class="form-label">Masala Tekshruvchisi</label>
+                <textarea name="checker" id="checker" class="form-control bg-dark checker">{{masala.checker}}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="type" class="form-label">Masala turi</label>
+                <select name="type" id="type" class="form-select bg-dark">
+                    <option value="masala" {% if masala.type == 'masala' %}selected{%endif %}>Masala</option>
+                    <option value="bitta" {% if masala.type == 'bitta urinish' %}selected{%endif %}>Bir urinish</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="yechim" class="form-label">Masala Yechimi</label>
+                <textarea name="yechim" id="yechim" class="form-control bg-dark tiny">{{masala.yechim}}</textarea>
+            </div>
+            <div class=".mb-3">
+                <label for="testcases" class="form-label">Misol testcaselar soni</label>
+                <div class="input-group">
+                    <input type="number" max="6" name="testcases" required value="2" id="testcases" class="bg-dark form-control">
+                    <span class="input-group-text bg-dark"><i class="fa fa-eye"></i></span>
+                </div>
+            </div>
+            <div class="my-3">
+                Teglar
+                <div class="row" id="tegs">
+                    <div class="col-md-2">
+                        <input type="text" class="bg-dark form-control mb-2" name="teg">
+                    </div>
+                </div>
+                <button type="button" id="add_teg_input" class="btn btn-primary"><i class="fa fa-plus"></i> Teg qo'shish</button>
+            </div>
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary mt-3">Yaratish</button>
+        </form>
+    </div>
+{% endblock content %}
+
+{% block js1 %}
+    <script>
+        var editor = tinymce.init({
+            themes: "modern",
+            skin: "oxide-dark",
+            setup: editor=>{
+                document.body.classList.add('dark');
+            },
+            content_css: "/static/styles/tiny-custom.css",
+            selector: 'textarea.tiny',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+            toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+        });
+
+        var editor = CodeMirror.fromTextArea(document.getElementById('checker'), {
+                mode: "python",
+                theme: 'dracula',
+                indentUnit: 4,
+                matchBrackets: true,
+            });
+        editor.save()
+
+
+        document.querySelector('#add_teg_input').addEventListener('click', ()=>{
+            var container = document.querySelector('#tegs');
+            var html = '<input type="text" class="bg-dark form-control mb-2" name="teg">';
+            var div = document.createElement('div');
+            div.className = 'col-md-2';
+            div.innerHTML = html;
+            container.appendChild(div);
+        });
+    </script>
+{% endblock js1 %}
