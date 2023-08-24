@@ -3,7 +3,8 @@ from datetime import datetime
 from django.db import models
 from users.models import MyUser
 from ckeditor.fields import RichTextField
-
+from django.contrib.humanize.templatetags.humanize import naturaltime
+import bs4
 
 class Post(models.Model):
     author = models.ForeignKey(
@@ -18,16 +19,10 @@ class Post(models.Model):
     likes = models.ManyToManyField(MyUser, related_name='post_likes', null=True, blank=True)
 
     def get_date(self):
-        time = datetime.now()
-        if self.date_created.day == time.day:
-            return str(time.hour - self.date_created.hour) + " soat oldin"
-        else:
-            if self.date_created.month == time.month:
-                return str(time.day - self.date_created.day) + " kun oldin"
-            else:
-                if self.date_created.year == time.year:
-                    return str(time.month - self.date_created.month) + " oy oldin"
-        return self.date_created
+        return str(naturaltime(self.date_created))
+
+    def get_custom_body(self):
+        return bs4.BeautifulSoup(self.content, 'html.parser').get_text()
 
     def __str__(self):
         return self.title

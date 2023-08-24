@@ -4,6 +4,8 @@ from django.http import HttpResponseRedirect, JsonResponse, HttpResponseNotFound
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 
+from Masalalar.models import Masala, Urinish
+
 from .models import MyUser
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
@@ -395,3 +397,100 @@ def add_admin_view(request, type=None):
             return HttpResponseNotFound()
     else:
         return HttpResponseNotFound()
+
+def liked_posts(request, username):
+    profile = get_object_or_404(MyUser, username=username)
+    if request.user.is_authenticated:
+        if request.user.is_staff or request.user == profile:
+            posts = profile.post_likes.all()
+            masalalar = Paginator(posts, 20)
+            if 'page' in request.GET:
+                object = masalalar.page(request.GET['page'])
+            else:
+                object = masalalar.page(1)
+            return render(request, 'users/liked_posts.html', {'profile': profile, 'page_obj': object, 'object': masalalar,})
+        else:
+            return render(request, '403.html', status=403)
+    else:
+        return render(request, '403.html', status=403)
+
+def solved_problems(request, username):
+    profile = get_object_or_404(MyUser, username=username)
+    masalalar = profile.masala_accepts.all()
+
+    seach = ''
+    if 'q' in request.GET:
+        search = request.GET.get('q')
+        seach = search
+        masalalar = Masala.objects.filter(Q(title__icontains=search) | Q(
+            body__icontains=search) | Q(info_in__icontains=search) | Q(out__icontains=search))
+    type1 = 0
+    if 'type' in request.GET and request.user.is_authenticated:
+        type1 = str(request.GET.get('type'))
+        if type1.isdigit():
+            type1 = int(type1)
+            if type1 != 0:
+                if type1 == 1:
+                    masala_accepts = request.user.masala_wrongs.all()
+                    masalalar = masala_accepts
+                elif type1 == 2:
+                    masalalar = request.user.masala_accepts.all()
+                else:
+                    masala_wrong = request.user.masala_wrongs.all()
+                    masala_accpted = request.user.masala_accepts.all()
+                    masalalar = masalalar ^ (masala_accpted | masala_wrong)
+    masalalar = Paginator(masalalar, 20)
+
+
+    if 'page' in request.GET:
+        object = masalalar.page(request.GET['page'])
+    else:
+        object = masalalar.page(1)
+    return render(request, 'users/solved_problems.html', {'profile': profile, 'page_obj': object, 'object': masalalar, 'search': seach, 'type': type1})
+
+def profile_attempts_view(request, username):
+    profile = get_object_or_404(MyUser, username=username)
+    masalalar = Paginator(Urinish.objects.filter(user=profile).order_by('-id'), 30)
+    if 'page' in request.GET:
+        object = masalalar.page(request.GET['page'])
+    else:
+        object = masalalar.page(1)
+    return render(request, 'users/attempts.html', {'profile': profile, 'object_list': object, 'object': masalalar})
+
+def courses_view(request, username):
+    profile = get_object_or_404(MyUser, username=username)
+    if profile.is_staff or profile.is_teacher:
+        courses = profile.courses.all()
+        masalalar = Paginator(courses, 30)
+        if 'page' in request.GET:
+            object = masalalar.page(request.GET['page'])
+        else:
+            object = masalalar.page(1)
+        return render(request, 'users/courses.html', {'profile': profile, 'object_list': object, 'object': masalalar})
+    else:
+        courses = profile.followed_courses.all()
+        masalalar = Paginator(courses, 30)
+        if 'page' in request.GET:
+            object = masalalar.page(request.GET['page'])
+        else:
+            object = masalalar.page(1)
+        return render(request, 'users/courses.html', {'profile': profile, 'object_list': object, 'object': masalalar})
+
+def tests_view(request, username):
+    profile = get_object_or_404(MyUser, username=username)
+    if profile.is_staff or profile.is_teacher:
+        courses = profile.author_test.all()
+        masalalar = Paginator(courses, 30)
+        if 'page' in request.GET:
+            object = masalalar.page(request.GET['page'])
+        else:
+            object = masalalar.page(1)
+        return render(request, 'users/quizess.html', {'profile': profile, 'object_list': object, 'object': masalalar})
+    else:
+        courses = profile.tasks.all()
+        masalalar = Paginator(courses, 30)
+        if 'page' in request.GET:
+            object = masalalar.page(request.GET['page'])
+        else:
+            object = masalalar.page(1)
+        return render(request, 'users/quizess.html', {'profile': profile, 'object_list': object, 'object': masalalar})

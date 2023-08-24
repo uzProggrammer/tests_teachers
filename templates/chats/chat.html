@@ -24,7 +24,8 @@
 
 </style>
 
-<div class="col-12 col-lg-7 col-xl-9" id="messages">
+<div class="col-md-8" id="messages">
+    <div class="card bg-dark" style="background-color: var(--card-bg) !important;">
         <div class="py-2 px-4 border-bottom d-lg-block chat-header">
             <div class="d-flex align-items-center py-1">
                 <button id="back-button" class="bg-transparent text-white" style="border: none;font-size: 30px;margin-right: 10px;display: none;"><i class="bx bx-left-arrow-alt"></i></button>
@@ -131,8 +132,8 @@
                 <button class="btn btn-primary" id="sender"><i class='bx bx-send'></i></button>
             </div>
         </div>
-
     </div>
+</div>
 {% endblock  %}
 
 {% block js1 %}
@@ -283,7 +284,7 @@
 
 
 
-        document.querySelector('#chat{{chat1.id}}').style='background-color: blue !important;color:white !important;';
+        document.querySelector('#chat{{chat1.id}}').style='background-color: var(--sidebar-active-bg) !important;color:white !important;border-radius:10px !important;';
         document.querySelector('#chat{{chat1.id}}').href = '';
     </script>
 {% endblock js1 %}

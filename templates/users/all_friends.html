@@ -9,109 +9,179 @@
 <li class="breadcrumb-item active">Do'stlar</li>
 {% endblock breadcrumb %}
 
+
 {% block content %}
-    {% include 'users/profile_header.html' %}
-
-    <div class="card bg-dark text-white m-2">
-        <div class="card-header p-0">
-            <form method="GET" class="input-group mb-2">
-                <input value="{{search}}" type="text" aria-label="Qidiruv" name="search" class="form-control bg-dark text-white" placeholder="Qidiruv">
-                <select name="sinf" class="form-control bg-dark text-white" id="id_sinf">
-  <option value="5.1">5.1</option>
-
-  <option value="5.2">5.2</option>
-
-  <option value="6.1">6.1</option>
-
-  <option value="6.2">6.2</option>
-
-  <option value="7.1">7.1</option>
-
-  <option value="7.2">7.2</option>
-
-  <option value="7.3">7.3</option>
-
-  <option value="8.1">8.1</option>
-
-  <option value="8.2">8.2</option>
-
-  <option value="8.3">8.3</option>
-
-  <option value="9.1">9.1</option>
-
-  <option value="9.2">9.2</option>
-
-  <option value="9.3">9.3</option>
-
-  <option value="10.1">10.1</option>
-
-  <option value="10.2">10.2</option>
-
-  <option value="10.3">10.3</option>
-
-  <option value="11.1">11.1</option>
-
-  <option value="11.2">11.2</option>
-
-  <option value="11.3">11.3</option>
-
-  <option value="all" selected>Hammasi</option>
-
-</select>
-                <button class="input-group-text btn btn-primary">Qidirish</button>
-            </form>
-        </div>
-        <div class="card-body table-responsive">
-            <table class="table table-bordered border-white bg-dark text-white">
-                <thead>
-                    <tr>
-                        <th scope="col">Foydalanuvchi nomi</th>
-                        <th scope="col">Ismi sharif</th>
-                        <th scope="col">Sinf</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for teacher in object.object_list %}
-                        <tr>
-                            <td><a href="{% url 'profile' teacher.username %}">{{teacher.username}}</a></td>
-                            <td>{{teacher.first_name}} {{teacher.last_name}}</td>
-                            <td>{{teacher.sinf|title}}</td>
-                        </tr>
-                    {% empty %}
-                    <tr class="text-center">
-                        <td class="text-center" colspan="3"><h1>Hech narsa topilmadi</h1></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <div class="card-footer">
-            {% block paginate %}
-            <div class="d-flex mt-3">
-                <div class="mx-auto">
-                    <div>
-                        <nav>
-                            <ul class="pagination">
-                                <li class="page-item {% if object_list.has_previous  %}{% else %}disabled{% endif %}" aria-disabled="true">
-                                    {% if object.has_previous %}
-                                        <a class="btn btn-success" href="?page={{ object.previous_page_number }}">&laquo; Oldingi</a>
-                                    {% else %}
-                                        <a class="btn btn-success disabled" href="#">&laquo; Oldingi</a>
-                                    {% endif %}
-                                </li>
-                                <li class="page-item {% if object_list.has_next  %}{% else %}disabled{% endif %}">
-                                    {% if object.has_next  %}
-                                        <a class="btn btn-success" href="?page={{ object.next_page_number }}">Keyingi &raquo;</a>
-                                    {% else %}
-                                        <a class="btn btn-success disabled" href="#">Keyingi &raquo;</a>
-                                    {% endif %}
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
+<div class="row">
+    <div class="col-md-3 text-center profile-sticky">
+        <div class="card bg-dark p-3 mb-3">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Student_%28example%29.svg/444px-Student_%28example%29.svg.png?20180722153736"
+                alt="IMG" width="100%" style="border-radius: 50%;background-color: transparent;">
+            <div class="my-2 fs-3">
+                {{profile.first_name}} {{profile.last_name}}
             </div>
-            {% endblock paginate %}
+            <span style="font-size: 13px;">{{profile.email}}</span>
+            <span  style="font-size: 13px;" class="user-status"></span>
+            <ul class="profile-items my-3">
+                <li><a  href="/users/profile/{{profile.username}}/"><i class="fa fa-user"></i> Profil</a></li>
+                {% if user == profile %}
+                <li><a href="/users/update/"><i class="fa fa-pen"></i> Tahirirlash</a></li>
+                <li><a href="/chats/"><i class="fa fa-comment"></i> Suhbatlar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/liked-posts/"><i class="fa fa-heart"></i> Yoqgan E'lonlar</a></li>
+                {% endif %}
+                {% if profile.is_teacher or profle.is_staff %}
+                <li><a href="/users/profile/{{profile.username}}/prices/assignment/"><i class="bx bx-football"></i> Topshiriqdan  olgan ballar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/prices/controls/"><i class="bx bx-football"></i> Nazoratlardan olgan ballar</a></li>
+                {% else %}
+                <li><a href="/users/profile/{{profile.username}}/assignments/"><i class="bx bx-football"></i> Topshiriqlar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/controls/"><i class="bx bx-football"></i> Nazoratlar</a></li>
+                {% endif %}
+                <li><a href="/users/profile/{{profile.username}}/solved-problems/"><i class="fa fa-check"></i> Masalalar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/attempts/"><i class="fab fa-strava"></i> Urinishlar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/courses/"><i class="fa fa-book"></i> Kurslar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/questions/"><i class="fa fa-question"></i> Testlar</a></li>
+                <li class="active-profile-item"><a href="#"><i class="fa fa-users"></i> Do'stlar</a></li>
+            </ul>
+            </ul>
         </div>
     </div>
-{% endblock content %}
+    <div class="col-md-9">
+        <div class="card bg-dark text-white m-2">
+            <div class="card-header p-0">
+                <form method="GET" class="input-group mb-2">
+                    <input value="{{search}}" type="text" aria-label="Qidiruv" name="search" class="form-control bg-dark text-white" placeholder="Qidiruv">
+                    <select name="sinf" class="form-control bg-dark text-white" id="id_sinf">
+      <option value="5.1">5.1</option>
+    
+      <option value="5.2">5.2</option>
+    
+      <option value="6.1">6.1</option>
+    
+      <option value="6.2">6.2</option>
+    
+      <option value="7.1">7.1</option>
+    
+      <option value="7.2">7.2</option>
+    
+      <option value="7.3">7.3</option>
+    
+      <option value="8.1">8.1</option>
+    
+      <option value="8.2">8.2</option>
+    
+      <option value="8.3">8.3</option>
+    
+      <option value="9.1">9.1</option>
+    
+      <option value="9.2">9.2</option>
+    
+      <option value="9.3">9.3</option>
+    
+      <option value="10.1">10.1</option>
+    
+      <option value="10.2">10.2</option>
+    
+      <option value="10.3">10.3</option>
+    
+      <option value="11.1">11.1</option>
+    
+      <option value="11.2">11.2</option>
+    
+      <option value="11.3">11.3</option>
+    
+      <option value="all" selected>Hammasi</option>
+    
+    </select>
+                    <button class="input-group-text btn btn-primary">Qidirish</button>
+                </form>
+            </div>
+            <div class="card-body table-responsive">
+                <table class="table table-bordered border-white bg-dark text-white">
+                    <thead>
+                        <tr>
+                            <th scope="col">Foydalanuvchi nomi</th>
+                            <th scope="col">Ismi sharif</th>
+                            <th scope="col">Sinf</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for teacher in object.object_list %}
+                            <tr>
+                                <td><a href="{% url 'profile' teacher.username %}">{{teacher.username}}</a></td>
+                                <td>{{teacher.first_name}} {{teacher.last_name}}</td>
+                                <td>{{teacher.sinf|title}}</td>
+                            </tr>
+                        {% empty %}
+                        <tr class="text-center">
+                            <td class="text-center" colspan="3"><h1>Hech narsa topilmadi</h1></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer">
+                {% block paginate %}
+                {% if object.num_pages != 1 %}
+        <div class="pages text-center">
+
+            <nav aria-label="Page navigation example" class="text-center">
+                <ul class="pagination bg-dark text-center justify-content-center my-3">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item bg-dark"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Orqaga</a></li>
+
+                        {% if page_obj.number > 3 %}
+                            <li class="page-item"> <a class="page-link" href="?page=1">1</a></li>
+                                {% if page_obj.number > 4 %}
+                                    <li class="page-item"><span class="page-link">...</span></li>
+                                {% endif %}
+                            {% endif %}
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}
+                                <li class="page-item"><a class="page-link active disabled bg-dark" href="?page={{ num }}">{{ num }}</a></li>
+                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            {% if page_obj.number < page_obj.paginator.num_pages|add:'-3' %} <span class="page-link">...</span>
+                                <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+                            {% elif page_obj.number < page_obj.paginator.num_pages|add:'-2' %} <li class="page-item"><a class="page-link"
+                                    href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+                        {% endif %}
+
+                        <li class="page-item"><a href="?page={{ page_obj.next_page_number }}" class="page-link">Oldinga</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+                {% endblock paginate %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    const status = document.querySelector('.user-status');
+
+    const now = new Date('Avg 23, 14:47:23');
+    function checkOnlineStatus() {
+        fetch('/users/profile/{{profile.username}}/check_user_status/')
+            .then(response => response.json())
+            .then(data => {
+                if (data.is_online) {
+                    status.innerHTML = '<p style="color: green !important;">Online</p>'
+                } else {
+                    status.innerHTML = `<p style="color: rgb(230,10,10) !important;">${data.time}</p>`
+                }
+            })
+            .catch(error => console.log(error));
+    }
+    checkOnlineStatus();
+    setInterval(checkOnlineStatus, 5000);
+
+</script>
+{% endblock %}

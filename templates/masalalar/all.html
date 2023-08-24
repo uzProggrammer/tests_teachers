@@ -64,9 +64,9 @@ Algoritmik Masalalar
             {% endfor %}
         </tbody>
         <tfoot>
-            {% if object.num_pages != 1 %}
             <tr>
                 <th colspan="8">
+                    {% if object.num_pages != 1 %}
                     <div class="pages text-center">
 
                         <nav aria-label="Page navigation example" class="text-center">

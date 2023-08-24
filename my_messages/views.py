@@ -24,7 +24,7 @@ def all_chats(request):
             chats = chats1 | chats2
         except Chat.DoesNotExist:
             chats = None
-        return render(request, 'chats/all.html', {'chats': chats, 'all_users': all_users, 'all_users_dict': all_users_dict})
+        return render(request, 'chats/all.html', {'chats': chats, 'all_users': all_users, 'all_users_dict': all_users_dict, 'profile': request.user})
     else:
         messages.error(request, 'Siz tizimga kirmagansiz. Suhbatlarga o\'tish uchun tizimga kirish zarur')
         return HttpResponseRedirect('/users/login/')
@@ -48,7 +48,7 @@ def user_chat(request, recipient):
             if message.user != request.user:
                 message.is_read = True
                 message.save()
-        return render(request, 'chats/chat.html', {'chat1': chat1, 'chats': chats, 'is_res': is_res,})
+        return render(request, 'chats/chat.html', {'chat1': chat1, 'chats': chats, 'is_res': is_res,  'profile': request.user})
     else:
         return HttpResponseRedirect('/users/login/')
 

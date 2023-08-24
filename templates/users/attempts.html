@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Urinishlar{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+<li class="breadcrumb-item"><a
+        href="{% if profile.is_teacher %}/users/teachers/{% else %}/users/teachers/{% endif %}">
+        {% if profile.is_teacher %}O'qituvchilar{% else %}O'quvchilar{% endif %}</a></li>
+<li class="breadcrumb-item"><a href="/users/teachers/{{profile.username}}">{{profile.username|title}}</a></li>
+<li class="breadcrumb-item active text-white" aria-current="page">Urinishlar</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-3 text-center profile-sticky">
+        <div class="card bg-dark p-3 mb-3">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Student_%28example%29.svg/444px-Student_%28example%29.svg.png?20180722153736"
+                alt="IMG" width="100%" style="border-radius: 50%;background-color: transparent;">
+            <div class="my-2 fs-3">
+                {{profile.first_name}} {{profile.last_name}}
+            </div>
+            <span style="font-size: 13px;">{{profile.email}}</span>
+            <span  style="font-size: 13px;" class="user-status"></span>
+            <ul class="profile-items my-3">
+                <li><a href="/users/profile/{{profile.username}}/"><i class="fa fa-user"></i> Profil</a></li>
+                {% if user == profile %}
+                <li><a href="/users/update/"><i class="fa fa-pen"></i> Tahirirlash</a></li>
+                <li><a href="/chats/"><i class="fa fa-comment"></i> Suhbatlar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/liked-posts/"><i class="fa fa-heart"></i> Yoqgan E'lonlar</a></li>
+                {% endif %}
+                {% if profile.is_teacher or profle.is_staff %}
+                <li><a href="/users/profile/{{profile.username}}/prices/assignment/"><i class="bx bx-football"></i> Topshiriqdan  olgan ballar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/prices/controls/"><i class="bx bx-football"></i> Nazoratlardan olgan ballar</a></li>
+                {% else %}
+                <li><a href="/users/profile/{{profile.username}}/assignments/"><i class="bx bx-football"></i> Topshiriqlar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/controls/"><i class="bx bx-football"></i> Nazoratlar</a></li>
+                {% endif %}
+                <li><a href="/users/profile/{{profile.username}}/solved-problems/"><i class="fa fa-check"></i> Masalalar</a></li>
+                <li class="active-profile-item"><a href="#"><i class="fab fa-strava"></i> Urinishlar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/courses/"><i class="fa fa-book"></i> Kurslar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/questions/"><i class="fa fa-question"></i> Testlar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/friends/"><i class="fa fa-users"></i> Do'stlar</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <h1>Urinishlar</h1>
+    <div class="table-responsive">
+        <table class="table m-0 table-hover table-borderless table-striped text-left slim-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Foydalanuvchi</th>
+                    <th>Masala</th>
+                    <th>Holati</th>
+                    <th>Til</th>
+                    <th>Vaqt</th>
+                    <th>Xotira</th>
+                    <th>Ko'd uzinligi</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for urinish in object_list.object_list %}
+                    <tr class="{% if user == urinish.user %}border-success{% endif %}">
+                        <td><a {% if urinish.user == user or user.is_staff %}href="/informatics/attempts/attempt/{{urinish.id}}/"{% endif %}>{{urinish.id}}</a></td>
+                        <td><a href="/users/profile/{{ urinish.user.username }}/">{{ urinish.user.first_name }} {{ urinish.user.last_name }}</a></td>
+                        <td><a href="/informatics/problems/{% if not urinish.masala.is_archived %}un{% endif %}problem/{{urinish.masala.slug}}/">{{urinish.masala.title}}</a></td>
+                        <td><span class="{% if urinish.turi == 'Qabul Qilindi' %}text-success{% elif urinish.turi == 'Tekshirilmoqda' %}text-info{% elif urinish.turi == 'Navbatda' %}text-white{% else %}text-danger{% endif %}">{{urinish.turi}}</span></td>
+                        <td><img src="{% if urinish.til == 'python' %}https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/121px-Python-logo-notext.svg.png{% elif urinish.til == 'node' %}https://algorithmshub.uz/static/javascript.png{% endif %}" width="30" style="border-radius: 15px;" alt="language"></td>
+                        <td>{{urinish.time|floatformat:'2'}} ms</td>
+                        <td>{{urinish.memory|floatformat:'2'}} KB</td>
+                        <td>{{urinish.olcham}}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% block paginate %}
+            <div class="d-flex mt-3">
+                <div class="mx-auto">
+                    <div>
+                        <nav>
+                            <ul class="pagination">
+                                <li class="page-item {% if object_list.has_previous  %}{% else %}disabled{% endif %}" aria-disabled="true">
+                                    {% if object_list.has_previous %}
+                                        <a class="btn btn-success" href="?page={{ object_list.previous_page_number }}">&laquo; Oldingi</a>
+                                    {% else %}
+                                        <a class="btn btn-success disabled" href="#">&laquo; Oldingi</a>
+                                    {% endif %}
+                                </li>
+                                <li class="page-item {% if object_list.has_next  %}{% else %}disabled{% endif %}">
+                                    {% if object_list.has_next  %}
+                                        <a class="btn btn-success" href="?page={{ object_list.next_page_number }}">Keyingi &raquo;</a>
+                                    {% else %}
+                                        <a class="btn btn-success disabled" href="#">Keyingi &raquo;</a>
+                                    {% endif %}
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        {% endblock paginate %}
+    </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    const status = document.querySelector('.user-status');
+
+    const now = new Date('Avg 23, 14:47:23');
+    function checkOnlineStatus() {
+        fetch('/users/profile/{{profile.username}}/check_user_status/')
+            .then(response => response.json())
+            .then(data => {
+                if (data.is_online) {
+                    status.innerHTML = '<p style="color: green !important;">Online</p>'
+                } else {
+                    status.innerHTML = `<p style="color: rgb(230,10,10) !important;">${data.time}</p>`
+                }
+            })
+            .catch(error => console.log(error));
+    }
+    checkOnlineStatus();
+    setInterval(checkOnlineStatus, 5000);
+
+</script>
+{% endblock %}

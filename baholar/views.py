@@ -38,25 +38,28 @@ def assignment_baho(request, username):
 
 def bsb_ball(request, username):
     if request.user.is_authenticated:
-        profile = get_object_or_404(MyUser, username=username)
-        sinf = Sinf.objects.get(nom=profile.sinf)
-        bsb = BSB.objects.filter(sinf=sinf)
-        problem_bal = 0
-        for control in bsb:
-            if control.type == 'Masala':
-                for problem in control.problems.all():
-                    for answer in problem.answers.all():
-                        if answer.balls.exists and answer.type == 'Accepted':
+        if request.user.sinf:
+            profile = get_object_or_404(MyUser, username=username)
+            sinf = Sinf.objects.get(nom=profile.sinf)
+            bsb = BSB.objects.filter(sinf=sinf)
+            problem_bal = 0
+            for control in bsb:
+                if control.type == 'Masala':
+                    for problem in control.problems.all():
+                        for answer in problem.answers.all():
+                            if answer.balls.exists and answer.type == 'Accepted':
 
-                            a = answer.balls.first()
-                            problem_bal += a.ball
-        object = Paginator(bsb, 40)
+                                a = answer.balls.first()
+                                problem_bal += a.ball
+            object = Paginator(bsb, 40)
 
-        if 'page' in request.GET:
-            object = object.page(request.GET['page'])
+            if 'page' in request.GET:
+                object = object.page(request.GET['page'])
+            else:
+                object = object.page(1)
+            return render(request, 'baho/control_price.html', {'profile': profile, 'object':object, 'problem_bal':problem_bal})
         else:
-            object = object.page(1)
-        return render(request, 'baho/control_price.html', {'profile': profile, 'object':object, 'problem_bal':problem_bal})
+            return render(request, '404.html')
     else:
         return render(request, '404.html')
 

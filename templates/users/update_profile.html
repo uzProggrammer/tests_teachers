@@ -9,11 +9,71 @@
 <li class="breadcrumb-item active text-white" aria-current="page">Tahrirlash</li>
 {% endblock breadcrumb %}
 
+
 {% block content %}
-    {% include 'users/profile_header.html' %}
-    <h2 class="text-center">Tahrirlash</h2>
-    <form method="post">{% csrf_token %}
-        {{form.as_p}}
-        <button type="submit" class="btn btn-outline-primary">Saqlash</button>
-    </form>
-{% endblock content %}
+<div class="row">
+    <div class="col-md-3 text-center profile-sticky">
+        <div class="card bg-dark p-3 mb-3">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Student_%28example%29.svg/444px-Student_%28example%29.svg.png?20180722153736"
+                alt="IMG" width="100%" style="border-radius: 50%;background-color: transparent;">
+            <div class="my-2 fs-3">
+                {{profile.first_name}} {{profile.last_name}}
+            </div>
+            <span style="font-size: 13px;">{{profile.email}}</span>
+            <span  style="font-size: 13px;" class="user-status"></span>
+            <ul class="profile-items my-3">
+                <li><a href="/users/profile/{{profile.username}}"><i class="fa fa-user"></i> Profil</a></li>
+                {% if user == profile %}
+                <li class="active-profile-item"><a href="#"><i class="fa fa-pen"></i> Tahirirlash</a></li>
+                <li><a href="/chats/"><i class="fa fa-comment"></i> Suhbatlar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/liked-posts/"><i class="fa fa-heart"></i> Yoqgan E'lonlar</a></li>
+                {% endif %}
+                {% if profile.is_teacher or profle.is_staff %}
+                <li><a href="/users/profile/{{profile.username}}/prices/assignment/"><i class="bx bx-football"></i> Topshiriqdan  olgan ballar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/prices/controls/"><i class="bx bx-football"></i> Nazoratlardan olgan ballar</a></li>
+                {% else %}
+                <li><a href="/users/profile/{{profile.username}}/assignments/"><i class="bx bx-football"></i> Topshiriqlar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/controls/"><i class="bx bx-football"></i> Nazoratlar</a></li>
+                {% endif %}
+                <li><a href="/users/profile/{{profile.username}}/solved-problems/"><i class="fa fa-check"></i> Masalalar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/attempts/"><i class="fab fa-strava"></i> Urinishlar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/courses/"><i class="fa fa-book"></i> Kurslar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/questions/"><i class="fa fa-question"></i> Testlar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/friends/"><i class="fa fa-users"></i> Do'stlar</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="card-p-3 bg-dark">
+            <h2 class="text-center">Profilni tahrirlash</h2>
+            <form method="post">{% csrf_token %}
+                {{form.as_p}}
+                <button type="submit" class="btn btn-outline-primary">Saqlash</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    const status = document.querySelector('.user-status');
+
+    const now = new Date('Avg 23, 14:47:23');
+    function checkOnlineStatus() {
+        fetch('/users/profile/{{profile.username}}/check_user_status/')
+            .then(response => response.json())
+            .then(data => {
+                if (data.is_online) {
+                    status.innerHTML = '<p style="color: green !important;">Online</p>'
+                } else {
+                    status.innerHTML = `<p style="color: rgb(230,10,10) !important;">${data.time}</p>`
+                }
+            })
+            .catch(error => console.log(error));
+    }
+    checkOnlineStatus();
+    setInterval(checkOnlineStatus, 5000);
+
+</script>
+{% endblock %}

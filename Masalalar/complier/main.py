@@ -23,7 +23,7 @@ class Complier:
         self.command = [self.lang, f"{BASE_DIR}\\code.py" if self.lang=='python' else f'{BASE_DIR}\\code.js']
         self.file = f"{BASE_DIR}\\code.py" if self.lang=='python' else f'{BASE_DIR}\\code.js'
         if self.checker:
-            self.checker_command = [self.lang, f"{BASE_DIR}\\checker.py"]
+            self.checker_command = ['python', f"{BASE_DIR}\\checker.py"]
             self.checker_file = f"{BASE_DIR}\\checker.py"
 
     def get_size(self,unit='mb'):
@@ -76,7 +76,7 @@ class Complier:
                             a = True
                         if communicate[1] == '':
                             outpoot1 = communicate[0][:-1]
-                            if outpoot1 == self.out:
+                            if a:
                                 if a:
                                     return {'status': 'Qabul qilindi', 'time': self.delta1, 'memory': memory*1024}
                                 else:

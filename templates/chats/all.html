@@ -4,116 +4,171 @@
 
 
 {% block content %}
-<div class="container p-0">
-
-
-    <div class="card bg-dark text-white">
-        <div class="row g-0">
-            <div class="col-12 col-lg-5 col-xl-3 border-right chat-left">
-
-                <div class="px-4 d-none d-md-block">
-                    <div class="align-items-center chat-search">
-                        <div class="flex-grow-1">
-                            <input type="text" class="form-control my-3 bg-dark text-white" placeholder="Search...">
-                        </div>
-                    </div>
-                </div>
-                <div class="chat-users">
-
-                    <div class="pinned-users">
-                        {% for chat in chats %}
-                            {% if chat.author == user %}
-                                {% if chat.is_pinned %}
-                                <a href="{% url 'user_chat' chat.recipient.username %}#message_sender" class="list-group-item list-group-item-action border-0  pinned-user" id="chat{{chat.id}}">
-                                    <div class="d-flex align-items-start">
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar5.png" class="rounded-circle mr-2 m-2" alt="Vanessa Tucker" width="45" height="45">
-                                        <div class="flex-grow-1 ml-3">
-                                            {{ chat.recipient.username }}
-                                            <div class="small">{% if chat.last_message_text.user == user %}Siz: {{chat.last_message_text.message|cut:'<p'|cut:'</p>'|slice:':4'|safe}}{% else %}U: {{chat.last_message_text.message|cut:'<p'|cut:'</p>'|slice:':4'|safe}}{% endif %}</div>
+<div class="row">
+    <div class="col-md-3 text-center profile-sticky">
+        <div class="card bg-dark p-3 mb-3">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Student_%28example%29.svg/444px-Student_%28example%29.svg.png?20180722153736"
+                alt="IMG" width="100%" style="border-radius: 50%;background-color: transparent;">
+            <div class="my-2 fs-3">
+                {{profile.first_name}} {{profile.last_name}}
+            </div>
+            <span style="font-size: 13px;">{{profile.email}}</span>
+            <span  style="font-size: 13px;" class="user-status"></span>
+            <ul class="profile-items my-3">
+                <li><a href="/users/profile/{{profile.username}}/"><i class="fa fa-user"></i> Profil</a></li>
+                {% if user == profile %}
+                <li><a href="/users/update/"><i class="fa fa-pen"></i> Tahirirlash</a></li>
+                <li class="active-profile-item"><a href="#"><i class="fa fa-comment"></i> Suhbatlar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/liked-posts/"><i class="fa fa-heart"></i> Yoqgan E'lonlar</a></li>
+                {% endif %}
+                {% if profile.is_teacher or profle.is_staff %}
+                <li><a href="/users/profile/{{profile.username}}/prices/assignment/"><i class="bx bx-football"></i> Topshiriqdan  olgan ballar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/prices/controls/"><i class="bx bx-football"></i> Nazoratlardan olgan ballar</a></li>
+                {% else %}
+                <li><a href="/users/profile/{{profile.username}}/assignments/"><i class="bx bx-football"></i> Topshiriqlar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/controls/"><i class="bx bx-football"></i> Nazoratlar</a></li>
+                {% endif %}
+                <li><a href="/users/profile/{{profile.username}}/solved-problems/"><i class="fa fa-check"></i> Masalalar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/attempts/"><i class="fab fa-strava"></i> Urinishlar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/courses/"><i class="fa fa-book"></i> Kurslar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/questions/"><i class="fa fa-question"></i> Testlar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/frineds/"><i class="fa fa-users"></i> Do'stlar</a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="container p-0">
+                <div class="row g-3">
+                    <div class="col-md-4 border-right chat-left">
+                        <div class="card bg-dark" style="background-color: var(--card-bg) !important;">
+                            <div class="px-4 d-none d-md-block">
+                                <span class="fs-3 mt-3">Suhbatlar</span>
+                                <div class="align-items-center chat-search">
+                                    <div class="flex-grow-1">
+                                        <input type="text" class="form-control my-3 bg-dark text-white" placeholder="Search...">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chat-users">
+                                
+                                <div class="pinned-users">
+                                    {% for chat in chats %}
+                                        {% if chat.author == user %}
+                                            {% if chat.is_pinned %}
+                                            <a href="{% url 'user_chat' chat.recipient.username %}#message_sender" class="list-group-item list-group-item-action border-0  pinned-user" id="chat{{chat.id}}">
+                                                <div class="d-flex align-items-start">
+                                                    <img src="https://bootdey.com/img/Content/avatar/avatar5.png" class="rounded-circle mr-2 m-2" alt="Vanessa Tucker" width="45" height="45">
+                                                    <div class="flex-grow-1 ml-3">
+                                                        {{ chat.recipient.username }}
+                                                        <div class="small">{% if chat.last_message_text.user == user %}Siz: {{chat.last_message_text.message|cut:'<p'|cut:'</p>'|slice:':4'|safe}}{% else %}U: {{chat.last_message_text.message|cut:'<p'|cut:'</p>'|slice:':4'|safe}}{% endif %}</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            {% endif %}
+                                        {% else %}
+                                            {% if chat.is_pinned_recipient %}
+                                            <a href="{% url 'user_chat' chat.author.username %}#message_sender" class="list-group-item list-group-item-action border-0  pinned-user" id="chat{{chat.id}}">
+                                                <div class="d-flex align-items-start">
+                                                    <img src="https://bootdey.com/img/Content/avatar/avatar5.png" class="rounded-circle mr-2 m-2" alt="Vanessa Tucker" width="45" height="45">
+                                                    <div class="flex-grow-1 ml-3">
+                                                        {{ chat.author.username }}
+                                                        <div class="small">{% if chat.last_message_text.user == user %}Siz: {{chat.last_message_text.message|cut:'<p>'|cut:'</p>'|slice:':4'|safe}}{% else %}U: {{chat.last_message_text.message|cut:'<p>'|cut:'</p>'|slice:':4'|safe}}{% endif %}</div>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+            
+            
+                                {% for chat in chats %}
+                                    {% if chat.author == user %}
+                                        {% if not chat.is_pinned %}
+                                        <a href="{% url 'user_chat' chat.recipient.username %}#message_sender" class="list-group-item list-group-item-action border-0" id="chat{{chat.id}}">
+                                            <div class="d-flex align-items-start">
+                                                <img src="https://bootdey.com/img/Content/avatar/avatar5.png" class="rounded-circle mr-2 m-2" alt="Vanessa Tucker" width="45" height="45">
+                                                <div class="flex-grow-1 ml-3">
+                                                    {{ chat.recipient.username }}
+                                                </div>
+                                            </div>
+                                        </a>
+                                        {% endif %}
+                                    {% else %}
+                                        {% if not chat.is_pinned_recipient %}
+                                        <a href="{% url 'user_chat' chat.author.username %}#message_sender" class="list-group-item list-group-item-action border-0" id="chat{{chat.id}}">
+                                            <div class="d-flex align-items-start">
+                                                <img src="https://bootdey.com/img/Content/avatar/avatar5.png" class="rounded-circle mr-2 m-2" alt="Vanessa Tucker" width="45" height="45">
+                                                <div class="flex-grow-1 ml-3">
+                                                    {{ chat.author.username }}{{unread_messages}}
+                                                </div>
+                                            </div>
+                                        </a>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <div class="add_chat">
+                                <button class="add_chat_btn btn btn-primary" style="border-radius: 50%;font-size: 20px;" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="bx bx-plus"></i></button>
+                            </div>
+                            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                <div class="modal-dialog bg-dark text-white">
+                                    <div class="modal-content bg-dark text-white">
+                                        <div class="modal-header bg-dark text-white">
+                                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Yangi chat yaratish</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="card bg-dark text-white p-0 m-0">
+                                                <input type="text" class="form-control bg-dark text-white" id="add_chat_search" onkeyup="add_chat_search(this)">
+                                                <div class='form-text text-white'>Iltimos biron bir foydalanuvchi nomini kiriting</div>
+                                            </div>
+            
+                                            <div class="users-list"></div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yopish</button>
                                         </div>
                                     </div>
-                                </a>
-                                {% endif %}
-                            {% else %}
-                                {% if chat.is_pinned_recipient %}
-                                <a href="{% url 'user_chat' chat.author.username %}#message_sender" class="list-group-item list-group-item-action border-0  pinned-user" id="chat{{chat.id}}">
-                                    <div class="d-flex align-items-start">
-                                        <img src="https://bootdey.com/img/Content/avatar/avatar5.png" class="rounded-circle mr-2 m-2" alt="Vanessa Tucker" width="45" height="45">
-                                        <div class="flex-grow-1 ml-3">
-                                            {{ chat.author.username }}
-                                            <div class="small">{% if chat.last_message_text.user == user %}Siz: {{chat.last_message_text.message|cut:'<p>'|cut:'</p>'|slice:':4'|safe}}{% else %}U: {{chat.last_message_text.message|cut:'<p>'|cut:'</p>'|slice:':4'|safe}}{% endif %}</div>
-                                        </div>
-                                    </div>
-                                </a>
-                                {% endif %}
-                            {% endif %}
-                        {% endfor %}
-                    </div>
-
-
-                    {% for chat in chats %}
-                        {% if chat.author == user %}
-                            {% if not chat.is_pinned %}
-                            <a href="{% url 'user_chat' chat.recipient.username %}#message_sender" class="list-group-item list-group-item-action border-0" id="chat{{chat.id}}">
-                                <div class="d-flex align-items-start">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar5.png" class="rounded-circle mr-2 m-2" alt="Vanessa Tucker" width="45" height="45">
-                                    <div class="flex-grow-1 ml-3">
-                                        {{ chat.recipient.username }}
-                                    </div>
                                 </div>
-                            </a>
-                            {% endif %}
-                        {% else %}
-                            {% if not chat.is_pinned_recipient %}
-                            <a href="{% url 'user_chat' chat.author.username %}#message_sender" class="list-group-item list-group-item-action border-0" id="chat{{chat.id}}">
-                                <div class="d-flex align-items-start">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar5.png" class="rounded-circle mr-2 m-2" alt="Vanessa Tucker" width="45" height="45">
-                                    <div class="flex-grow-1 ml-3">
-                                        {{ chat.author.username }}{{unread_messages}}
-                                    </div>
-                                </div>
-                            </a>
-                            {% endif %}
-                        {% endif %}
-                    {% endfor %}
-                </div>
-                <div class="add_chat">
-                    <button class="add_chat_btn btn btn-primary" style="border-radius: 50%;font-size: 20px;" data-bs-toggle="modal" data-bs-target="#staticBackdrop"><i class="bx bx-plus"></i></button>
-                </div>
-                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                    <div class="modal-dialog bg-dark text-white">
-                        <div class="modal-content bg-dark text-white">
-                            <div class="modal-header bg-dark text-white">
-                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Yangi chat yaratish</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="card bg-dark text-white p-0 m-0">
-                                    <input type="text" class="form-control bg-dark text-white" id="add_chat_search" onkeyup="add_chat_search(this)">
-                                    <div class='form-text text-white'>Iltimos biron bir foydalanuvchi nomini kiriting</div>
-                                </div>
-
-                                <div class="users-list"></div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yopish</button>
                             </div>
                         </div>
                     </div>
+                    {% block chat %}
+                    <div class="col-md-8 bg-noner">
+                        <div class="card bg-dark" style="width: 100% !important;height: 100%;max-width: 100% !important;">
+                            <div class="text-center" style="font-size: 30px;font-family: Verdana, Geneva, Tahoma, sans-serif !important;background-color: rgba(200,200,200,0.2);border-radius:20px;margin-top:30%;">Iltimos biron bir chatni tanlang</div>
+                        </div>
+                    </div>
+                    {% endblock %}
                 </div>
-                <hr class="d-block d-lg-none mt-1 mb-0">
-            </div>
-            {% block chat %}
-            <div class="col-12 col-lg-7 col-xl-9 bg-noner">
-                <div class="text-center" style="font-size: 30px;font-family: Verdana, Geneva, Tahoma, sans-serif !important;background-color: rgba(200,200,200,0.2);border-radius:20px;margin-top:30%;">Iltimos biron bir chatni tanlang</div>
-            </div>
-            {% endblock %}
         </div>
     </div>
 </div>
 {% endblock %}
 
 {% block js %}
+<script>
+    const status = document.querySelector('.user-status');
+
+    const now = new Date('Avg 23, 14:47:23');
+    function checkOnlineStatus() {
+        fetch('/users/profile/{{profile.username}}/check_user_status/')
+            .then(response => response.json())
+            .then(data => {
+                if (data.is_online) {
+                    status.innerHTML = '<p style="color: green !important;">Online</p>'
+                } else {
+                    status.innerHTML = `<p style="color: rgb(230,10,10) !important;">${data.time}</p>`
+                }
+            })
+            .catch(error => console.log(error));
+    }
+    checkOnlineStatus();
+    setInterval(checkOnlineStatus, 5000);
+
+</script>
+
 
 <script>
     $.ajax(
