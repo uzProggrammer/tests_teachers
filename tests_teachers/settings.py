@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-ud#m8@m(-31-fx*iu+*$wv4@zbfmq4r7@&yur+7-cr=y%wu4s3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', 'sschool.pythonanywhere.com', '127.0.0.1', 'tests-teachers.onrender.com', ]
+ALLOWED_HOSTS = ['localhost', 'sschool.pythonanywhere.com', '127.0.0.1', 'sschool.onrender.com', ]
 
 ADMINS = [
     [("Dadajonov Azamjon", "meniismim.azamjon@gmail.com"), ('Azamjon Dadajonov', 'dadajonovazamjon767@gmail.com')]
