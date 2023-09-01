@@ -1,0 +1,87 @@
+{% extends 'tests/base.html' %}
+
+{% block title %}{{test.title}}ni tahrirlash{% endblock title %}
+
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/tests/">Testlar</a></li>
+    <li class="breadcrumb-item"><a href="/tests/test/{{test.id}}/">{{test.title}}</a></li>
+    <li class="breadcrumb-item active text-white" aria-current="page">Tahrirlash</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+
+<div class="card bg-dark p-2 my-3">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link" href="/tests/test/{{test.id}}/"><i class="fa fa-question"></i> Test</a>
+        </li>
+        {% if user.is_staff or user == test.author %}
+        <li class="nav-item">
+            <a class="nav-link bg-primary text-white" aria-current="page" href="#"><i class="fa fa-pen"></i> Tahrirlash</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/tests/test/{{test.id}}/add-quiz/"><i class="fa fa-plus"></i> Savol Qo'shish</a>
+        </li>
+        {% if not test.is_public %}
+        <li class="nav-item">
+            <a class="nav-link" href="/tests/test/{{test.id}}/public/"><i class="fa fa-globe"></i> Ommaviy qilish</a>
+        </li>
+        {% endif %}
+        {% endif %}
+        <li class="nav-item">
+            <a class="nav-link" href="/tests/test/{{test.id}}/results/"><i class="fa fa-chart-bar"></i> Natijalar</a>
+        </li>
+        {% if user in test.users %}
+        <li class="nav-item">
+            <a class="nav-link" href="/tests/test/{{test.id}}/results/"><i class="fa fa-chart-simple"></i> Natijam</a>
+        </li>
+        {% endif %}
+    </ul>
+</div>
+{{test.type}}
+
+<div class="card bg-dark p-3">
+    <form method="post">{% csrf_token %}
+        <div class="mb-3">
+            <label for="title" class="form-label">Test nomi</label>
+            <input type="text" name="title" required value="{{test.title}}" id="title" class="form-control bg-dark">
+        </div>
+        <div class="mb-3">
+            <label for="body">Test haqida Ma'lumot</label>
+            <textarea name="body" id="body">{{test.summary}}</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="diff">Qiyinchiligini tanlang</label>
+            <select required name="diff" id="diff" class="bg-dark form-select">
+                <option value="Oddiy" {% if test.type == 'Oddiy' %}selected{% endif %}>Oddiy</option>
+                <option value="O'rtacha" {% if test.type == "O'rtacha" %}selected{% endif %}>O'rtacha</option>
+                <option value="Qiyin" {% if test.type == 'Qiyin' %}selected{% endif %}>Qiyin</option>
+                <option value="Juda Qiyin" {% if test.type == 'Juda Qiyin' %}selected{% endif %}>Juda Qiyin</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="time">Beriladigan vaqtni kiriting:</label>
+            <input type="time" name="time" id="time" value="{{test.time|time:'h:i'}}" class="form-control bg-dark">
+        </div>
+        <button class="btn btn-primary" type="submit"><i class="fa fa-pen"></i> Tahrirlash</button>
+    </form>
+</div>
+{% endblock content %}
+
+{% block js1 %}
+    <script>
+        var editor1 = tinymce.init({
+            themes: "modern",
+            skin: "oxide-dark",
+            setup: editor=>{
+                document.body.classList.add('dark');
+            },
+            content_css: "/static/styles/tiny-custom.css",
+            selector: 'textarea',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+            toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+        });
+    </script>
+{% endblock js1 %}

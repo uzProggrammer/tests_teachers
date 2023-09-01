@@ -1,0 +1,55 @@
+{% extends 'tests/base.html' %}
+
+{% block title %}Test qo'shish{% endblock title %}
+
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/tests/">Testlar</a></li>
+    <li class="breadcrumb-item active text-white" aria-current="page">Test qo'shish</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="card bg-dark p-3">
+    <form method="post">{% csrf_token %}
+        <div class="mb-3">
+            <label for="title" class="form-label">Test nomi</label>
+            <input type="text" name="title" required value="{{test.title}}" id="title" class="form-control bg-dark">
+        </div>
+        <div class="mb-3">
+            <label for="body">Test haqida Ma'lumot</label>
+            <textarea name="body" id="body">{{test.summary}}</textarea>
+        </div>
+        <div class="mb-3">
+            <label for="diff">Qiyinchiligini tanlang</label>
+            <select required name="diff" id="diff" class="bg-dark form-select">
+                <option value="Oddiy" {% if test.type == 'Oddiy' %}selected{% endif %}>Oddiy</option>
+                <option value="O'rtacha" {% if test.type == "O'rtacha" %}selected{% endif %}>O'rtacha</option>
+                <option value="Qiyin" {% if test.type == 'Qiyin' %}selected{% endif %}>Qiyin</option>
+                <option value="Juda Qiyin" {% if test.type == 'Juda Qiyin' %}selected{% endif %}>Juda Qiyin</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="time">Beriladigan vaqtni kiriting:</label>
+            <input type="time" name="time" id="time" class="form-control bg-dark">
+        </div>
+        <button class="btn btn-primary" type="submit"><i class="fa fa-plus"></i> Yaratish</button>
+    </form>
+</div>
+{% endblock content %}
+
+{% block js1 %}
+    <script>
+        var editor1 = tinymce.init({
+            themes: "modern",
+            skin: "oxide-dark",
+            setup: editor=>{
+                document.body.classList.add('dark');
+            },
+            content_css: "/static/styles/tiny-custom.css",
+            selector: 'textarea',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+            toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+        });
+    </script>
+{% endblock js1 %}

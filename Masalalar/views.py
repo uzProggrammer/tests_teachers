@@ -193,15 +193,15 @@ def masala_qoshish(request: HttpRequest):
                 pwd_length = 40
                 pwd = ''.join(random.sample(all_ch, pwd_length))
 
+                masala = Masala.objects.create(title=title, difficulty=diff, memory_limit=memory, time_limit=time, body=body,
+                    info_in=_in, out=out, checker=checker, type=type, yechim = yechim, korinadigan_testlar = testcases, slug=pwd, author=request.user
+                )
+                
                 if 'teg' in request.POST:
                     tegs = request.POST.getlist('teg')
                     for teg in tegs:
                         teg1 = Teg.objects.create(name=teg)
                         MasalaTeg.objects.create(problem=masala,tag=teg1)
-
-                masala = Masala.objects.create(title=title, difficulty=diff, memory_limit=memory, time_limit=time, body=body,
-                    info_in=_in, out=out, checker=checker, type=type, yechim = yechim, korinadigan_testlar = testcases, slug=pwd, author=request.user
-                )
                 messages.success(request, 'Masala muvvofiqiyatli yaratildi')
                 return HttpResponseRedirect(f'/informatics/problems/unproblem/{masala.slug}/')
             return render(request, 'masalalar/create.html', )
@@ -212,6 +212,13 @@ def masala_qoshish(request: HttpRequest):
 
 def masalaemas_view(request: HttpRequest, slug):
     masala = get_object_or_404(Masala, slug=slug, is_archived=False)
+    masala.empty = True
+    masala.save()
+    masala.empty = True
+    masala.save()
+    masala.empty = True
+    masala.save()
+    print(masala.title)
     attempts = []
     user_like = False
     user_dislike = False
@@ -439,3 +446,10 @@ def masala_tahrirla_view(request, slug):
             return render(request, '403.html', status=403)
     else:
         return render(request, '403.html', status=403)
+
+def get_urinish_type(request, id):
+    urinish = get_object_or_404(Urinish, id=id)
+    if urinish.turi == 'Qabul Qilindi':
+        return JsonResponse({'type': urinish.turi, 'time': '%.2f'%float(urinish.time), 'memory': '%.2f'%float(urinish.memory), 'is_acc':True})
+    else:
+        return JsonResponse({'type': urinish.turi, 'time': '%.2f'%float(urinish.time), 'memory': '%.2f'%float(urinish.memory), 'is_acc':False})

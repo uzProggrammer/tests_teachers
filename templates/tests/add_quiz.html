@@ -1,0 +1,397 @@
+{% extends 'tests/base.html' %}
+
+{% block title %}
+    {{test.title|title}}
+{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/tests/">Testlar</a></li>
+    <li class="breadcrumb-item"><a href="/tests/test/{{test.id}}">{{test.title|title}}</a></li>
+    <li class="breadcrumb-item active text-white" aria-current="page">TSavol qo'shish</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="card bg-dark p-2 my-3">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link" href="/tests/test/{{test.id}}/"><i class="fa fa-question"></i> Test</a>
+        </li>
+        {% if user.is_staff or user == test.author %}
+        <li class="nav-item">
+            <a class="nav-link" href="/tests/test/{{test.id}}/edit/"><i class="fa fa-pen"></i> Tahrirlash</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link bg-primary text-white" aria-current="page" href="#"><i class="fa fa-plus"></i> Savol Qo'shish</a>
+        </li>
+        {% if not test.is_public %}
+        <li class="nav-item">
+            <a class="nav-link" href="/tests/test/{{test.id}}/public/"><i class="fa fa-globe"></i> Ommaviy qilish</a>
+        </li>
+        {% endif %}
+        {% endif %}
+        <li class="nav-item">
+            <a class="nav-link" href="/tests/test/{{test.id}}/results/"><i class="fa fa-chart-bar"></i> Natijalar</a>
+        </li>
+        {% if user in test.users %}
+        <li class="nav-item">
+            <a class="nav-link" href="/tests/test/{{test.id}}/results/"><i class="fa fa-chart-simple"></i> Natijam</a>
+        </li>
+        {% endif %}
+    </ul>
+</div>
+<form class="card bg-dark mb-2 p-3" method="post">{% csrf_token %}
+    <div class="mb-3">
+        <label for="quiz-type">Savol turini tanlang:</label>
+        <select name="quiz-type" id="quiz-type" class="bg-dark form-select">
+            <option>Savol turini tanlang</option>
+            <option value="quiz">Bir variantli test</option>
+            <option value="multi-quiz">Ko'p variantli test</option>
+            <option value="drag-and-drop">Moshlashtiradigan test</option>
+            <option value="closed-test">Yopiq test</option>
+            
+        </select>
+    </div>
+    <div id="quiz-add-container">
+        
+    </div>
+</form>
+{% endblock %}
+
+{% block js1 %}
+    <script>
+        var quiz_type = document.querySelector('#quiz-type');
+        quiz_type.addEventListener('change', ()=>{
+            if (quiz_type.value == 'quiz'){
+                var html = `
+                <div class="mb-3">
+                    <label for="quiz-1-title">Savolni kiriting</label>
+                    <textarea name="quiz-1-title" id="quiz-1-title" class="form-control bg-dark"></textarea>
+                </div>
+                <div class="mb-3 p-3" id='variants'>
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-primary" id="quiz-1-add"><i class="fa fa-plus"></i> Savol qo'shish</button>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quiz-1-body">Savolni kiriting:</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark" ><input required type="radio" class="form-check-input" name="is-true-1" value="1"></span>
+                            <textarea name="quiz-1-body-1" id="quiz-1-body" class="form-control bg-dark"></textarea>
+                            <button type="button" class="btn btn-danger input-group-text variant-minus"><i class="fa fa-minus"></i></button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="ball">Savol balini kiriting:</label>
+                    <input id='ball' type="number" step="0.00001" name="ball" class="form-control bg-dark" required>
+                </div>
+                <button type="submit" class="btn btn-success">Saqlash</button>
+                `;
+
+                
+
+                document.querySelector('#quiz-add-container').innerHTML = html;
+                var editor1 = tinymce.init({
+                    themes: "modern",
+                    skin: "oxide-dark",
+                    setup: editor=>{
+                        document.body.classList.add('dark');
+                    },
+                    content_css: "/static/styles/tiny-custom.css",
+                    selector: 'textarea',
+                    plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                    toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+                });
+                var variant_count = 2
+                document.querySelector('#quiz-1-add').addEventListener('click', ()=>{
+                    var html = `
+                        <label for="quiz-1-body-${variant_count}">Savolni kiriting:</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark" ><input required type="radio" class="form-check-input" name="is-true-1" value="${variant_count}"></span>
+                            <textarea name="quiz-1-body-${variant_count}" id="quiz-1-body-${variant_count}" class="form-control bg-dark"></textarea>
+                            <button type="button" class="btn btn-danger input-group-text variant-minus"><i class="fa fa-minus"></i></button>
+                        </div>
+                    `;
+                    var div = document.createElement('div');
+                    div.className = 'mb-3';
+                    div.innerHTML = html;
+                    document.querySelector('#variants').appendChild(div);
+                    variant_count = variant_count+1;
+                    var editor1 = tinymce.init({
+                        themes: "modern",
+                        skin: "oxide-dark",
+                        setup: editor=>{
+                            document.body.classList.add('dark');
+                        },
+                        content_css: "/static/styles/tiny-custom.css",
+                        selector: 'textarea',
+                        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                        toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+                    });
+
+                    document.querySelectorAll('.variant-minus').forEach(el=>{
+                        el.addEventListener('click', ()=>{
+                            el.parentElement.parentElement.remove()
+                        });
+                    });
+                        
+                });
+
+                document.querySelectorAll('.variant-minus').forEach(el=>{
+                    el.addEventListener('click', ()=>{
+                        el.parentElement.parentElement.remove()
+                    });
+                });
+
+            } else if (quiz_type.value==='drag-and-drop'){
+                var html = `
+
+                <div class="input">
+                    <div class="card bg-dark text-white">
+                        <div class="card-header">
+                            <label for="id_title" class="form-label">Test matni</label>
+                            <textarea name="title" id="id_title" class="form-control bg-dark text-white"></textarea>
+                        </div>
+                        <div class="card-body p-2 " id="answers" style="width: 100%;">
+                            <div class="card bg-dark p-3 m-0 all-answers" id="answer1" style="width:100% !important;" data-key-id="1">
+                                <div class="m-3"><label for="answer1" class="form-label">1 - variant</label><textarea id="answer-1" style="width: 100% !important; max-height: 80px;" name='answer-1' class="form-control bg-dark textarea-answers"></textarea></div>
+                                <div class="question card bg-dark p-3" id="question1" style="width:100% !important;"  draggable="true" data-value-id="1"><label for="question1">1 - javob<textarea class="form-control bg-dark textarea-question" name='question1' style="max-height: 80px;"></textarea></div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="button" id="add_button" class="btn btn-outline-primary m-3"><i class="bx bx-plus"></i></button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="ball">Savol balini kiriting:</label>
+                    <input id='ball' type="number" step="0.00001" name="ball" class="form-control bg-dark" required>
+                </div>
+                <div class="my-3 mx-2">
+                    <button type='button' id='drag_and_drop_btn' style="cursor:pointer;" class="btn btn-outline-primary">Saqlash</button>
+                </div>
+
+                `;
+                document.querySelector('#quiz-add-container').innerHTML = html;
+
+                document.querySelector('#drag_and_drop_btn').addEventListener('click', ()=>{
+                    data = {'csrfmiddlewaretoken':'{{csrf_token}}', title: tinymce.get('id_title').getContent(), 'quiz-type': quiz_type.value};
+                    document.querySelectorAll('.all-answers').forEach(el=>{
+                        data[tinymce.get(el.querySelector('.textarea-answers').id).getContent()] = tinymce.get(el.querySelector('.textarea-question').id).getContent();
+                    });
+                    console.log(data);
+                    $.ajax(
+                        {
+                            type: 'post',
+                            url: '',
+                            data: data,
+                            success: (data)=>{
+                                window.location.href = `/tests/test/{{test.id}}/`;
+                            },
+                            error: (e)=>{console.error(data)}
+                        }
+                    );
+                });
+
+
+                const questions = document.querySelectorAll('.question');
+                const answers = document.querySelectorAll('.answer');
+
+                questions.forEach(question => {
+                    question.addEventListener('dragstart', dragStart);
+                });
+
+                answers.forEach(answer => {
+                    answer.addEventListener('dragover', dragOver);
+                    answer.addEventListener('dragenter', dragEnter);
+                    answer.addEventListener('dragleave', dragLeave);
+                    answer.addEventListener('drop', drop);
+                });
+
+                function dragStart(e) {
+                    e.dataTransfer.setData('text/plain', e.target.id);
+
+                }
+
+                function dragOver(e) {
+                    e.preventDefault();
+                }
+
+                function dragEnter(e) {
+                    e.preventDefault();
+                    this.classList.add('hovered');
+                }
+
+                function dragLeave() {
+                    this.classList.remove('hovered');
+
+                }
+
+                function drop(e) {
+                    e.preventDefault();
+                    const draggedElementId = e.dataTransfer.getData('text/plain');
+                    const draggedElement = document.getElementById(draggedElementId);
+                    this.classList.remove('hovered');
+                    this.appendChild(draggedElement);
+                }
+
+                var editor1 = tinymce.init({
+                    themes: "modern",
+                    skin: "oxide-dark",
+                    setup: editor=>{
+                        document.body.classList.add('dark');
+                    },
+                    content_css: "/static/styles/tiny-custom.css",
+                    selector: 'textarea',
+                    plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                    toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+                });
+
+                var form_count = 1;
+
+                document.querySelector('#add_button').addEventListener('click', () => {
+                    form_count++;
+                    var html = `
+                    <div class="card bg-dark p-3 m-0 all-answers" id="answer${form_count}" style="width:100% !important;" data-key-id="${form_count}">
+                        <div class="m-3"><label for="answer${form_count}" class="form-label">${form_count} - variant</label><textarea  id="answer-${form_count}" style="width: 100% !important; max-height: 80px;" name='answer-${form_count}' class="form-control bg-dark textarea-answers"></textarea></div>
+                        <div class="question card bg-dark p-3" id="question${form_count}" style="width:100% !important;"  draggable="true" data-value-id="${form_count}"><label for="question${form_count}">${form_count} - javob<textarea class="form-control bg-dark textarea-question" name='question${form_count}' style="max-height: 80px;"></textarea></div>
+                    </div>
+                    `;
+                    var div = document.createElement('div');
+                    div.innerHTML = html;
+                    document.querySelector('#answers').appendChild(div);
+                    var editor1 = tinymce.init({
+                        themes: "modern",
+                        skin: "oxide-dark",
+                        setup: editor=>{
+                            document.body.classList.add('dark');
+                        },
+                        content_css: "/static/styles/tiny-custom.css",
+                        selector: 'textarea',
+                        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                        toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+                    });
+
+                })
+
+            } else if (quiz_type.value==='multi-quiz'){
+
+                var html = `
+                <div class="mb-3">
+                    <label for="quiz-1-title">Savolni kiriting</label>
+                    <textarea name="quiz-1-title" id="quiz-1-title" class="form-control bg-dark"></textarea>
+                </div>
+                <div class="mb-3 p-3" id='variants'>
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-primary" id="quiz-1-add"><i class="fa fa-plus"></i> Savol qo'shish</button>
+                    </div>
+                    <div class="mb-3">
+                        <label for="quiz-1-body">Savolni kiriting:</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark" ><input type="checkbox" class="form-check-input" name="is-true-1" value="1"></span>
+                            <textarea name="quiz-1-body-1" id="quiz-1-body" class="form-control bg-dark"></textarea>
+                            <button type="button" class="btn btn-danger input-group-text variant-minus"><i class="fa fa-minus"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="ball">Savol balini kiriting:</label>
+                    <input id='ball' type="number" step="0.00001" name="ball" class="form-control bg-dark" required>
+                </div>
+                <button type="submit" class="btn btn-success">Saqlash</button>
+                `;
+
+                
+
+                document.querySelector('#quiz-add-container').innerHTML = html;
+                var editor1 = tinymce.init({
+                    themes: "modern",
+                    skin: "oxide-dark",
+                    setup: editor=>{
+                        document.body.classList.add('dark');
+                    },
+                    content_css: "/static/styles/tiny-custom.css",
+                    selector: 'textarea',
+                    plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                    toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+                });
+                var variant_count = 2
+                document.querySelector('#quiz-1-add').addEventListener('click', ()=>{
+                    var html = `
+                        <label for="quiz-1-body-${variant_count}">Savolni kiriting:</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark" ><input type="checkbox" class="form-check-input" name="is-true-1" value="${variant_count}"></span>
+                            <textarea name="quiz-1-body-${variant_count}" id="quiz-1-body-${variant_count}" class="form-control bg-dark"></textarea>
+                            <button type="button" class="btn btn-danger input-group-text variant-minus"><i class="fa fa-minus"></i></button>
+                        </div>
+                    `;
+                    var div = document.createElement('div');
+                    div.className = 'mb-3';
+                    div.innerHTML = html;
+                    document.querySelector('#variants').appendChild(div);
+                    variant_count = variant_count+1;
+                    var editor1 = tinymce.init({
+                        themes: "modern",
+                        skin: "oxide-dark",
+                        setup: editor=>{
+                            document.body.classList.add('dark');
+                        },
+                        content_css: "/static/styles/tiny-custom.css",
+                        selector: 'textarea',
+                        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                        toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+                    });
+
+                    document.querySelectorAll('.variant-minus').forEach(el=>{
+                        el.addEventListener('click', ()=>{
+                            el.parentElement.parentElement.remove()
+                        });
+                    });
+                        
+                });
+
+                document.querySelectorAll('.variant-minus').forEach(el=>{
+                    el.addEventListener('click', ()=>{
+                        el.parentElement.parentElement.remove()
+                    });
+                });
+
+
+            } else if (quiz_type.value==='closed-test'){
+                var html = `
+                <div class="mb-3">
+                    <label for="body">Savolni kiriting</label>
+                    <textarea name="body" id="body"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="true_answer">To'g'ri javobni kiriting</label>
+                    <input type="text" class="form-control bg-dark" id="true_answer" name="true_answer">
+                </div>
+                <div class="mb-3">
+                    <label for="ball">Savol balini kiriting:</label>
+                    <input id='ball' type="number" step="0.00001" name="ball" class="form-control bg-dark" required>
+                </div>
+                <button type="submit" class="btn btn-success">Saqlash</button>
+                `;
+                document.querySelector('#quiz-add-container').innerHTML = html;
+
+                var editor1 = tinymce.init({
+                    themes: "modern",
+                    skin: "oxide-dark",
+                    setup: editor=>{
+                        document.body.classList.add('dark');
+                    },
+                    content_css: "/static/styles/tiny-custom.css",
+                    selector: 'textarea',
+                    plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                    toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+                });
+
+            } else{
+                document.querySelector('#quiz-add-container').innerHTML = '';
+            }
+        });
+    </script>
+{% endblock js1 %}

@@ -9,7 +9,7 @@ class MemoryLimit(Exception):
 
 
 class Complier:
-    def __init__(self, body:str, time_limit:int, memory_limit:int, username:str, _in:str, out:str, checker:str = None, lang='python', ):
+    def __init__(self, body:str, time_limit:int, memory_limit:int, username:str, _in:str, out:str, checker:str = None, lang='python'):
         self.body = body
         self.time_limit = time_limit
         self.memory_limit = memory_limit*(1024)
@@ -20,8 +20,8 @@ class Complier:
         self.checker = checker
         self.delta1 = 0.0
         self.delta = 0.0
-        self.command = [self.lang, f"{BASE_DIR}\\code.py" if self.lang=='python' else f'{BASE_DIR}\\code.js']
-        self.file = f"{BASE_DIR}\\code.py" if self.lang=='python' else f'{BASE_DIR}\\code.js'
+        self.command = [self.lang, f"{BASE_DIR}\\{username}.py" if self.lang=='python' else f'{BASE_DIR}\\{username}.js']
+        self.file = f"{BASE_DIR}\\{username}.py" if self.lang=='python' else f'{BASE_DIR}\\{username}.js'
         if self.checker:
             self.checker_command = ['python', f"{BASE_DIR}\\checker.py"]
             self.checker_file = f"{BASE_DIR}\\checker.py"
@@ -42,7 +42,8 @@ class Complier:
         if self.checker:
             with open(self.checker_file, 'w') as file:
                 file.write(self.checker)
-            
+    def delete_file(self):
+        os.remove(self.file)
     def get_run_memory(self):
         return self.get_size('bytes')/1024
 
@@ -78,15 +79,19 @@ class Complier:
                             outpoot1 = communicate[0][:-1]
                             if a:
                                 if a:
+                                    self.delete_file()
                                     return {'status': 'Qabul qilindi', 'time': self.delta1, 'memory': memory*1024}
                                 else:
+                                    self.delete_file()
                                     return {'status': 'Nato\'g\'ri javob', 'time': self.delta1, 'memory': memory*1024}
                             else:
+                                self.delete_file()
                                 return {'status': 'Nato\'g\'ri javob', 'time': self.delta1, 'memory': memory*1024}
                         else:
-                            print(communicate[1])
+                            self.delete_file()
                             return {'status': 'Komplatsiya xatosi', 'time': self.delta1, 'memory': memory*1024, 'e': communicate[1]}
                     except subprocess.TimeoutExpired:
+                        self.delete_file()
                         return {'status': 'Vaqt chegarasidan o\'tib ketdi', 'time': self.delta1, 'memory': memory*1024}
                 else:
                     try:
@@ -99,13 +104,17 @@ class Complier:
                         if communicate[1] == '':
                             outpoot1 = communicate[0][:-1]
                             if outpoot1 == self.out:
+                                self.delete_file()
                                 return {'status': 'Qabul qilindi', 'time': self.delta, 'memory': memory*1024}
                             else:
+                                self.delete_file()
                                 return {'status': 'Nato\'g\'ri javob', 'time': self.delta, 'memory': memory*1024}
                         
                         else:
+                            self.delete_file()
                             return {'status': 'Komplatsiya xatosi', 'time': self.delta1, 'memory': memory*1024, 'e': communicate[1]}
                     except subprocess.TimeoutExpired:
+                        self.delete_file()
                         return {'status': 'Vaqt chegarasidan o\'tib ketdi', 'time': self.delta, 'memory': memory*1024}
         else:
             return {'status': 'Xotira chegararidan o\'tib ketdi', 'time': 0, 'memory': memory*1024}

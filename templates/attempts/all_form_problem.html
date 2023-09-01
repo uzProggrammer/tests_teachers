@@ -70,7 +70,7 @@
                     <tr class="{% if user == urinish.user %}border-success{% endif %}">
                         <td>{% if user == urinish.user %}<a href="/informatics/attempts/attempt/{{urinish.id}}/">{{urinish.id}}</a>{% else %}{{urinish.id}}{% endif %}</td>
                         <td><a href="/users/profile/{{urinish.user.username}}/">{{urinish.user.first_name}} {{urinish.user.last_name}}</a></td>
-                        <td><span class="{% if urinish.turi == 'Qabul Qilindi' %}text-success{% elif urinish.turi == 'Tekshirilmoqda' %}text-info{% elif urinish.turi == 'Navbatda' %}text-white{% else %}text-danger{% endif %}">{{urinish.turi}}</span></td>
+                        <td><span class="{% if urinish.turi == 'Qabul Qilindi' %}text-success{% elif 'Tekshirilmoqda' in urinish.turi %}text-info{% elif urinish.turi == 'Navbatda' %}text-white{% else %}text-danger{% endif %}">{{urinish.turi}}</span></td>
                         <td><img src="{% if urinish.til == 'python' %}https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/121px-Python-logo-notext.svg.png{% elif urinish.til == 'node' %}https://algorithmshub.uz/static/javascript.png{% endif %}" width="30" style="border-radius: 15px;" alt="language"></td>
                         <td>{{urinish.time|floatformat:'2'}} ms</td>
                         <td>{{urinish.memory|floatformat:'2'}} KB</td>

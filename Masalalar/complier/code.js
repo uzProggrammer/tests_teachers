@@ -1,1 +1,2 @@
-console.log("Alik")asd
+console.log("Current directory:", __dirname);
+a=b

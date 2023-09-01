@@ -84,14 +84,9 @@ class Masala(models.Model):
         return [i.tag.name for i in self.tegs.all()][:3] if self.tegs else []
 
     def get_simple_tests(self):
-        return self.testlar.all()[:self.korinadigan_testlar] if self.testlar.count() >= self.korinadigan_testlar else self.testlar[:1] if self.testlar.count() > 0 else False
+        return self.testlar.all()[:self.korinadigan_testlar] if self.testlar.count() >= self.korinadigan_testlar else self.testlar.all()[:1] if self.testlar.count() > 0 else False
 
     def run(self, username, lang, urinish):
-        while True:
-            defaul_time.sleep(0.01)
-            emptyes = self.__class__.objects.filter(empty=False)
-            if emptyes.count()==0:
-                break
         self.empty = False
         self.save()
         time = int()
@@ -100,8 +95,12 @@ class Masala(models.Model):
         i = 1
         d='Qabul Qilindi'
         for test in self.testlar.all():
+            urinish.turi = f'Tekshirilmoqda {i}'
+            urinish.save()
             data = Complier(body=urinish.body, time_limit=self.time_limit, memory_limit = self.memory_limit, username=username, _in=test.t_in, out=test.out, checker=self.checker if self.checker else None, lang=urinish.til)
             data = data.run()
+            urinish.time = data['time']
+            urinish.memory = data['memory']
             if 'e' in data:
                 urinish.error = data['e']
                 urinish.save()

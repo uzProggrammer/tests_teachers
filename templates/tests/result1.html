@@ -1,0 +1,55 @@
+{% extends 'tests/base.html' %}
+
+{% load detect_type %}
+
+{% block title %}
+{{result.user.first_name|title}}ning natijasi
+{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/tests/">Testlar</a></li>
+    <li class="breadcrumb-item"><a href="/tests/test/{{test.id}}/">{{test.title|title}}</a></li>
+    <li class="breadcrumb-item"><a href="/tests/test/{{test.id}}/results/">Natijalar</a></li>
+    <li class="breadcrumb-item active bg-dark" aria-current="page">{{result.user.first_name|title}}ning natijasi</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-9">
+        <div class="card bg-dark p-3">
+            <ol type="1">
+                {% for i,j in result.data.items %}
+                    <li style="display:flex;flex-direction: row;gap: 10px;">{{forloop.counter}}. {{i|safe}} - <i class="fa fa-{% if j == True %}check text-success{% else %}x text-danger{% endif %}"></i> <br></li>
+                {% endfor %}
+            </ol>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card bg-dark p-3">
+            <table class="table">
+                <tr>
+                    <th>Foydalanuvchi</th>
+                    <th><a href="/users/profile/{{result.user.username}}/">{{result.user.first_name|title}} {{result.user.last_name|title}}</a></th>
+                </tr>
+                <tr>
+                    <th>Ball</th>
+                    <th>{{result.score}}</th>
+                </tr>
+                <tr>
+                    <th>To'g'ri javoblar</th>
+                    <th>{{result.get_trues}}</th>
+                </tr>
+                <tr>
+                    <th>Nato'g'ri javoblar</th>
+                    <th>{{result.get_falses}}</th>
+                </tr>
+                <tr>
+                    <th>Vaqt</th>
+                    <th>{{result.time}}</th>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock content %}

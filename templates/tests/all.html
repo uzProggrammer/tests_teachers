@@ -1,0 +1,77 @@
+{% extends 'tests/base.html' %}
+
+{% load detect_type %}
+
+{% block title %}
+    Testlar
+{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item active text-white" aria-current="page">Testlar</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+{% for test in page_obj.object_list %}
+    {% if test.is_public or user.is_staff or user == test.author %}
+    <a href="/tests/test/{{test.id }}/" class="card mb-3 p-3 bg-dark" style="display: flex !important;justify-content: space-between !important;flex-direction: row;align-items: center;">
+        <div class="mb-2">
+            <h4>{{test.title}}</h4>
+            {{test.get_custom_body|safe|slice:':20'}}...
+        </div>
+        <div class="mb-2">
+            <span class="badge p-2 bg-success">{{test|get_user_result:user}} / {{test.quizes_count}}</span>
+        </div>
+    </a>
+    {% else %}
+    <div class="card mb-3 p-3 bg-dark" style="display: flex !important;justify-content: space-between !important;flex-direction: row;align-items: center;">
+        <div class="mb-2">
+            <h4>{{test.title}}</h4>
+            {{test.get_custom_body|safe|slice:':20'}}...
+        </div>
+        <div class="mb-2">
+            <span class="badge p-2 bg-danger">Rejada</span>
+        </div>
+    </div>
+    {% endif %}
+{% endfor %}
+
+
+
+{% if object.num_pages != 1 %}
+<div class="pages text-center">
+
+    <nav aria-label="Page navigation example" class="text-center">
+        <ul class="pagination bg-dark text-center justify-content-center my-3">
+            {% if page_obj.has_previous %}
+                <li class="page-item bg-dark"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Orqaga</a></li>
+
+                {% if page_obj.number > 3 %}
+                    <li class="page-item"> <a class="page-link" href="?page=1">1</a></li>
+                        {% if page_obj.number > 4 %}
+                            <li class="page-item"><span class="page-link">...</span></li>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item"><a class="page-link active disabled bg-dark" href="?page={{ num }}">{{ num }}</a></li>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    {% if page_obj.number < page_obj.paginator.num_pages|add:'-3' %} <span class="page-link">...</span>
+                        <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+                    {% elif page_obj.number < page_obj.paginator.num_pages|add:'-2' %} <li class="page-item"><a class="page-link"
+                            href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+                {% endif %}
+
+                <li class="page-item"><a href="?page={{ page_obj.next_page_number }}" class="page-link">Oldinga</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+{% endif %}
+{% endblock content %}

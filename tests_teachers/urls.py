@@ -20,7 +20,6 @@ from django.shortcuts import render
 from bsb.models import BSB
 from posts.models import Post
 from users.models import MyUser
-from quizess.models import Task
 from assignments.models import Assignment, StudentAnswer
 from django.conf.urls.static import static
 from searchs.views import permission_denied, server_error, bad_request
@@ -40,11 +39,10 @@ def home(request):
                 a = unread_answerca1
                 unread_answerca2.append(a)
     users = MyUser.objects.all()
-    tasks = Task.objects.all()
     posts = Post.objects.all()
     controls = BSB.objects.all().count()
     assignments = Assignment.objects.count()
-    return render(request, 'home.html', {'users': users, 'tasks': tasks, 'posts': posts, 'unread_assign': unread_assign, 'unread_answerca': len(unread_answerca2), 'controls': controls, 'assignments': assignments})
+    return render(request, 'home.html', {'users': users, 'posts': posts, 'unread_assign': unread_assign, 'unread_answerca': len(unread_answerca2), 'controls': controls, 'assignments': assignments})
 
 def notFound(request, exception):
     unread_assign = None
@@ -63,6 +61,7 @@ def notFound(request, exception):
 
 
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('users/', include('users.urls')),
@@ -70,7 +69,9 @@ urlpatterns = [
     path('', home, name='home'),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('posts/', include('posts.urls')),
-    path('tests/', include('quizess.urls')),
+    path('tests/', include('quizess.views.urls.add')),
+    path('tests/', include('quizess.views.urls.detail')),
+    path('tests/', include('quizess.views.urls.edit')),
     path('', include('searchs.urls')),
     path('404/', notFound, name='notFound'),
     path('informatics/', include('infotmatika.urls')),

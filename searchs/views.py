@@ -4,7 +4,6 @@ from django.shortcuts import render
 from my_messages.models import Chat
 from .models import Search
 from users.models import MyUser
-from quizess.models import Task
 from posts.models import Post
 from django.db.models import Q
 from assignments.models import Assignment, StudentAnswer
@@ -27,14 +26,11 @@ def search(request):
             posts = Post.objects.filter(
                 Q(title__icontains=request.POST['body']) | Q(content__icontains=request.POST['body'])
             )
-            quizess = Task.objects.filter(
-                Q(title__icontains=request.POST['body']) | Q(about__icontains=request.POST['body'])
-            )
             users = MyUser.objects.filter(
                 Q(username__icontains=request.POST['body'])
             )
             Search(user=request.user,body=request.POST['body']).save()
-            return render(request, 'search_content.html', {'quizess':quizess, 'users':users, 'posts':posts, 'unread_assign': unread_assign, 'unread_answerca': len(unread_answerca2)})
+            return render(request, 'search_content.html', {'users':users, 'posts':posts, 'unread_assign': unread_assign, 'unread_answerca': len(unread_answerca2)})
         else:
             return HttpResponseRedirect('/')
     else:

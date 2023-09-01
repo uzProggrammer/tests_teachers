@@ -10,7 +10,6 @@ from .models import MyUser
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from .forms import RegisterForm, UserProfile
-from quizess.models import Result
 from assignments.models import Assignment, StudentAnswer
 from sinflar.models import Sinf
 import random
@@ -65,11 +64,6 @@ def profile_view(request, username):
                 unread_answerca2.append(a)
     profile = get_object_or_404(MyUser, username=username)
     test = 0
-    try:
-        res = Result.objects.filter(user=profile)
-        test+=res.count()
-    except Result.DoesNotExists:
-        pass
     return render(request, 'users/profile.html', {'profile':profile, 'test': test, 'unread_assign': unread_assign, 'unread_answerca': len(unread_answerca2)})
 
 def theme_changer(request):
@@ -144,6 +138,8 @@ def login_view(request):
             return redirect('home')
         else:
             messages.error(request, 'Bunday foydalanuvchi tizimda topilmadi. Hohlasangiz ro\'yxatdan o\'ting: <a href="/users/signup">Ro\'yxatdan o\'tish</a>')
+
+        return HttpResponseRedirect(f'/users/login/')
     return render(request, 'users/login.html', {'unread_assign': unread_assign, 'unread_answerca': len(unread_answerca2)})
 
 def update_profile(request):

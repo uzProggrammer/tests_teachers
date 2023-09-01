@@ -1,48 +1,120 @@
 {% extends 'tests/base.html' %}
 
-{% block title %}{{quiz.title}} Natijalar{% endblock title %}
+{% load detect_type %}
+
+{% block title %}
+Natijalar
+{% endblock title %}
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
     <li class="breadcrumb-item"><a href="/tests/">Testlar</a></li>
-    <li class="breadcrumb-item"><a href="/tests/test/{{quiz.id}}/">{{quiz.title}}</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Natijalar</li>
+    <li class="breadcrumb-item"><a href="/tests/test/{{test.id}}/">{{test.title}}</a></li>
+    <li class="breadcrumb-item active bg-dark" aria-current="page">Natijalar</li>
 {% endblock breadcrumb %}
 
 {% block content %}
-    {% if user.is_staff or user.is_teacher %}
-        <div class="card bg-dark text-white">
-            <div class="card-body">
-                <a href="{% url 'test_detail' quiz.id %}" class="btn btn-outline-primary mx-2">Test haqida</a>
-                <a class="btn btn-outline-primary mx-2" href="{%  url 'add_test_question' quiz.id %}">Savol qo'shish</a>
-                {% if quiz.is_active %}
-                {% else %}
-                    <a href="{% url 'actived_test' quiz.id %}" class="btn btn-outline-primary">Chop etish</a>
-                {% endif %}
-                <a href="{% url 'edit_test' quiz.id %}" class="btn btn-outline-primary mx-2">Tahrirlash</a>
-                <a href="{% url 'test_results' quiz.id %}" class="btn btn-outline-primary mx-2">Natijalar</a>
-            </div>
-        </div>
-    {% endif %}
-    <div class="card bg-dark text-white mt-3">
-        <div class="card-header m-2">
-            <h2>Natijalar</h2>
-        </div>
-        <div class="card-body table-responsive p-2">
-            <table class="table m-0 table-hover table-borderless table-striped text-left text-white">
-                <tr class="text-white">
-                    <th class="text-white">№</th>
-                    <th class="text-white">Foydalanuvchi</th>
-                    <th class="text-white">To'plagan ball</th>
+<div class="card bg-dark p-2 my-3">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link" href="/tests/test/{{test.id}}/"><i class="fa fa-question"></i> Test</a>
+        </li>
+        {% if user.is_staff or user == test.author %}
+        <li class="nav-item">
+            <a class="nav-link" href="/tests/test/{{test.id}}/edit/"><i class="fa fa-pen"></i> Tahrirlash</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/tests/test/{{test.id}}/add-quiz/"><i class="fa fa-plus"></i> Savol Qo'shish</a>
+        </li>
+        {% if not test.is_public %}
+        <li class="nav-item">
+            <a class="nav-link" href="/tests/test/{{test.id}}/public/"><i class="fa fa-globe"></i> Ommaviy qilish</a>
+        </li>
+        {% endif %}
+        {% endif %}
+        <li class="nav-item">
+            <a class="nav-link bg-primary text-white" aria-current="page" href="#"><i class="fa fa-chart-bar"></i> Natijalar</a>
+        </li>
+        {% if user in test.users.all %}
+        <li class="nav-item">
+            <a class="nav-link" href="/tests/test/{{test.id}}/result/"><i class="fa fa-chart-simple"></i> Natijam</a>
+        </li>
+        {% endif %}
+    </ul>
+</div>
+
+
+<div class="table-responsive card p-1 bg-dark mt-2">
+    <table class="table" id="not-stripted">
+        <thead>
+            <tr>
+                <th>O'rin</th>
+                <th>Foydalanuvchi</th>
+                <th>Test</th>
+                <th>Vaqt</th>
+                <th>Ball</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for masala in page_obj.object_list %}
+                <tr class="{% if user == masala.user %}border-success{% endif %}">
+                    <td>{% if user.is_staff or user == test.author %}<a href="/tests/test/{{test.id}}/result/{{masala.id}}/">{{forloop.counter|add_qirq:page}}</a> {% elif user != masala.user %}{{forloop.counter|add_qirq:page}}{% else %}<a href="/tests/test/{{test.id}}/result/">{{forloop.counter|add_qirq:page}}</a>{% endif %}</td>
+                    <td><a href="/users/profile/{{masala.user.username}}/">{{masala.user.first_name|title}} {{masala.user.last_name|title}}</a></td>
+                    <td><a href="/tests/test/{{test.id}}/">{{test.title|title}}</a></td>
+                    <td>{{masala.time|date:"H:i:s"}}</td>
+                    <td>{{masala.score}}</td>
                 </tr>
-                {% for result in results %}
-                    <tr class="text-white">
-                        <th class="text-white">{{result.id}}</th>
-                        <th class="text-white">{{result.user}}</th>
-                        <th class="text-white">{{result.scope}}</th>
-                    </tr>
-                {% endfor %}
-            </table>
-        </div>
-    </div>
+            {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center">
+                        <i class="fa fa-x bg-danger" style="font-size: 90px;padding: 25px 30px;border-radius: 50px;"></i><br><br> Afsuski Hech narsa Topilmadi
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="8">
+                    {% if object.num_pages != 1 %}
+                    <div class="pages text-center">
+
+                        <nav aria-label="Page navigation example" class="text-center">
+                            <ul class="pagination bg-dark text-center justify-content-center my-3">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item bg-dark"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Orqaga</a></li>
+    
+                                    {% if page_obj.number > 3 %}
+                                        <li class="page-item"> <a class="page-link" href="?page=1">1</a></li>
+                                            {% if page_obj.number > 4 %}
+                                                <li class="page-item"><span class="page-link">...</span></li>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+    
+                                    {% for num in page_obj.paginator.page_range %}
+                                        {% if page_obj.number == num %}
+                                            <li class="page-item"><a class="page-link active disabled bg-dark" href="?page={{ num }}">{{ num }}</a></li>
+                                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+    
+                                    {% if page_obj.has_next %}
+                                        {% if page_obj.number < page_obj.paginator.num_pages|add:'-3' %} <span class="page-link">...</span>
+                                            <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+                                        {% elif page_obj.number < page_obj.paginator.num_pages|add:'-2' %} <li class="page-item"><a class="page-link"
+                                                href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+                                    {% endif %}
+    
+                                    <li class="page-item"><a href="?page={{ page_obj.next_page_number }}" class="page-link">Oldinga</a></li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                    {% endif %}
+                </th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
 {% endblock content %}

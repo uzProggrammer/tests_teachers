@@ -134,12 +134,12 @@
                 </thead>
                 <tbody>
                     {% for urinish in attempts %}
-                        <tr class="">
+                        <tr class="attempts">
                             <td><a href="/informatics/attempts/attempt/{{urinish.id}}/">{{urinish.id}}</a></td>
-                            <td><span class="{% if urinish.turi == 'Qabul Qilindi' %}text-success{% elif urinish.turi == 'Tekshirilmoqda' %}text-info{% elif urinish.turi == 'Navbatda' %}text-white{% else %}text-danger{% endif %}">{{urinish.turi}}</span></td>
+                            <td class="attempt-type {% if urinish.turi == 'Qabul Qilindi' %}text-success{% elif 'Tekshirilmoqda' in urinish.turi %}text-info{% elif urinish.turi == 'Navbatda' %}text-white{% else %}text-danger{% endif %}" data-id="{{urinish.id}}"><span class="">{{urinish.turi}}</span></td>
                             <td><img src="{% if urinish.til == 'python' %}https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/121px-Python-logo-notext.svg.png{% elif urinish.til == 'node' %}https://algorithmshub.uz/static/javascript.png{% endif %}" width="30" style="border-radius: 15px;" alt="language"></td>
-                            <td>{{urinish.time|floatformat:'2'}} ms</td>
-                            <td>{{urinish.memory|floatformat:'2'}} KB</td>
+                            <td id="time-{{urinish.id}}">{{urinish.time|floatformat:'2'}} ms</td>
+                            <td id="memory-{{urinish.id}}">{{urinish.memory|floatformat:'2'}} KB</td>
                             <td>{{urinish.olcham}}</td>
                         </tr>
                     {% endfor %}
@@ -152,6 +152,38 @@
 {% block js1 %}
     {% if user.is_authenticated %}
         <script>
+            document.querySelectorAll('.attempt-type').forEach(
+                el=>{
+                    if(el.className.includes('text-info') || el.className.includes('text-white')){
+                        var interval = setInterval(()=>{
+                            $.ajax({
+                                type: 'get',
+                                url: '/informatics/attempts/attempt/'+el.getAttribute('data-id')+'/get-type/',
+                                success: data=>{
+                                    if(!data['type'].includes('Tekshirilmoqda')){
+                                        el.innerHTML = data.type;
+                                        document.querySelector('time-'+el.getAttribute('data-id')).innerHTML = data.time;
+                                        document.querySelector('memory-'+el.getAttribute('data-id')).innerHTML = data.memory;
+                                        if(data['is_acc']){
+                                            el.classList.remove('text-info');
+                                            el.classList.add('text-success');
+                                        }else{
+                                            el.classList.remove('text-info');
+                                            el.classList.add('text-danger');
+                                        }
+                                        clearInterval(interval);
+                                    }
+                                    document.querySelector('#time-'+el.getAttribute('data-id')).innerHTML = data.time+' ms';
+                                    document.querySelector('#memory-'+el.getAttribute('data-id')).innerHTML = data.memory + ' KB';
+                                    el.innerHTML = data.type;
+                                },
+                                error: e=>console.error(e),
+                            })
+                        }, 2000)
+                    }
+                }
+            )
+
             var lang = document.querySelector('#lang');
             if (lang.value==='node') til = 'javascript';
             if (lang.value==='python') til = 'python'

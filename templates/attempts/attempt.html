@@ -13,7 +13,7 @@
                     <thead>
                         <tr>
                             <th class="text-center py-3" colspan="2">
-                                <span class="fs-3 my-3 {% if urinish.turi == 'Qabul Qilindi' %}text-success{% elif urinish.turi == 'Tekshirilmoqda' %}text-info{% else %}text-danger{% endif %}">{{urinish.turi}}</span>
+                                <span class="fs-3 my-3 {% if urinish.turi == 'Qabul Qilindi' %}text-success{% elif 'Tekshirilmoqda' in urinish.turi %}text-info{% else %}text-danger{% endif %}">{{urinish.turi}}</span>
                             </th>
                         </tr>
                     </thead>

@@ -1,1 +1,1 @@
-print('Alik1')
+print(1)

@@ -1,0 +1,396 @@
+{% extends 'tests/base.html' %}
+
+{% load detect_type %}
+
+{% block title %}
+    {{test.title}} Savollar
+{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/tests/">Testlar</a></li>
+    <li class="breadcrumb-item"><a href="/tests/test/{{test.id}}/">{{test.title|title}}</a></li>
+    <li class="breadcrumb-item active text-white" aria-current="page">Savollar</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<style>
+    .question,
+    .answer {
+        padding: 10px;
+        border: 1px solid var(--sidebar-active-bg);
+        border-radius: 5px;
+        margin: 5px;
+        cursor: pointer;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .quiz {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .answers {
+        display: flex;
+        flex-direction: column;
+    }
+    .hovered{
+        background-color: blue !important;
+    }
+    *{
+        user-select: none !important;
+    }
+</style>
+    <div class="row">
+        <div class="col-md-9">
+            <div class="card bg-dark p-3">
+                <ol>
+                    {% for object in sorted_objects %}
+                    {% if object|detect_type == "<class 'quizess.models.ClosedTest'>" %}
+                        <li>
+                            <section id="cl-{{object.id}}">
+                                {{object.body|safe}}
+                                <div class="mt-3">
+                                    <label for="closed-answer-{{object.id}}">Javobini kiriting</label>
+                                    <input type="text" name="closed-answer-{{object.id}}" id="closed-answer-{{object.id}}" class="bg-dark form-control closed-answers" data-id="{{object.id}}">
+                                </div>
+                            </section>
+                        </li><br><hr><br>
+                    {% elif object|detect_type == "<class 'quizess.models.DefoulMultitQuiz'>" %}
+                        <li>
+                            <section id="ml-{{object.id}}">
+                                {{object.body|safe}}
+                                <div class="mt-3">
+                                    {% for variant in object.get_variants %}
+                                    <div class="m-1">
+                                        <label for="multi-variant-{{variant.id}}" style="display: flex;flex-direction: row;gap: 10px;">
+                                            <input type="checkbox" id="multi-variant-{{variant.id}}" name="multi-variant-{{object.id}}" value="{{variant.id}}" class="form-check-input multi-quizes" data-id="{{object.id}}"> {{variant.body|safe}}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </section>
+                        </li><br><hr><br>
+                    {% elif object|detect_type == "<class 'quizess.models.DefoultQuiz'>" %}
+                        <li>
+                            <section id="df-{{object.id}}">
+                                {{object.body|safe}}
+                                <div class="mt-3">
+                                    {% for variant in object.get_variants %}
+                                    <div class="m-1">
+                                        <label for="quiz-variant-{{variant.id}}" style="display: flex;flex-direction: row;gap: 10px;">
+                                            <input type="radio" id="quiz-variant-{{variant.id}}" value="{{variant.id}}" name="quiz-variant-{{object.id}}" class="form-check-input default_quizes" data-id="{{object.id}}"> {{variant.body|safe}}
+                                        </label>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </section>
+                        </li><br><hr><br>
+                    {% else %}
+                        <li>
+                            <section id="dd-{{object.id}}">
+                                {{object.body|safe}}
+                                <div class="row mt-3">
+                                    <div class="answers col-md bg-dark keys" data-id="{{object.id}}">
+                                        {% for key in object.get_keys %}
+                                            <div data-id="{{object.id}}" class="answer" id="answer{{key.id}}" data-key-id="{{key.id}}">{{key.body|safe}}</div>
+                                        {% endfor %}
+                                    </div>
+                                    <div class="quiz col-md bg-dark values" data-id="{{object.id}}">{% for value in object.get_values %}<div class="question" data-id="{{object.id}}" id="question{{value.id}}" draggable="true" data-value-id="{{value.id}}" style="display: flex;flex-direction: row;gap: 10px;"><i class="fa fa-hand-point-left"></i> {{value.body|safe}}</div>{% endfor %}</div>
+                                </div>
+                            </section>
+                        </li><br><hr><br>
+                    {% endif %}
+                    {% endfor %}
+                </ol>
+            </div>
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content text-center  bg-dark p-3">
+                        Rostan ham testni yubormoqchimisiz?
+                        <div class="mt-3">
+                            <button class="btn btn-secondary" data-bs-dismiss="modal">Yo'q</button>
+                            <button class="btn btn-success" id="test-submitter">Ha</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mt-3">
+            <div class="card bg-dark p-3" style="position: -webkit-sticky !important;position: sticky !important;top: 20px;">
+                <button class="btn btn-outline-success" id="time-button">00:00:00</button>
+                <br>
+                <ul style="list-style: none;">
+                    {% for key,value in sorted_objects|get_range_with_len %}
+                    {% if value|detect_type == "<class 'quizess.models.ClosedTest'>" %}
+                        <a id="clu-{{value.id}}" href="#cl-{{value.id}}" class="btn btn-outline-success m-1" data-id="{{value.id}}"><li>{{key}}</li></a>
+                    {% elif value|detect_type == "<class 'quizess.models.DefoulMultitQuiz'>" %}
+                        <a id="mlu-{{value.id}}" href="#ml-{{value.id}}" class="btn btn-outline-success m-1" data-id="{{value.id}}"><li>{{key}}</li></a>
+                    {% elif value|detect_type == "<class 'quizess.models.DefoultQuiz'>" %}
+                        <a id="dfu-{{value.id}}" href="#df-{{value.id}}" class="btn btn-outline-success m-1" data-id="{{value.id}}"><li>{{key}}</li></a>
+                    {% elif value|detect_type == "<class 'quizess.models.DragAndDrop'>" %}
+                        <a id="ddu-{{value.id}}" href="#dd-{{value.id}}" class="btn btn-outline-success m-1" data-id="{{value.id}}"><li>{{key}}</li></a>
+                    {% endif %}
+                    {% endfor %}<br>
+                    <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Yuborish</button>
+                    
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block js1 %}
+    <script>
+        window.addEventListener('contextmenu', e=>{
+            e.preventDefault()
+        });
+        document.addEventListener("keydown", function(event) {
+            if (event.key === "F12") {
+                event.preventDefault();
+            };
+        });
+        window.addEventListener("keydown", function(e) {
+            if (e.ctrlKey && e.key === "u") {
+                e.preventDefault();
+            }
+        });
+        var attempts_count = 3;
+        window.addEventListener("blur", function() {
+            if (attempts_count!=0){
+                attempts_count-=1;
+                if(attempts_count!==0){
+                    alert(`Sahifadan chiqib ketish taqiqlanadi. Siz agar yana ${attempts_count} marta sahifani tark etsangiz testingiz teskshirish uchun yuboriladi.`);
+                } else{
+                    alert(`Sahifadan chiqib ketish taqiqlanadi. Agar siz yana bir martta sahifani tark etsangiz testingiz avtomatiskiy tekshirishga yuboriladi`);
+                };
+            } else{
+                ml = localStorage.getItem('multi_answer');
+                cl = localStorage.getItem('closed_answers');
+                dd_s = localStorage.getItem('dd_s');
+                default_quizes = localStorage.getItem('default_quizes');
+                data = {'csrfmiddlewaretoken': '{{csrf_token}}', 'ml': ml, 'cl':cl, 'dd_s':dd_s,'dq':default_quizes, 'time': document.querySelector('#time-button').innerHTML};
+                $.ajax(
+                    {
+                        type: 'post',
+                        url:'post/',
+                        data: data,
+                        success: data=>{
+                            console.log(document.querySelector('#time-button').innerHTML)
+                            localStorage.setItem('multi_answer', '');
+                            localStorage.setItem('closed_answers', '');
+                            localStorage.setItem('dd_s', '');
+                            localStorage.setItem('default_quizes', '');
+                            window.location.pathname = '/tests/test/{{test.id}}/';
+                        },
+                        error: e=>console.error(e)
+                    }
+                )
+            }
+        });
+
+        window.addEventListener('beforeunload', function (e) {
+            e.preventDefault();
+            ml = localStorage.getItem('multi_answer');
+            cl = localStorage.getItem('closed_answers');
+            dd_s = localStorage.getItem('dd_s');
+            default_quizes = localStorage.getItem('default_quizes');
+            data = {'csrfmiddlewaretoken': '{{csrf_token}}', 'ml': ml, 'cl':cl, 'dd_s':dd_s,'dq':default_quizes, 'time': document.querySelector('#time-button').innerHTML};
+            $.ajax(
+                {
+                    type: 'post',
+                    url:'post/',
+                    data: data,
+                    success: data=>{
+                        console.log(document.querySelector('#time-button').innerHTML)
+                        localStorage.setItem('multi_answer', '');
+                        localStorage.setItem('closed_answers', '');
+                        localStorage.setItem('dd_s', '');
+                        localStorage.setItem('default_quizes', '');
+                        window.location.pathname = '/tests/test/{{test.id}}/';
+                    },
+                    error: e=>console.error(e)
+                }
+            )
+        });
+        window.onbeforeunload = (e)=>{
+            alert('Siz Test vaqtida page reload qila olmaysiz');
+        };
+
+        $.ajax({type: 'get',url: 'get-time/',success: data=>{start = data.start;time = data.time;end = start+time;end_hours = parseInt(time/3600);end_minutes = parseInt(time/60%60);end_seconds = parseInt(time%60);var date_ca = new Date();date_ca.setSeconds(end_seconds);date_ca.setHours(end_hours);date_ca.setMinutes(end_minutes);var interavale1 = setInterval(()=>{if(parseInt(date_ca.getHours())!==0  || parseInt(date_ca.getMinutes())!==0 || parseInt(date_ca.getSeconds())!==0){date_ca.setSeconds(date_ca.getSeconds()-1);document.querySelector('#time-button').innerHTML = `${date_ca.getHours()}:${date_ca.getMinutes()}:${date_ca.getSeconds()}`;}else{ml = localStorage.getItem('multi_answer');cl = localStorage.getItem('closed_answers');dd_s = localStorage.getItem('dd_s');default_quizes = localStorage.getItem('default_quizes');data = {'csrfmiddlewaretoken': '{{csrf_token}}', 'ml': ml, 'cl':cl, 'dd_s':dd_s,'dq':default_quizes, 'time': '00:00:00'};$.ajax({type: 'post',url:'post/',data: data,success: data=>{localStorage.setItem('multi_answer', '');localStorage.setItem('closed_answers', '');localStorage.setItem('dd_s', '');localStorage.setItem('default_quizes', '');window.location.pathname = '/tests/test/{{test.id}}/';},error: e=>console.error(e)});clearInterval(interavale1);}},1000)},})
+        try{
+            var a = document.querySelectorAll('.values').forEach(
+                el=>{
+                    var interval = setInterval(()=>{
+                        if (el.innerHTML==='') {
+                            c = document.querySelector(`#ddu-${el.getAttribute('data-id')}`);
+                            c.classList.remove('btn-outline-success');
+                            c.classList.add('btn-success');
+                            clearInterval(interval);
+                            el.remove();
+                        }
+                    }, 1000)
+                },
+            );
+
+            const questions = document.querySelectorAll('.question');
+            const answers = document.querySelectorAll('.answer');
+
+            questions.forEach(question => {
+                question.addEventListener('dragstart', dragStart);
+            });
+
+            answers.forEach(answer => {
+                answer.addEventListener('dragover', dragOver);
+                answer.addEventListener('dragenter', dragEnter);
+                answer.addEventListener('dragleave', dragLeave);
+                answer.addEventListener('drop', drop);
+            });
+
+            function dragStart(e) {
+                e.dataTransfer.setData('text/plain', e.target.id);
+
+            }
+
+            function dragOver(e) {
+                e.preventDefault();
+            }
+
+            function dragEnter(e) {
+                e.preventDefault();
+                this.classList.add('hovered');
+            }
+
+            function dragLeave() {
+                this.classList.remove('hovered');
+
+            }
+            dd_s = {}
+            function drop(e) {
+                e.preventDefault();
+                const draggedElementId = e.dataTransfer.getData('text/plain');
+                const draggedElement = document.getElementById(draggedElementId);
+                
+                if(draggedElement.getAttribute('data-id')===this.getAttribute('data-id')){
+                    if(dd_s.hasOwnProperty(this.getAttribute('data-key-id'))){
+                        dd_s[this.getAttribute('data-key-id')].push(draggedElement.getAttribute('data-value-id'));
+                    } else{
+                        dd_s[this.getAttribute('data-key-id')] = [draggedElement.getAttribute('data-value-id')];
+                    };
+                    localStorage.setItem('dd_s', JSON.stringify(dd_s))
+                    this.appendChild(draggedElement);
+                }
+                this.classList.remove('hovered');
+            }
+
+            tinymce.init({
+                themes: "modern",
+                skin: "oxide-dark",
+                content_css: "dark",
+                selector: 'textarea',
+                plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+            });
+        } catch (e){}
+    </script>
+
+    <script>
+        closeed_answers = {}
+        document.querySelectorAll('.closed-answers').forEach(
+            el=>{
+                el.addEventListener('change', ()=>{
+                    if (el.value!=''){
+                        var el1 = document.querySelector(`#clu-${el.getAttribute('data-id')}`);
+                        el1.classList.remove('btn-outline-success');
+                        el1.classList.add('btn-success');
+                        closeed_answers[el.getAttribute('data-id')] = el.value;
+                        localStorage.setItem('closed_answers', JSON.stringify(closeed_answers));
+                    } else{
+                        var el1 = document.querySelector(`#clu-${el.getAttribute('data-id')}`);
+                        el1.classList.remove('btn-success');
+                        el1.classList.add('btn-outline-success');
+                    }
+                })
+            }
+        );
+        multi_answers = {}
+        document.querySelectorAll('.multi-quizes').forEach(
+        el=>{
+                el.addEventListener('change', ()=>{
+                    if (el.checked){
+                        var el1 = document.querySelector(`#mlu-${el.getAttribute('data-id')}`);
+                        el1.classList.remove('btn-outline-success');
+                        el1.classList.add('btn-success');
+                        var inputs = document.querySelectorAll(`input[name="${el.name}"]`);
+                        data = []
+                        inputs.forEach(el2=>{
+                            if(el2.checked){
+                                data.push(el2.value)
+                            }
+                        });
+                        multi_answers[el.getAttribute('data-id')] = data;
+                        localStorage.setItem('multi_answer', JSON.stringify(multi_answers));
+                    } else{
+                        var inputs = document.querySelectorAll(`input[name="${el.name}"]`);
+                        a=true;
+                        data = []
+                        inputs.forEach(el=>{
+                            if(el.checked){
+                                a=false;
+                                data.push(el.value);
+                            }
+                        });
+                        if (a){
+                            var el1 = document.querySelector(`#mlu-${el.getAttribute('data-id')}`);
+                            el1.classList.remove('btn-success');
+                            el1.classList.add('btn-outline-success');
+                        } else{
+                            localStorage.setItem('multi_answer', JSON.stringify(data));
+                        }
+                    }
+                });
+            }
+        );
+
+
+        default_quizes = {};
+        document.querySelectorAll('.default_quizes').forEach(el=>{
+            el.addEventListener('change', ()=>{
+                var el1 = document.querySelector(`#dfu-${el.getAttribute('data-id')}`);
+                el1.classList.remove('btn-outline-success');
+                el1.classList.add('btn-success');
+                default_quizes[el.getAttribute('data-id')] = el.value;
+                localStorage.setItem('default_quizes', JSON.stringify(default_quizes));
+            });
+        });
+
+
+        document.querySelector('#test-submitter').addEventListener(
+            'click',
+            e=>{
+                ml = localStorage.getItem('multi_answer');
+                cl = localStorage.getItem('closed_answers');
+                dd_s = localStorage.getItem('dd_s');
+                default_quizes = localStorage.getItem('default_quizes');
+                data = {'csrfmiddlewaretoken': '{{csrf_token}}', 'ml': ml, 'cl':cl, 'dd_s':dd_s,'dq':default_quizes, 'time': document.querySelector('#time-button').innerHTML};
+                $.ajax(
+                    {
+                        type: 'post',
+                        url:'post/',
+                        data: data,
+                        success: data=>{
+                            console.log(document.querySelector('#time-button').innerHTML)
+                            localStorage.setItem('multi_answer', '');
+                            localStorage.setItem('closed_answers', '');
+                            localStorage.setItem('dd_s', '');
+                            localStorage.setItem('default_quizes', '');
+                            window.location.pathname = '/tests/test/{{test.id}}/';
+                        },
+                        error: e=>console.error(e)
+                    }
+                )
+            },
+        );
+    </script>
+{% endblock js1 %}
