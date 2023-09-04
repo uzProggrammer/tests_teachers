@@ -10,35 +10,93 @@
 {% endblock breadcrumb %}
 
 {% block content %}
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css">
-    <div class="card bg-dark text-white">
-        <div class="card-header p-3">
-            <h2>Tahrirlash</h2>
-        </div>
-        <div class="card-body">
-            <form method="post">{% csrf_token %}
-                {{form.as_p}}
-                <button type="submit" class="btn btn-primary">Saqlash</button>
-            </form>
-        </div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css">
+<div class="card bg-dark text-white">
+    <div class="card-header p-3">
+        <h2>Yangi topshiriq</h2>
     </div>
+    <div class="card-body">
+        <form method="post">{% csrf_token %}
+            <div class="m-3">
+                <label for="title">Topshiriq nomi</label>
+                <input type="text" value="{{ass.title}}" name="title" class="form-control bg-dark text-white" id="title" aria-describedby="titleHelp">
+                <div id="titleHelp" class="form-text text-white">Siz o'quvchi yoki sinf uchun taynlayotgan topshiriqning nomi</div>
+            </div>
+            <div class="m-3">
+                <label for="info">Topshiriq matni</label>
+                <textarea name="info" class="form-control" id="info" aria-describedby="infoHelp">{{ass.info|safe}}</textarea>
+                <div id="infoHelp" class="form-text text-white">Siz o'quvchi yoki sinf uchun taynlayotgan topshiriqning matni</div>
+            </div>
+            <div class="m-3 row g-2">
+                <div class="col">
+                    <label for="sinf">Sinf</label>
+                    <select id="sinf" name="sinf" class="bg-dark form-select" style="width:100%;">
+                        <option value="" selected>------</option>
+                        <option value="5.1" {% if ass.sinf == '5.1' %} selected{% endif %}>5.1</option>
+                        <option value="5.2" {% if ass.sinf == '5.2' %} selected{% endif %}>5.2</option>
+                        <option value="6.1" {% if ass.sinf == '6.1' %} selected{% endif %}>6.1</option>
+                        <option value="6.2" {% if ass.sinf == '6.2' %} selected{% endif %}>6.2</option>
+                        <option value="7.1" {% if ass.sinf == '7.1' %} selected{% endif %}>7.1</option>
+                        <option value="7.2" {% if ass.sinf == '7.2' %} selected{% endif %}>7.2</option>
+                        <option value="7.3" {% if ass.sinf == '7.3' %} selected{% endif %}>7.3</option>
+                        <option value="8.1" {% if ass.sinf == '8.1' %} selected{% endif %}>8.1</option>
+                        <option value="8.2" {% if ass.sinf == '8.2' %} selected{% endif %}>8.2</option>
+                        <option value="8.3" {% if ass.sinf == '8.3' %} selected{% endif %}>8.3</option>
+                        <option value="9.1" {% if ass.sinf == '9.1' %} selected{% endif %}>9.1</option>
+                        <option value="9.2" {% if ass.sinf == '9.2' %} selected{% endif %}>9.2</option>
+                        <option value="9.3" {% if ass.sinf == '9.3' %} selected{% endif %}>9.3</option>
+                        <option value="10.1" {% if ass.sinf == '10.1' %} selected{% endif %}>10.1</option>
+                        <option value="10.2" {% if ass.sinf == '10.2' %} selected{% endif %}>10.2</option>
+                        <option value="10.3" {% if ass.sinf == '10.3' %} selected{% endif %}>10.3</option>
+                        <option value="11.1" {% if ass.sinf == '11.1' %} selected{% endif %}>11.1</option>
+                        <option value="11.2" {% if ass.sinf == '11.2' %} selected{% endif %}>11.2</option>
+                        <option value="11.3" {% if ass.sinf == '11.3' %} selected{% endif %}>11.3</option>
+                    </select>
+                    <div class="form-text text-danger">Sizning topshirig'ingizni sinfi. Agar sinfni tanlagan bo'lsangiz o'quvchini tashlab keting!</div>
+                </div>
+                <div class="col">
+                    <label for="student">O'quvchi</label>
+                    <select id="student" name="student" class="bg-dark form-select">
+                        <option value="" selected>------</option>
+                        {% for user1 in users %}
+                        <option value="{{user1.id}}" {% if ass.student == '{{user1}}' %} selected{% endif %}>{{user1.username}}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-text text-danger">Sizning topshirig'ingiz bajaruvchi o'quvchi. Agar o'quvchini tanlagan bo'lsangiz sinfni tashlab keting!</div>
+                </div>
+            </div>
+            <div class="m-3 row g-2">
+                <div class="col">
+                    <label class="form-label">Topshirish sanasi</label>
+                    <input type="datetime-local" name="qachongacha" class="form-control bg-dark text-white" value="{{ass.qachongacha|date:'Y-m-d\TH:i'}}">
+                    <div class="form-text text-white">O'quvchi mana shu vaqtdan keyin topshirsa ball kamayib keta veradi</div>
+                </div>
+                <div class="col">
+                    <label class="form-label">Ball</label>
+                    <input type="number" name="max_ball" class="form-control bg-dark text-white" step="0.00001" value="{{ass.max_ball}}">
+                    <div class="form-text text-white">O'quvchi maksimal olishi mumkin bo'lgan ball</div>
+                </div>
+            </div>
+            <div class="m-3">
+                <button type="submit" class="btn btn-success">Saqlash</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
 
-    <script>
-
-        tinymce.init({
+{% block js1 %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.full.min.js"></script>
+<script>
+    tinymce.init({
         themes: "modern",
         skin: "oxide-dark",
         content_css: "dark",
         selector: 'textarea',
         plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
         toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
-      });
-    </script>
-{% endblock content %}
+    });
 
-{% block js1 %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.full.min.js"></script>
-<script>
     $(function () {
           $("select").select2({
           });
