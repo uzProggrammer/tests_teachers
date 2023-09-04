@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.http import JsonResponse
 from django.urls import path, include
 from django.shortcuts import render
 
@@ -23,26 +24,14 @@ from users.models import MyUser
 from assignments.models import Assignment, StudentAnswer
 from django.conf.urls.static import static
 from searchs.views import permission_denied, server_error, bad_request
+from quizess.models import Quiz
+from Masalalar.models import Masala
+from assignments.models import Assignment
+from courses.models import Course
 
 
 def home(request):
-    unread_assign = None
-    unread_answerca2 = []
-    if request.user.is_authenticated:
-        unread_assign = Assignment.objects.filter(is_readed=False, student=request.user)
-
-        unread_answerca = StudentAnswer.objects.filter(is_readed=False)
-        unread_answerca2 = []
-        for unread_answerca1 in unread_answerca:
-
-            if unread_answerca1.assignment.author == request.user:
-                a = unread_answerca1
-                unread_answerca2.append(a)
-    users = MyUser.objects.all()
-    posts = Post.objects.all()
-    controls = BSB.objects.all().count()
-    assignments = Assignment.objects.count()
-    return render(request, 'home.html', {'users': users, 'posts': posts, 'unread_assign': unread_assign, 'unread_answerca': len(unread_answerca2), 'controls': controls, 'assignments': assignments})
+    return render(request, 'home.html')
 
 def notFound(request, exception):
     unread_assign = None
@@ -59,8 +48,36 @@ def notFound(request, exception):
                 unread_answerca2.append(a)
     return render(request, '404.html', {'unread_assign': unread_assign, 'unread_answerca': len(unread_answerca2)})
 
+def get_counts_api(reqeust):
+    data={}
+    a = MyUser.objects.filter(is_teacher=True).count()
+    data['t']=a
+    b = MyUser.objects.filter(is_teacher=False).count()
+    data['s']=b
+    c=Quiz.objects.all().count()
+    data['q']=c
+    d = Masala.objects.all().count()
+    data['m']=d
+    f = BSB.objects.count()
+    data['c']=f
+    j = Assignment.objects.count()
+    data['a'] = j
+    data['c1'] = Course.objects.count()
+    return JsonResponse(data)
 
-
+def get_api_2(reqeust):
+    courses = Course.objects.all().order_by('users')[:8]
+    data = {}
+    for i in courses:
+        data1 = {
+            'title': i.title,
+            'id': i.id,
+            'about': i.summary,
+            'users': i.users.count(),
+            'teg': i.tags.all()[0].title if i.tags else ''
+        }
+        data[i.id] = data1
+    return JsonResponse(data)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -68,7 +85,6 @@ urlpatterns = [
     path('users/', include('django.contrib.auth.urls')),
     path('', home, name='home'),
     path('ckeditor/', include('ckeditor_uploader.urls')),
-    path('posts/', include('posts.urls')),
     path('tests/', include('quizess.views.urls.add')),
     path('tests/', include('quizess.views.urls.detail')),
     path('tests/', include('quizess.views.urls.edit')),
@@ -83,6 +99,8 @@ urlpatterns = [
     path('courses/', include('courses.urls')),
     path('courses/', include('courses.creates_url')),
     path('courses/', include('courses.edits_url')),
+    path('api1/', get_counts_api),
+    path('api2/', get_api_2),
 ]
 
 handler404 = notFound

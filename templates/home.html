@@ -3,133 +3,388 @@
 {% block title %}Bosh sahifa{% endblock title %}
 
 
-
-{% comment %}
 {% block content %}
-    <div class="card bg-dark text-white">
-        <div class="card-header">
-            <h2>Bu qanday <i>Platforma</i>?</h2>
-        </div>
-        <div class="card-body">
-          <h5> <b><font face="Times New Roman" ><p align="justify">Ushbu integrallashgan LMS - platforma PTMA Bekobod tuman ixtisoslashtirilgan maktabida Informatika va axborot texnologiyalari fanini
-            o'rganish uchun xizmat qiladi. Bu yerda ta'lim beruvchi va ta'lim oluvchilar real vaqtda dars mashg'ulotlarini o'tkazadilar, iqtidorli o'quvchilar fan olimpiadalariga
-            tayyorgarlik ko'radilar </p></font></b> </h5>
-            <br> <h6> <b><i> <font face="Times New Roman" ><p align="right">Biz jahonni - bilim ila zabd eturmiz </p></font></i></b> </h6>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.css" integrity="sha512-UTNP5BXLIptsaj5WdKFrkFov94lDx+eBvbKyoe1YAfjeRPC+gT5kyZ10kOHCfNZqEui1sxmqvodNUx3KbuYI/A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+    .stats i {
+        font-size: 110px;
+    }
 
+    .rgba {
+        color: rgba(0, 0, 0, .5);
+    }
+
+    body.dark .rgba {
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+
+    .wrapper {
+        width: 100%;
+    }
+
+    .carousel {
+        
+        margin: auto;
+        padding: 0 30px;
+    }
+
+    
+
+    .owl-dots {
+        text-align: center;
+        margin-top: 40px;
+    }
+
+    .owl-dot {
+        height: 15px;
+        width: 45px;
+        margin: 0 5px;
+        outline: none;
+        border-radius: 14px;
+        border: 2px solid #0072bc !important;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+    }
+
+    .owl-dot.active,
+    .owl-dot:hover {
+        background: #0072bc !important;
+    }
+</style>
+{% if user.is_authenticated %}
+<div class="about text-center mt-3" style="margin-top: 45px !important;">
+    <h1>Bu qanday platforma?</h1>
+    <div class="row" style="align-items: center !important;">
+        <div class="col-md-7">
+            <img src="/static/logo/home2.png" width="100%" alt="Home2">
+        </div>
+        <div class="col-md-5 text-start">
+            <div class="bg-dark text-white">
+                <h3>Bizning vazifa o'quvchilarga bilim berishdir...</h3><br>
+                <div>
+                    <h5> <b>
+                            <font face="Times New Roman">
+                                <p align="justify">Ushbu integrallashgan LMS - platforma PTMA Bekobod tuman
+                                    ixtisoslashtirilgan maktabida Informatika va axborot texnologiyalari fanini
+                                    o'rganish uchun xizmat qiladi. Bu yerda ta'lim beruvchi va ta'lim oluvchilar real
+                                    vaqtda dars mashg'ulotlarini o'tkazadilar, iqtidorli o'quvchilar fan olimpiadalariga
+                                    tayyorgarlik ko'radilar </p>
+                            </font>
+                        </b> </h5>
+                    <br>
+                    <h6> <b><i>
+                                <font face="Times New Roman">
+                                    <p align="right">Biz jahonni - bilim ila zabd eturmiz </p>
+                                </font>
+                            </i></b> </h6>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="card bg-dark text-white my-4">
-        <div class="card-header">
-            <h3>Hozirgi vaqtda</h3>
+</div>
+
+<div class="top-courses text-center my-3" style="margin-top: 45px !important;">
+    <a class="fs-3" href="/courses/">Ko'p O'quvchi qatnashgan Kurslar</a>
+    <div class="wrapper">
+        <div class="carousel owl-carousel" id="courses-container">
+            
         </div>
-        <div class="card-body">
-            <div class="row row-cols-1 row-cols-md-3 g-4">
-                <div class="card bg-dark text-white" style="border:none;">
-                    <div class="card-title">
-                        <h4>Foydalanuvchilar</h4>
-                    </div>
-                    <div class="card-body">
-                        {{users.count}} ta
-                    </div>
-                </div>
-                <div class="coll">
-                    <div class="card bg-dark text-white" style="border:none;">
-                        <div class="card-title">
-                            <h4>Savollar</h4>
-                        </div>
-                        <div class="card-body">
-                            {{tasks.count}} ta
-                        </div>
-                    </div>
-                </div>
-                <div class="card bg-dark text-white" style="border:none;">
-                    <div class="card-title">
-                        <h4>Postlar</h4>
-                    </div>
-                    <div class="card-body">
-                        {{posts.count}} ta
-                    </div>
+    </div>
+</div>
+
+
+<div class="stats" style="margin-top: 95px;">
+    <div class="row g-3">
+        <div class="col-md-3 stat text-center p-3 mr-1">
+            <i class="fa-solid fa-chalkboard-user rgba"></i><br><br>
+            <span class="fs-2" id="teacher" style="margin-left: -10px;">0</span>
+            <h3>O'qituvchilar</h3>
+        </div>
+
+        <div class="col-md-3 stat text-center p-3 mr-1">
+            <i class="fa fa-user rgba"></i><br><br>
+            <span class="fs-2" id="student" style="margin-left: -10px;">0</span>
+            <h3>O'quvchilar</h3>
+        </div>
+
+        <div class="col-md-3 stat text-center p-3 mr-1">
+            <i class="fa fa-question rgba"></i><br><br>
+            <span class="fs-2" id="quiz" style="margin-left: -10px;">0</span>
+            <h3>Testlar</h3>
+        </div>
+
+        <div class="col-md-3 stat text-center p-3 mr-1">
+            <i class="fa fa-code rgba"></i><br><br>
+            <span class="fs-2" id="problem" style="margin-left: -10px;">0</span>
+            <h3>Algoritmik masalalar</h3>
+        </div>
+
+        <div class="col-md-4 stat text-center p-3 mr-1">
+            <i class="fa-solid fa-chart-gantt rgba"></i><br><br>
+            <span class="fs-2" id="control" style="margin-left: -10px;">0</span>
+            <h3>Nazoratlar</h3>
+        </div>
+
+        <div class="col-md-4 stat text-center p-3 mr-1">
+            <i class="fa fa-person-chalkboard rgba"></i><br><br>
+            <span class="fs-2" id="assignment" style="margin-left: -10px;">0</span>
+            <h3>Darslar</h3>
+        </div>
+
+        <div class="col-md-4 stat text-center p-3 mr-1">
+            <i class="fa fa-book rgba"></i><br><br>
+            <span class="fs-2" id="course" style="margin-left: -10px;">0</span>
+            <h3>Kurslar</h3>
+        </div>
+    </div>
+</div>
+
+<div class="card bg-dark mt-3">
+    <div class="card-header p-3">
+        <h2>Tizimdagi kuchli <span class="text-info">5</span> lik</h2>
+    </div>
+    <div class="card-body table-responsive">
+        <table class="table">
+            <thead>
+                <tr class="p-2">
+                    <th>Foydalanuvchi nomi</th>
+                    <th>Ismi sharifi</th>
+                    <th>Ball</th>
+                </tr>
+            </thead>
+            <tbody id="top-users">
+                <tr class="p-3">
+                    <td colspan="3" class="text-center">Biroz sabr qiling!!</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<style>
+    .card.bg-dark {
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    .start-btn {
+        background-color: rgb(15, 186, 15);
+        text-decoration: none;
+        text-align: center;
+        padding: 15px 30px;
+        font-size: 21px;
+        border-radius: 10px;
+        color: rgb(255, 255, 255) !important;
+    }
+</style>
+
+<div class="card bg-dark p-3 mb-3">
+    <div class="row text-center" style="align-items: center !important;">
+        <div class="col-md-5 text-start h-100">
+            <span style="font-size: 20px;" class="rgba">Bilim Bilan qurollangan odam yengilmasdir</span>
+            <h1 style="margin-bottom: 20px !important;">Biz Bilan Yangi bilimlarni olishga tayyormisiz?</h1><br>
+            <a class="start-btn mt-3" href="/users/login/">Hoziroq boshlash <i class="fa fa-chevron-right"></i></a>
+        </div>
+        <div class="col-md-7">
+            <img width="100%" src="/static/logo/home.png" alt="Home.png">
+        </div>
+    </div>
+</div>
+<div class="goals text-center" style="margin-top: 25px !important;">
+    <h1>Bizning maqsadlar qanday?</h1>
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <div class="card bg-dark p-3 goal h-100" style="border: 1px solid black !important;">
+                <h4>Darslarni zamonaviy usulda o'tish</h4>
+                <p class="pt-3">Ushbu platforma yordamida darslarni yangi usulda ya'ni onlineda o'tish mumkin!</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-dark p-3 goal h-100" style="border: 1px solid black !important;">
+                <h4>Oson ishlash</h4>
+                <p class="pt-3">Ushbu platformada o'qituvchilar o'quvchilarga topshiriqlar berishi mumkin, O'quvchilar
+                    yechishi uchun Algoritmik masalalar berishi mumkin, O'quvchilar o'rganishi uchun kurslar yaratishi
+                    mumkin, O'quvchilarni bilimini sinash uchun testlar yaratishi mumkin, Har chorak oxirida olinadigan
+                    Nazoratlar yaratishi mumkin. O'quvchilar esa ularni yechishi mumkin!</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-dark p-3 goal h-100" style="border: 1px solid black !important;">
+                <h4>O'qituvchilar ishini yengillashtirish</h4>
+                <p class="pt-3">O'quvchilar javobini endi faqat O'qituvchi tekshirishi shart emas. Endi tizimni o'zi
+                    tekshiradi. (Albatta hammasini ham emas)</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="text-center" style="margin-top: 25px;">
+    <a class="start-btn" href="/users/login/">Hoziroq boshlash <i class="fa fa-chevron-right"></i></a>
+</div>
+<div class="about text-center mt-3" style="margin-top: 45px !important;">
+    <h1>Bu qanday platforma?</h1>
+    <div class="row" style="align-items: center !important;">
+        <div class="col-md-7">
+            <img src="/static/logo/home2.png" width="100%" alt="Home2">
+        </div>
+        <div class="col-md-5 text-start">
+            <div class="bg-dark text-white">
+                <h3>Bizning vazifa o'quvchilarga bilim berishdir...</h3><br>
+                <div>
+                    <h5> <b>
+                            <font face="Times New Roman">
+                                <p align="justify">Ushbu integrallashgan LMS - platforma PTMA Bekobod tuman
+                                    ixtisoslashtirilgan maktabida Informatika va axborot texnologiyalari fanini
+                                    o'rganish uchun xizmat qiladi. Bu yerda ta'lim beruvchi va ta'lim oluvchilar real
+                                    vaqtda dars mashg'ulotlarini o'tkazadilar, iqtidorli o'quvchilar fan olimpiadalariga
+                                    tayyorgarlik ko'radilar </p>
+                            </font>
+                        </b> </h5>
+                    <br>
+                    <h6> <b><i>
+                                <font face="Times New Roman">
+                                    <p align="right">Biz jahonni - bilim ila zabd eturmiz </p>
+                                </font>
+                            </i></b> </h6>
                 </div>
             </div>
         </div>
     </div>
-{% endblock content %}
-{% endcomment %}
-
-{% block content %}
-    <div class="row mb-3 bg-dark text-white">
-            <div class="col-12 bg-dark text-white">
-                <div class="card bg-dark text-white">
-                    <div class="card-body bg-dark text-white">
-                        <div class="row bg-dark text-white">
-                            <div class="col-12 mb-3">
-                                <h2>Bu qanday Platforma?</h2>
-                            </div>
-
-                            <div class="col-12 col-lg-8 col-md-6 mb-3 bg-dark text-white">
-                                <div><h5> <b><font face="Times New Roman" ><p align="justify">Ushbu integrallashgan LMS - platforma PTMA Bekobod tuman ixtisoslashtirilgan maktabida Informatika va axborot texnologiyalari fanini
-                                    o'rganish uchun xizmat qiladi. Bu yerda ta'lim beruvchi va ta'lim oluvchilar real vaqtda dars mashg'ulotlarini o'tkazadilar, iqtidorli o'quvchilar fan olimpiadalariga
-                                    tayyorgarlik ko'radilar </p></font></b> </h5>
-                                    <br> <h6> <b><i> <font face="Times New Roman" ><p align="right">Biz jahonni - bilim ila zabd eturmiz </p></font></i></b> </h6></div>
-                            </div>
-
-                            <div class="col-12 col-lg-4 col-md-6">
-                                <div class="card mt-1 overflow-hidden bg-dark text-white">
-                                    <img src="static/logo/photo_2022-09-06_21-20-111.jpg" id="img-logo" alt="sschool.uz" width="100%">
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
+</div>
+<div class="text-center" style="margin-top: 25px;">
+    <a class="start-btn" href="/users/login/">Hoziroq boshlash <i class="fa fa-chevron-right"></i></a>
+</div>
+<div class="stats" style="margin-top: 95px;">
+    <div class="row g-3">
+        <div class="col-md-3 stat text-center p-3 mr-1">
+            <i class="fa-solid fa-chalkboard-user rgba"></i><br><br>
+            <span class="fs-2" id="teacher" style="margin-left: -10px;">0</span>
+            <h3>O'qituvchilar</h3>
         </div>
 
-        <div class="card bg-dark">
-            <div class="card-header p-3"><h2>Tizimdagi kuchli <span class="text-info">5</span> lik</h2></div>
-            <div class="card-body table-responsive">
-                <table class="table">
-                    <thead>
-                        <tr class="p-2">
-                            <th>Foydalanuvchi nomi</th>
-                            <th>Ismi sharifi</th>
-                            <th>Ball</th>
-                        </tr>
-                    </thead>
-                    <tbody id="top-users">
-                        <tr class="p-3">
-                            <td colspan="3" class="text-center">Biroz sabr qiling!!</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="col-md-3 stat text-center p-3 mr-1">
+            <i class="fa fa-user rgba"></i><br><br>
+            <span class="fs-2" id="student" style="margin-left: -10px;">0</span>
+            <h3>O'quvchilar</h3>
         </div>
+
+        <div class="col-md-3 stat text-center p-3 mr-1">
+            <i class="fa fa-question rgba"></i><br><br>
+            <span class="fs-2" id="quiz" style="margin-left: -10px;">0</span>
+            <h3>Testlar</h3>
+        </div>
+
+        <div class="col-md-3 stat text-center p-3 mr-1">
+            <i class="fa fa-code rgba"></i><br><br>
+            <span class="fs-2" id="problem" style="margin-left: -10px;">0</span>
+            <h3>Algoritmik masalalar</h3>
+        </div>
+
+        <div class="col-md-4 stat text-center p-3 mr-1">
+            <i class="fa-solid fa-chart-gantt rgba"></i><br><br>
+            <span class="fs-2" id="control" style="margin-left: -10px;">0</span>
+            <h3>Nazoratlar</h3>
+        </div>
+
+        <div class="col-md-4 stat text-center p-3 mr-1">
+            <i class="fa fa-person-chalkboard rgba"></i><br><br>
+            <span class="fs-2" id="assignment" style="margin-left: -10px;">0</span>
+            <h3>Darslar</h3>
+        </div>
+
+        <div class="col-md-4 stat text-center p-3 mr-1">
+            <i class="fa fa-book rgba"></i><br><br>
+            <span class="fs-2" id="course" style="margin-left: -10px;">0</span>
+            <h3>Kurslar</h3>
+        </div>
+    </div>
+</div>
+{% endif %}
 {% endblock content %}
 
 {% block js %}
-    <script>
-        var top_users_table = document.querySelector('#top-users');
-        $.ajax(
-            {
-                type: 'GET',
-                url: '/users/get_top_users/',
-                success: (data) => {
+{% if user.is_authenticated %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $.ajax({
+        type: 'get',
+        url: '/api2/',
+        success: data=>{
+            html = '';
+            for(i of Object.values(data)){
+                html += `
+                <a href="/courses/course/${i.id}/" class="card bg-dark p-3 h-100">
+                    <img src="/static/logo/courses.png" style="border-radius: 10px;" alt="Image">
+                    <h4 class="mt-3">${i.title}</h4>
+                    <p>${i.about}</p>
+                    <div class="tegs"><span class="bg-success badge"><i class="fa fa-users"></i> ${i.users}</span> <span class="bg-primary badge">${(i.teg!=='') ? '<i class="fa fa-heshteg"></i> '+i.teg+'</span>' : ''}</div>
+                </a>
+                `;
+            };
+            if(html!==''){
+                document.querySelector('.carousel').innerHTML = html;
+                $(".carousel").owlCarousel({
+                    margin: 20,
+                    autoplay: true,
+                    autoplayTimeout: 2000,
+                    autoplayHoverPause: true,
+                    responsive: {
+                        0: { items: 1, nav: false },
+                        600: { items: 2, nav: false },
+                        1000: { items: 3, nav: false },
+                    },
+                });
+            } else{
+                document.querySelector('.top-courses').innerHTML = '';
+            };
+        },
+    });
+</script>
+{% endif %}
+<script>
+    $.ajax(
+        {
+            type: 'get',
+            url: '/api1/',
+            success: (data) => {
+                document.querySelector('#teacher').innerHTML = data.t + ' ta';
+                document.querySelector('#student').innerHTML = data.s + ' ta';
+                document.querySelector('#quiz').innerHTML = data.q + ' ta';
+                document.querySelector('#problem').innerHTML = data.m + ' ta';
+                document.querySelector('#control').innerHTML = data.c + ' ta';
+                document.querySelector('#assignment').innerHTML = data.a + ' ta';
+                document.querySelector('#course').innerHTML = data.c1 + ' ta';
+            },
+            error: e => console.error(e),
+        }
+    );
+
+    var top_users_table = document.querySelector('#top-users');
+    $.ajax(
+        {
+            type: 'GET',
+            url: '/users/get_top_users/',
+            success: (data) => {
+                try {
                     var html = ''
-                    for (let [username, user] of Object.entries(data)){
+                    for (let [username, user] of Object.entries(data)) {
                         html += `
-                            <tr class="p-3">
-                                <td><a href="/users/profile/${user.username}">${user.username}</a></td>
-                                <td>${user.full}</td>
-                                <td>${user.ball}</td>
-                            </tr>
-                        `;
+                                <tr class="p-3">
+                                    <td><a href="/users/profile/${user.username}">${user.username}</a></td>
+                                    <td>${user.full}</td>
+                                    <td>${user.ball}</td>
+                                </tr>
+                            `;
                     };
                     top_users_table.innerHTML = html;
-                },
-                error: (e) => {
-                    console.log(e)
-                },
+                } catch (e) { };
             },
-        );
-    </script>
+            error: (e) => {
+                console.log(e)
+            },
+        },
+    );
+</script>
 {% endblock js %}

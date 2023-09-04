@@ -30,7 +30,7 @@ Yoqtirgan Po'stlarim
                 <li><a href="/chats/"><i class="fa fa-comment"></i> Suhbatlar</a></li>
                 <li class="active-profile-item"><a href="#"><i class="fa fa-heart"></i> Yoqgan E'lonlar</a></li>
                 {% endif %}
-                {% if profile.is_teacher or profle.is_staff %}
+                {% if not profile.is_teacher or not profle.is_staff %}
                 <li><a href="/users/profile/{{profile.username}}/prices/assignment/"><i class="bx bx-football"></i> Topshiriqdan  olgan ballar</a></li>
                 <li><a href="/users/profile/{{profile.username}}/prices/controls/"><i class="bx bx-football"></i> Nazoratlardan olgan ballar</a></li>
                 {% else %}

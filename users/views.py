@@ -386,6 +386,7 @@ def add_admin_view(request, type=None):
                 user = get_object_or_404(MyUser, username=username)
                 user.is_staff = is_staff
                 user.is_teacher = True
+                user.save()
                 messages.success(request, f'{user.username} muvoffiqiyatli o\'qituvchi qilib tayinlandi')
                 return HttpResponseRedirect(f'/users/profile/{user.username}/')
             return render(request, 'users/add_super_user1.html', {'is_user': True})

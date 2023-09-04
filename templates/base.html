@@ -19,14 +19,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/fontawesome.min.css" integrity="sha512-cHxvm20nkjOUySu7jdwiUxgGy11vuVPE9YeK89geLMLMMEOcKFyS2i+8wo0FOwyQO/bL8Bvq1KMsqK4bbOsPnA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.13.2/datatables.min.css"/>
-    <link rel="stylesheet" href="/static/froala-editor/css/froala_editor.pkgd.min.css">
-
-    <link rel="stylesheet" href="/static/froala-editor/css/themes/dark.min.css">
 
     <link rel = "icon" href="/static/logo/site-logo.png"
         type = "image/x-icon">
 
-    <link rel="stylesheet" href="/static/styles/styles21.css">
+    <link rel="stylesheet" href="/static/styles/styles22.css">
 </head>
 
 <body class="container dark">
@@ -65,9 +62,8 @@
                             <li><hr class="dropdown-divider"></li>
                             {% if user.is_staff or user.is_teacher %}
                             <li><a class="dropdown-item" href="/informatics/problems/add/"><i class="fa fa-plus"></i> Masala Qo'shish</a></li>
-                            <li><a class="dropdown-item" href="/posts/add/"><i class="fa fa-plus"></i> Yangilik Qo'shish</a></li>
-                            <li><a class="dropdown-item" href="/assignments/add/"><i class="fa fa-plus"></i> Topshiriq Berish</a></li>
-                            <li><a class="dropdown-item" href="/controls/create/"><i class="fa fa-plus"></i> Nazorat boshlash</a></li>
+                            <li><a class="dropdown-item" href="/assignments/add/"><i class="fa fa-plus"></i> Dars qo'shish</a></li>
+                            <li><a class="dropdown-item" href="/controls/create/"><i class="fa fa-plus"></i> Nazorat Qo'shish</a></li>
                             <li><a class="dropdown-item" href="/tests/add/"><i class="fa fa-plus "></i> Test Qo'shish</a></li>
                             <li><a class="dropdown-item" href="/courses/add/"><i class="fa fa-plus "></i> Kurs Qo'shish</a></li>
                             <li><a class="dropdown-item" href="/users/add-super-user"><i class="fa fa-plus "></i> Admin Qo'shish</a></li>
@@ -108,11 +104,7 @@
             </li>
 
             <li class="s-item" id="tests">
-                <a href="/tests/"><i class="fa fa-question"></i> Testlar</a>
-            </li>
-
-            <li class="s-item" id="posts">
-                <a href="/posts/"><i class="fa fa-pen"></i> E'lonalar</a>
+                <a href="#"><i class="fa fa-question"></i> Olimpiada masalalari</a>
             </li>
 
             <li class="s-item" id="controls">
@@ -125,6 +117,7 @@
                         <li><a class="dropdown-item" href="/controls/"><i class="fa fa-bar-chart"></i> Nazoratlar</a></li>
                         <li><a class="dropdown-item" href="/assignments/"><i class="fa fa-person-chalkboard"></i> Darslar</a></li>
                         <li><a class="dropdown-item" href="/courses/"><i class="fa fa-book"></i> Kurslar</a></li>
+                        <li><a class="dropdown-item"  href="/tests/"><i class="fa fa-question"></i> Testlar</a></li>
                     </ul>
                 </div>
             </li>
@@ -203,7 +196,6 @@
     
     
     <script src="https://cdn.tiny.cloud/1/17a7wrogyqde5oyr8zrqqq2htjo86oedjrlbztd41drtencr/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
-    <script src="/static/froala-editor/js/froala_editor.pkgd.min.js"></script>
 
     <script src="https://unpkg.com/typed.js@2.0.15/dist/typed.umd.js"></script>
 

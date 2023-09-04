@@ -626,10 +626,8 @@ input.bg-dark, select.bg-dark, textarea.bg-dark{
 }
 .card.bg-dark{
     box-sizing: border-box !important;
-    box-shadow: 3px 3px 10px var(--input-bg),
-                -3px 3px 10px var(--input-bg),
-                3px -3px 10px var(--input-bg),
-                -3px -3px 10px var(--input-bg) !important;
+    
+    box-shadow: 0 8px 30px -7px var(--card-bg) !important;
 }
 
 
