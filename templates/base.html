@@ -23,14 +23,17 @@
     <link rel = "icon" href="/static/logo/site-logo.png"
         type = "image/x-icon">
 
-    <link rel="stylesheet" href="/static/styles/styles22.css">
+    <link rel="stylesheet" href="/static/styles/styles24.css">
 </head>
 
 <body class="container dark">
 
     <div class="rounded">
         <div class="navbar1">
-            <i class="fa fa-bars sidebar_toggler" id="sidebar-toogle"></i> <a class="nav-title" href="/"> BD Specialized School</a>
+            <i class="fa fa-bars sidebar_toggler" id="sidebar-toogle"></i> <a class="nav-title" href="/">
+                <span class="h-i-1">BD Specialized School</span>
+                <span class="h-i-2">BDSS</span>
+            </a>
             <ul class="items">
                 {% if user.is_authenticated %}
                 <li class="item">
@@ -51,7 +54,7 @@
                     <div class="dropdown-center">
                         <a class="fs-6" role="button" type="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
-                            {{user.username|title}} <i class="fa fa-user"></i>
+                            <span class="username">{{user.username|title}}</span> <i class="fa fa-user"></i>
                         </a>
                         <ul class="dropdown-menu bg-dark">
                             <li><a class="dropdown-item" href="/users/profile/{{user.username}}/"><i class="fa fa-user"></i> Profil</a></li>
@@ -66,6 +69,7 @@
                             <li><a class="dropdown-item" href="/controls/create/"><i class="fa fa-plus"></i> Nazorat Qo'shish</a></li>
                             <li><a class="dropdown-item" href="/tests/add/"><i class="fa fa-plus "></i> Test Qo'shish</a></li>
                             <li><a class="dropdown-item" href="/courses/add/"><i class="fa fa-plus "></i> Kurs Qo'shish</a></li>
+                            <li><a class="dropdown-item" href="/olympiad-solutions/add/"><i class="fa fa-plus "></i>Yechim Qo'shish</a></li>
                             <li><a class="dropdown-item" href="/users/add-super-user"><i class="fa fa-plus "></i> Admin Qo'shish</a></li>
                             {% endif %}
                             <li><hr class="dropdown-divider"></li>
@@ -81,7 +85,7 @@
                     <div class="dropdown-center">
                         <a class="fs-6" role="button" type="button" data-bs-toggle="dropdown"
                             aria-expanded="false">
-                            Authentikatsiya <i class="fa fa-user"></i>
+                            <span class="username"> Authentikatsiya </span><i class="fa fa-user"></i>
                         </a>
                         <ul class="dropdown-menu bg-dark">
                             <li><a class="dropdown-item" href="/users/login/"><i class="fa fa-arrow-right"></i> Kirish</a></li>
@@ -103,8 +107,8 @@
                 <a href="/classes/"><i class="fa fa-box"></i> Sinflar</a>
             </li>
 
-            <li class="s-item" id="tests">
-                <a href="#"><i class="fa fa-question"></i> Olimpiada masalalari</a>
+            <li class="s-item" id="olimpiada-solutions">
+                <a href="/olympiad-solutions/"><i class="fa fa-chart-pie"></i> Olimpiada masalalari</a>
             </li>
 
             <li class="s-item" id="controls">
@@ -143,12 +147,12 @@
 
         {% if messege.tags == "error" %}
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                {{messege|safe}}
+                <i class="fa fa-x fs-4"></i> {{messege|safe}}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         {% else %}
             <div class="alert alert-{{ messege.tags }} alert-dismissible fade show" role="alert">
-                {{messege|safe}}
+                <i class="fa fa-check fs-4"></i> {{messege|safe}}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         {% endif %}

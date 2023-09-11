@@ -1,0 +1,54 @@
+{% extends 'o/base.html' %}
+
+{% block title %}
+Olimpiada masalasini qo'shish
+{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/olympiad-solutions/">Olimpiada yechimlari</a></li>
+    <li class="breadcrumb-item"><a href="/olympiad-solutions/solution/{{sol.id}}/">{{sol.title}}</a></li>
+    <li class="breadcrumb-item active bg-dark" aria-current="page">Olimpiada masalasini qo'shish</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+
+    <div class="row">
+        <form method="post" class="col-md-12">{% csrf_token %}
+            <div class="card bg-dark p-0">
+                <h2 class="p-3 mb-2">Masala yechimini qo'shish</h2>
+                <div class="p-3 mb-3">
+                    <label for="title">Masala nomini kiriting</label>
+                    <input required type="text" id="title" name="title" class="bg-dark form-control">
+                </div>
+                <div class="mb-3 p-3">
+                    <label for="url">Masala url manzilini kiriting</label>
+                    <input required type="url" id="url" name="url" class="bg-dark form-control">
+                </div>
+                <div class="mb-3 p-3">
+                    <label for="url">Masala yechimini kiriting</label>
+                    <textarea name="body" id="body" class="form-control bg-dark"></textarea>
+                </div>
+                <div class="p-3">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Saqlash</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
+
+{% block js1 %}
+<script>
+    var editor1 = tinymce.init({
+        themes: "modern",
+        skin: "oxide-dark",
+        setup: editor=>{
+            document.body.classList.add('dark');
+        },
+        content_css: "/static/styles/tiny-custom.css",
+        selector: 'textarea',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+    });
+</script>
+{% endblock %}

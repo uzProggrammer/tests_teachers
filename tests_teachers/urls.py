@@ -99,6 +99,7 @@ urlpatterns = [
     path('courses/', include('courses.urls')),
     path('courses/', include('courses.creates_url')),
     path('courses/', include('courses.edits_url')),
+    path('olympiad-solutions/', include('olimpiads.urls')),
     path('api1/', get_counts_api),
     path('api2/', get_api_2),
 ]

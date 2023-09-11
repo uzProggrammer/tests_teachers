@@ -1,0 +1,32 @@
+{% extends 'o/base.html' %}
+
+{% block title %}
+Olimpiada yechimi qo'shish
+{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/olympiad-solutions/">Olimpiada yechimlari</a></li>
+    <li class="breadcrumb-item active bg-dark" aria-current="page">Qo'shish</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <div class="row">
+        <form method="post" class="col-md-12">{% csrf_token %}
+            <div class="card bg-dark p-0">
+                <h2 class="p-3 mb-2">Olimpiada yechimini yaratish</h2>
+                <div class="p-3 mb-3">
+                    <label for="title">Olimpiada nomini kiriting</label>
+                    <input required type="text" id="title" name="title" class="bg-dark form-control">
+                </div>
+                <div class="mb-3 p-3">
+                    <label for="url">Olimpiada url manzilini kiriting</label>
+                    <input required type="url" id="url" name="url" class="bg-dark form-control">
+                </div>
+                <div class="p-3">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Saqlash</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

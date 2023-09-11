@@ -20,7 +20,7 @@ class Complier:
         self.checker = checker
         self.delta1 = 0.0
         self.delta = 0.0
-        self.command = [self.lang, f"{BASE_DIR}\\{username}.py" if self.lang=='python' else f'{BASE_DIR}\\{username}.js']
+        self.command = ['python' if self.lang == 'python' else '/home/SSchool/.nvm/versions/node/v20.5.1/bin/node', f"{BASE_DIR}\\{username}.py" if self.lang=='python' else f'{BASE_DIR}\\{username}.js']
         self.file = f"{BASE_DIR}\\{username}.py" if self.lang=='python' else f'{BASE_DIR}\\{username}.js'
         if self.checker:
             self.checker_command = ['python', f"{BASE_DIR}\\checker.py"]
@@ -53,7 +53,7 @@ class Complier:
         if self.get_run_memory() <= self.memory_limit:
             if 'sys' in self.body or 'os' in self.body or 'subprocess' in self.body or 'tkinter' in self.body or 'turtle' in self.body or 'subprocess' in self.body:
                 return {'status': 'Import Error', 'time': 0, 'memory': 0}
-            
+
             else:
                 memory = self.get_run_memory()
                 if self.checker:
@@ -109,7 +109,7 @@ class Complier:
                             else:
                                 self.delete_file()
                                 return {'status': 'Nato\'g\'ri javob', 'time': self.delta, 'memory': memory*1024}
-                        
+
                         else:
                             self.delete_file()
                             return {'status': 'Komplatsiya xatosi', 'time': self.delta1, 'memory': memory*1024, 'e': communicate[1]}

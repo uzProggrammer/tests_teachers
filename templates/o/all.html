@@ -1,0 +1,97 @@
+{% extends 'o/base.html' %}
+
+{% block title %}
+Olimpiadalar
+{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item active bg-dark" aria-current="page">Olimpiada yechimlari</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="card bg-dark p-3 mb-3">
+    <form method="get">
+        <label for="search">Qidiruv</label>
+        <div class="input-group">
+            <input type="text" name="search" id="search" class="form-control bg-dark" placeholder="Qidirish..." value="{{search}}">
+            <button class="btn bg-dark input-group-text"><i class="fa fa-search"></i></button>
+        </div>
+    </form>
+</div>
+<div class="table-responsive card p-1 bg-dark mt-2">
+    <table class="table" id="not-stripted">
+        <thead>
+            <tr>
+                <th>Nomi</th>
+                <th>Muallif</th>
+                <th>Manzil</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for masala in page_obj.object_list %}
+                <tr class="{% if user in masala.accepteds %}border-success{% elif user in wrong_answers %}border-danger{% else %}{% endif %}">
+                    <td>
+                        <a href="/olympiad-solutions/solution/{{masala.id}}/"  {% if search|lower in masala.title|lower and search != '' %} style="color: rgb(20, 197, 20);" {% endif %};>{{masala.title|safe|title}}</a>
+                    </td>
+                    <td>
+                        <a href="/users/profile/{{masala.author.username}}/" {% if search|lower in masala.author.username|lower or search|lower in masala.author.last_name|lower or search|lower in masala.author.first_name|lower %}{% if search != '' %} style="color: rgb(20, 197, 20);" {% endif %}{% endif %};>{{masala.author.first_name|title}} {{masala.author.last_name|title}}</a>
+                    </td>
+                    <td>
+                        <a {% if search|lower in masala.url|lower and search != '' %} style="color: rgb(20, 197, 20);" {% endif %} href="{{masala.url}}" >{{masala.get_custom_url}}</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3" class="text-center">
+                        <i class="fa fa-x bg-danger" style="font-size: 90px;padding: 25px 30px;border-radius: 50%;"></i><br><br> Afsuski Hech narsa Topilmadi
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <th colspan="8">
+                    {% if object.num_pages != 1 %}
+                    <div class="pages text-center">
+
+                        <nav aria-label="Page navigation example" class="text-center">
+                            <ul class="pagination bg-dark text-center justify-content-center my-3">
+                                {% if page_obj.has_previous %}
+                                    <li class="page-item bg-dark"><a class="page-link" href="{% if search %}?search={{search}}&{% else %}?{% endif %}page={{ page_obj.previous_page_number }}">Orqaga</a></li>
+    
+                                    {% if page_obj.number > 3 %}
+                                        <li class="page-item"> <a class="page-link" href="{% if search %}?search={{search}}&{% else %}?{% endif %}page=1">1</a></li>
+                                            {% if page_obj.number > 4 %}
+                                                <li class="page-item"><span class="page-link">...</span></li>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endif %}
+    
+                                    {% for num in page_obj.paginator.page_range %}
+                                        {% if page_obj.number == num %}
+                                            <li class="page-item"><a class="page-link active disabled bg-dark" href="{% if search %}?search={{search}}&{% else %}?{% endif %}page={{ num }}">{{ num }}</a></li>
+                                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <li class="page-item"><a class="page-link" href="{% if search %}?search={{search}}&{% else %}?{% endif %}page={{ num }}">{{ num }}</a></li>
+                                        {% endif %}
+                                    {% endfor %}
+    
+                                    {% if page_obj.has_next %}
+                                        {% if page_obj.number < page_obj.paginator.num_pages|add:'-3' %} <span class="page-link">...</span>
+                                            <li class="page-item"><a class="page-link" href="{% if search %}?search={{search}}&{% else %}?{% endif %}page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+                                        {% elif page_obj.number < page_obj.paginator.num_pages|add:'-2' %} <li class="page-item"><a class="page-link"
+                                                href="{% if search %}?search={{search}}&{% else %}?{% endif %}page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+                                    {% endif %}
+    
+                                    <li class="page-item"><a href="{% if search %}?search={{search}}&{% else %}?{% endif %}page={{ page_obj.next_page_number }}" class="page-link">Oldinga</a></li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                    {% endif %}
+                </th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+{% endblock content %}

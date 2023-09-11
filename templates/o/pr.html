@@ -1,0 +1,59 @@
+{% extends 'o/base.html' %}
+
+{% block title %}
+{{pr.title|title}}
+{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/olympiad-solutions/">Olimpiada yechimlari</a></li>
+    <li class="breadcrumb-item"><a href="/olympiad-solutions/solution/{{sol.id}}/">{{sol.title|title}}</a></li>
+    <li class="breadcrumb-item active bg-dark" aria-current="page">{{pr.title|title}}</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+{% if user.is_staff or user == sol.author %}
+<div class="card bg-dark p-2 mb-3">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link bg-primary text-white" aria-current="page" href="#"><i class="fa fa-microchip"></i> Masala</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="edit/"><i class="fa fa-pen"></i> Tahrirlash</a>
+        </li>
+    </ul>
+</div>
+{% endif %}
+
+    <div class="row">
+        <div class="col-md-8 mb-3">
+            <div class="card bg-dark p-0">
+                <div class="p-3 mb-3" style="display: flex !important;justify-content: space-between;">
+                    <h3>{{pr.title|safe|title}}</h3>
+                    <span><a href="{{pr.url}}" target="_blank">{{pr.get_custom_url}}</a></span>
+                </div>
+                <div class="mb-3 p-3">
+                    {{pr.yechim|safe}}
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-dark p-2" style="position: sticky !important;top: 0 !important;">
+                <div class="p-3" style="display: flex !important;justify-content: space-between;">
+                    <a class="fs-3" href="/olympiad-solutions/solution/{{sol.id}}/">{{sol.title|title}}</a>
+                    <span><a href="{{sol.url}}">{{sol.get_custom_url}}</a></span>
+                </div>
+                <div class="mb-3 row p-3">
+                    {% for problem in sol.problems.all %}
+                    <div class="col-md-12 mt-3">
+                        <a href="/olympiad-solutions/solution/{{sol.id}}/problem/{{problem.id}}/" class="card h-100 {% if pr == problem %}bg-primary text-white{% else %}bg-dark{% endif %} p-2" style="box-shadow: none !important;">
+                            <h4>{{problem.title|safe|title}}</h4>
+                            <div class="p-2">{{problem.get_custom_body|slice:':20'}}...</div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'baholar',
     'courses',
     'Masalalar',
+    'olimpiads',
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,52 @@
+{% extends 'o/base.html' %}
+
+{% block title %}
+{{sol.title|title}}ni tahrirlash
+{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/olympiad-solutions/">Olimpiada yechimlari</a></li>
+    <li class="breadcrumb-item"><a href="/olympiad-solutions/solution/{sol.id}/">Olimpiada yechimlari</a></li>
+    <li class="breadcrumb-item active bg-dark" aria-current="page">Tahrirlash</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+{% if user.is_staff or user == sol.author %}
+
+{% endif %}
+{% if user.is_staff or user == sol.author %}
+<div class="card bg-dark p-2 mb-3">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link" href="/olympiad-solutions/solution/{{sol.id}}/"><i class="fa fa-bar-chart"></i> Olimpiada</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link bg-primary text-white" aria-current="page" href="#"><i class="fa fa-pen"></i> Tahrirlash</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/olympiad-solutions/solution/{{sol.id}}/add-problem/"><i class="fa fa-plus"></i> Masala yechimini qo'shish</a>
+        </li>
+    </ul>
+</div>
+{% endif %}
+
+    <div class="row">
+        <form method="post" class="col-md-12">{% csrf_token %}
+            <div class="card bg-dark p-0">
+                <h2 class="p-3 mb-2">Olimpiada yechimini yaratish</h2>
+                <div class="p-3 mb-3">
+                    <label for="title">Olimpiada nomini kiriting</label>
+                    <input required type="text" id="title" name="title" class="bg-dark form-control" value="{{sol.title}}">
+                </div>
+                <div class="mb-3 p-3">
+                    <label for="url">Olimpiada url manzilini kiriting</label>
+                    <input required type="url" id="url" name="url" class="bg-dark form-control" value="{{sol.url}}">
+                </div>
+                <div class="p-3">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i> Saqlash</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

@@ -4,8 +4,12 @@
 
 
 {% block content %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.css" integrity="sha512-UTNP5BXLIptsaj5WdKFrkFov94lDx+eBvbKyoe1YAfjeRPC+gT5kyZ10kOHCfNZqEui1sxmqvodNUx3KbuYI/A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.css"
+    integrity="sha512-UTNP5BXLIptsaj5WdKFrkFov94lDx+eBvbKyoe1YAfjeRPC+gT5kyZ10kOHCfNZqEui1sxmqvodNUx3KbuYI/A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css"
+    integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 <style>
     .stats i {
         font-size: 110px;
@@ -26,12 +30,12 @@
     }
 
     .carousel {
-        
+
         margin: auto;
         padding: 0 30px;
     }
 
-    
+
 
     .owl-dots {
         text-align: center;
@@ -67,11 +71,11 @@
                 <div>
                     <h5> <b>
                             <font face="Times New Roman">
-                                <p align="justify">Ushbu integrallashgan LMS - platforma PTMA Bekobod tuman
+                                <p align="justify">Ushbu integrallashgan ta'lim - platforma ITMA Bekobod tuman
                                     ixtisoslashtirilgan maktabida Informatika va axborot texnologiyalari fanini
                                     o'rganish uchun xizmat qiladi. Bu yerda ta'lim beruvchi va ta'lim oluvchilar real
                                     vaqtda dars mashg'ulotlarini o'tkazadilar, iqtidorli o'quvchilar fan olimpiadalariga
-                                    tayyorgarlik ko'radilar </p>
+                                    tayyorgarlik ko'radilar va bepul online kurslardan foydalanadilar</p>
                             </font>
                         </b> </h5>
                     <br>
@@ -90,7 +94,7 @@
     <a class="fs-3" href="/courses/">Ko'p O'quvchi qatnashgan Kurslar</a>
     <div class="wrapper">
         <div class="carousel owl-carousel" id="courses-container">
-            
+
         </div>
     </div>
 </div>
@@ -157,7 +161,7 @@
             </thead>
             <tbody id="top-users">
                 <tr class="p-3">
-                    <td colspan="3" class="text-center">Biroz sabr qiling!!</td>
+                    <td colspan="3" class="text-center">Yuklanmoqda...</td>
                 </tr>
             </tbody>
         </table>
@@ -235,11 +239,11 @@
                 <div>
                     <h5> <b>
                             <font face="Times New Roman">
-                                <p align="justify">Ushbu integrallashgan LMS - platforma PTMA Bekobod tuman
+                                <p align="justify">Ushbu integrallashgan ta'lim - platforma ITMA Bekobod tuman
                                     ixtisoslashtirilgan maktabida Informatika va axborot texnologiyalari fanini
                                     o'rganish uchun xizmat qiladi. Bu yerda ta'lim beruvchi va ta'lim oluvchilar real
                                     vaqtda dars mashg'ulotlarini o'tkazadilar, iqtidorli o'quvchilar fan olimpiadalariga
-                                    tayyorgarlik ko'radilar </p>
+                                    tayyorgarlik ko'radilar va bepul online kurslardan foydalanadilar </p>
                             </font>
                         </b> </h5>
                     <br>
@@ -302,28 +306,68 @@
     </div>
 </div>
 {% endif %}
+<footer class="site-footer">
+    <hr>
+        <div class="row">
+            <div class="col-md-4 text-center" style="align-items: center;">
+                <img width="60%" src="/static/logo/site-logo.png" alt="site-logo">
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="text-start">
+                    <h3>Sayt sahifalari</h3>
+                    <ul class="footer-links">
+                        <li><a href="/">Bosh sahifa</a></li>
+                        <li><a href="/classes/">Sinflar</a></li>
+                        <li><a href="/tests/">Testlar</a></li>
+                        <li><a href="/assignments/">Darslar</a></li>
+                        <li><a href="/problems/">Algoritmik masalalar</a></li>
+                        <li><a href="/courses/">Kurslar</a></li>
+                        <li><a href="/controls/">Nazoratlar</a></li>
+                        <li><a href="/olympiad-solutions/">Olimpiada masalalari</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="text-start">
+                    <h2>Bog'lanish</h2>
+                    <ul class="footer-links ">
+                        <li><a href="tel:+998930705213" target="_blank"><i class="fa fa-phone"></i> Bog'lanish</a></li>
+                        <li><a href="mailto:dadajonovazamjon@gmail.com" target="_blank"><i class="fa fa-envelope"></i> Email manzil</a></li>
+                        <li><a href="https://t.me/dadajonov_azamjon/" target="_blank"><i class="fa fa-plus"></i> O'z hissangizni qo'shing</a></li>
+                        <li><a href="https://t.me/dadajonov_azamjon/" target="_blank"><i class="fa fa-question"></i> Savollar</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    <hr>
+    <div class="text-center">
+        <p>&copy; Specialized Schooll Copyright 2022 - 2023 by <a href="https://t.me/dadajonov_azamjon/" target="_blank"> this school student</a></p>
+    </div>
+</footer>
 {% endblock content %}
 
 {% block js %}
 {% if user.is_authenticated %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js" integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"
+    integrity="sha512-bPs7Ae6pVvhOSiIcyUClR7/q2OAsRiovw4vAkX+zJbw3ShAeeqezq50RIIcIURq7Oa20rW2n2q+fyXBNcU9lrw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
     $.ajax({
         type: 'get',
         url: '/api2/',
-        success: data=>{
+        success: data => {
             html = '';
-            for(i of Object.values(data)){
+            for (i of Object.values(data)) {
                 html += `
                 <a href="/courses/course/${i.id}/" class="card bg-dark p-3 h-100">
                     <img src="/static/logo/courses.png" style="border-radius: 10px;" alt="Image">
                     <h4 class="mt-3">${i.title}</h4>
                     <p>${i.about}</p>
-                    <div class="tegs"><span class="bg-success badge"><i class="fa fa-users"></i> ${i.users}</span> <span class="bg-primary badge">${(i.teg!=='') ? '<i class="fa fa-heshteg"></i> '+i.teg+'</span>' : ''}</div>
+                    <div class="tegs"><span class="bg-success badge"><i class="fa fa-users"></i> ${i.users}</span> <span class="bg-primary badge">${(i.teg !== '') ? '<i class="fa fa-heshteg"></i> ' + i.teg + '</span>' : ''}</div>
                 </a>
                 `;
             };
-            if(html!==''){
+            if (html !== '') {
                 document.querySelector('.carousel').innerHTML = html;
                 $(".carousel").owlCarousel({
                     margin: 20,
@@ -336,7 +380,7 @@
                         1000: { items: 3, nav: false },
                     },
                 });
-            } else{
+            } else {
                 document.querySelector('.top-courses').innerHTML = '';
             };
         },
