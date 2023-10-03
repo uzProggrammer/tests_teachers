@@ -1,0 +1,13 @@
+{
+    "builds": [{
+        "src": "test_teachers/wsgi.py",
+        "use": "@ardnt/vercel-python-wsgi",
+        "config": { "maxLambdaSize": "40mb" }
+    }],
+    "routes": [
+        {
+            "src": "/(.*)",
+            "dest": "test_teachers/wsgi.py"
+        }
+    ]
+}
