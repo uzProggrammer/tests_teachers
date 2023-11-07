@@ -18,17 +18,15 @@ def all_bsb(request):
 
 def edit_bsb(request, id):
     bsb = get_object_or_404(BSB, id=id)
-    if request.user.is_staff or request.user.is_teacher or request.user.is_superuser:
+    if request.user.is_authenticated and request.user.is_staff or request.user.is_teacher or request.user.is_superuser:
         sinflar = Sinf.objects.all().order_by('nom')
         if request.method == 'POST':
-            info = request.POST['info']
             sinf_id = int(request.POST['sinf'])
             sinf = Sinf.objects.get(id=sinf_id)
             type = request.POST['type']
             d_end = request.POST['d_end']
             d_start = request.POST['d_start']
             title = request.POST['title']
-            bsb.body = info
             bsb.sinf = sinf
             bsb.type = type
             bsb.date_ended = d_end
@@ -38,24 +36,73 @@ def edit_bsb(request, id):
             return HttpResponseRedirect(f'/controls/control/{id}/')
         return render(request, 'bsb/bsb_edit.html', {'bsb':bsb, 'sinflar':sinflar})
     else:
-        return render(request, '404.html')
+        return render(request, '403.html', status=403)
+
+def clone_bsb(request, id):
+    bsb = get_object_or_404(BSB, id=id)
+    if request.user.is_staff or request.user.is_teacher:
+        sinflar = Sinf.objects.all().order_by('nom')
+        if request.method=='POST':
+            sinf_id = int(request.POST['sinf'])
+            sinf = Sinf.objects.get(id=sinf_id)
+            d_end = request.POST['d_end']
+            d_start = request.POST['d_start']
+            bsb1 = BSB.objects.create(title=bsb.title, date_ended=d_end, date_statrted=d_start, sinf=sinf, author=request.user, body="...", type=bsb.type)
+            if bsb.type == 'Masala':
+                for problem1 in bsb.problems.all():
+                    problem = BsbProblem.objects.create(title=problem1.title,
+                                difficulty=problem1.difficulty, time_limit=problem1.time_limit, memory_limit=problem1.memory_limit,
+                                about=problem1.about,info_out=problem1.info_out, info_in=problem1.info_in,
+                                simple_tests=problem1.simple_tests, tests=problem1.tests, yechim=problem1.yechim, ball=problem1.ball, user=problem1.user, bsb=bsb1)
+            elif bsb.type=='Topshiriq':
+                for assignment in bsb.assignments.all():
+                    ass = BsbAssignment.objects.create(title=assignment.title, info=assignment.info, author=assignment.user, ball=assignment.ball, Bsb=bsb1)
+            else:
+                for quiz in bsb.quizess.all():
+                    bsb_quiz = BsbQuiz.objects.create(bsb=bsb1, body=quiz.body, ball=quiz.ball)
+                    for tests in quiz.tests.all():
+                        BsbQuizTests(question=bsb_quiz, body=tests.body, is_true=tests.is_true).save()
+            messages.success(request, 'Nazorat nusxalandi!')
+            return HttpResponseRedirect(f'/controls/control/{bsb1.id}/')
+
+        return render(request, 'bsb/bsb_clone.html', {'bsb':bsb, 'sinflar':sinflar})
+    else:
+        return render(request, '403.html', status=403)
 
 def add_bsb(request):
-    if request.user.is_staff or request.user.is_teacher or request.user.is_superuser:
+    if request.user.is_authenticated and request.user.is_staff or request.user.is_teacher or request.user.is_superuser:
         sinflar = Sinf.objects.all().order_by('nom')
         if request.method == 'POST':
-            info = request.POST['info']
             sinf_id = request.POST['sinf']
             sinf = Sinf.objects.get(nom=sinf_id)
             type = request.POST['type']
             d_end = request.POST['d_end']
             d_start = request.POST['d_start']
             title = request.POST['title']
-            bsb = BSB.objects.create(body=info, sinf=sinf,type=type,date_ended=d_end,date_statrted=d_start, title=title, author=request.user)
+            bsb = BSB.objects.create(sinf=sinf,type=type,date_ended=d_end,date_statrted=d_start, title=title, author=request.user)
             return HttpResponseRedirect(f'/controls/control/{bsb.id}/')
         return render(request, 'bsb/bsb_add.html', {'sinflar': sinflar})
     else:
-        return render(request, '404.html')
+        return render(request, '403.html', status=403)
+
+def delete_bsb(request, id):
+    bsb = get_object_or_404(BSB, id=id)
+    if request.user.is_authenticated and request.user.is_staff or request.user.is_teacher:
+        if request.method == "POST":
+            if bsb.type == 'Masala':
+                bsb.problems.all().delete()
+            elif bsb.type=='Topshiriq':
+                bsb.assignments.all().delete()
+            else:
+                for quiz in bsb.quizess.all():
+                    BsbQuizTests.objects.filter(question=quiz).delete()
+                    quiz.delete()
+            bsb.delete()
+            messages.success(request, 'Nazorat o\'chirildi!')
+            return HttpResponseRedirect(f'/controls/')
+        return render(request, 'bsb/delete_bsb.html', {'bsb':bsb})
+    else:
+        return render(request, '403.html', status=403)
 
 def bsb_view(request, id):
     bsb = get_object_or_404(BSB, id=id)
@@ -161,7 +208,7 @@ def bsb_assignment(request, id, id1):
 
 def add_bsb_assignment(request, id):
     bsb = get_object_or_404(BSB, id=id)
-    if (request.user.is_teacher or request.user.is_staff) and bsb.type == 'Topshiriq':
+    if request.user.is_authenticated and (request.user.is_teacher or request.user.is_staff) and bsb.type == 'Topshiriq':
         last = BsbAssignment.objects.last()
         users = MyUser.objects.filter(is_student=True)
         if request.method == 'POST' and bsb.type == 'Topshiriq':
@@ -179,7 +226,7 @@ def edit_bsb_assignment(request, id, id1):
     bsb = get_object_or_404(BSB, id=id)
     ass = get_object_or_404(BsbAssignment, id=id1)
     form = EditForm(request.POST or None, instance=ass)
-    if request.method == 'POST' and request.user.is_staff or request.user.is_teacher and bsb.type == 'Topshiriq':
+    if request.user.is_authenticated and request.method == 'POST' and request.user.is_staff or request.user.is_teacher and bsb.type == 'Topshiriq':
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(f'/controls/control/{id}/assignments/assignment/{id1}/')
@@ -187,7 +234,7 @@ def edit_bsb_assignment(request, id, id1):
 
 def add_answer_ball(request, id, id1):
     bsb = get_object_or_404(BSB, id=id)
-    if request.user.is_staff or request.user.is_teacher  and bsb.type == 'Topshiriq':
+    if request.user.is_authenticated and request.user.is_staff or request.user.is_teacher  and bsb.type == 'Topshiriq':
         student_answer = get_object_or_404(StudentAnswer, id=id1)
         if request.method=='POST':
             ball = float(request.POST.get('ball'))
@@ -208,7 +255,7 @@ def add_answer_ball(request, id, id1):
 
 def bsb_problems(request, id):
     bsb = get_object_or_404(BSB, id=id)
-    if timezone.now() > bsb.date_statrted and timezone.now() < bsb.date_ended and request.user.sinf == bsb.sinf.nom and bsb.type=='Masala' or request.user.is_staff or request.user == bsb.author:
+    if request.user.is_authenticated and timezone.now() > bsb.date_statrted and timezone.now() < bsb.date_ended and request.user.sinf == bsb.sinf.nom and bsb.type=='Masala' or request.user.is_staff or request.user == bsb.author:
         problems = bsb.problems.all()
         return render(request, 'bsb/bsb_problems.html', {'bsb':bsb, 'problems':problems})
     else:
@@ -227,12 +274,12 @@ def bsb_problem(request, id, id1):
         task = get_object_or_404(BsbProblem, id=id1)
         task_attempts = None
         formca = None
-        if request.user.sinf == bsb.sinf.nom:
+        if request.user.is_authenticated and request.user.sinf == bsb.sinf.nom:
             attemptca = BsbProblemAnswer.objects.filter(bsb_problem=task, user=request.user).last()
             formca = AttemptForm(request.POST or None, instance=attemptca)
             task_attempts = BsbProblemAnswer.objects.filter(user=request.user, bsb_problem=task).order_by('-id')
         task_attempts1 = BsbProblemAnswer.objects.filter(bsb_problem=task).order_by('-id')
-        if request.method == 'POST' and bsb.type == 'Masala' and request.user.sinf == bsb.sinf.nom:
+        if request.user.is_authenticated and request.method == 'POST' and bsb.type == 'Masala' and request.user.sinf == bsb.sinf.nom:
             if request.user.is_teacher or request.user.is_staff:
                 if 'body' in request.POST:
                     runner = Complier(body=request.POST['body'], time_limit=task.time_limit * 5,
@@ -304,7 +351,7 @@ def bsb_problem(request, id, id1):
 
 def edit_bsb_problem(request, id, id1):
     bsb = get_object_or_404(BSB, id=id)
-    if request.user.is_staff or request.user.is_teacher and bsb.type == 'Masala':
+    if request.user.is_authenticated and request.user.is_staff or request.user.is_teacher and bsb.type == 'Masala':
         problem = get_object_or_404(BsbProblem, id=id1)
         simple_t = json.dumps(problem.simple_tests)
         tests = json.dumps(problem.tests)
@@ -345,7 +392,7 @@ def edit_bsb_problem(request, id, id1):
 
 def get_attempt(request, id, id1):
     bsb = get_object_or_404(BSB, id=id)
-    if request.user.is_teacher or request.user.is_staff and bsb.type == 'Masala':
+    if request.user.is_authenticated and request.user.is_teacher or request.user.is_staff and bsb.type == 'Masala':
         attempt = get_object_or_404(BsbProblemAnswer, id=id1)
         return render(request, 'bsb/attempt.html', {'attempt':attempt, 'bsb':bsb})
     else:
@@ -353,7 +400,7 @@ def get_attempt(request, id, id1):
 
 def add_bsb_problem(request, id):
     bsb = get_object_or_404(BSB, id=id)
-    if request.user.is_teacher or request.user.is_staff and bsb.type == 'Masala':
+    if request.user.is_authenticated and request.user.is_teacher or request.user.is_staff and bsb.type == 'Masala':
         if request.method == 'POST':
             title = request.POST['title']
             diff = int(request.POST.get('diff', False))
@@ -386,7 +433,7 @@ def add_bsb_problem(request, id):
 
 def bsb_quizess(request, id):
     bsb = get_object_or_404(BSB, id=id)
-    if request.user.sinf == bsb.sinf.nom and bsb.type == 'Test' and not BsbQuizBall.objects.filter(test=bsb, user=request.user).exists() or request.user.is_staff or request.user.is_teacher:
+    if request.user.is_authenticated and request.user.sinf == bsb.sinf.nom and bsb.type == 'Test' and not BsbQuizBall.objects.filter(test=bsb, user=request.user).exists() or request.user.is_staff or request.user.is_teacher:
         quizes = bsb.quizess.all()
 
         return render(request, 'bsb/quizess.html', {'bsb':bsb, 'quizes':quizes})
@@ -397,7 +444,7 @@ def bsb_quizess(request, id):
 def post_bsb_question(request, id):
     bsb = get_object_or_404(BSB, id=id)
 
-    if request.user.sinf == bsb.sinf.nom and bsb.type == 'Test' and not BsbQuizBall.objects.filter(test=bsb, user=request.user).exists():
+    if request.user.is_authenticated and request.user.sinf == bsb.sinf.nom and bsb.type == 'Test' and not BsbQuizBall.objects.filter(test=bsb, user=request.user).exists():
         if request.method == 'POST':
             data = {}
             data1 = []
@@ -422,12 +469,31 @@ def post_bsb_question(request, id):
             return render(request, 'bsb/quiz_post.html', {'data':data, 'data1':sum(data1), 'bsb':bsb})
         else:
             return HttpResponseRedirect(f'/controls/control/{bsb.id}/')
+    elif request.user.is_staff or request.user.is_teacher:
+        if request.method == 'POST':
+            data = {}
+            data1 = []
+            data3 = []
+            for key, value in request.POST.items():
+                if key != 'csrfmiddlewaretoken':
+                    quiz = BsbQuiz.objects.get(id=key)
+                    answer = BsbQuizTests.objects.get(id=value)
+                    data3.append(answer)
+                    if answer.is_true:
+                        data[quiz.id] = True
+                        data1.append(quiz.ball)
+                    else:
+                        data[quiz.id] = False
+            scope = sum(data1)
+            return render(request, 'bsb/quiz_post.html', {'data':data, 'data1':sum(data1), 'bsb':bsb})
+        else:
+            return HttpResponseRedirect(f'/controls/control/{bsb.id}/')
     else:
         return HttpResponseRedirect(f'/controls/control/{bsb.id}/')
 
 def add_bsb_quiz(request, id):
     bsb = get_object_or_404(BSB, id=id)
-    if request.user.is_staff or request.user.is_teacher and bsb.type == 'Test':
+    if request.user.is_authenticated and request.user.is_staff or request.user.is_teacher and bsb.type == 'Test':
         if request.method == 'POST':
             quiz = request.POST
             BsbQuiz(bsb=bsb, body=request.POST.get('quiz-title'), ball=int(request.POST.get('ball'))).save()
@@ -452,7 +518,7 @@ def add_bsb_quiz(request, id):
 def quiz_answer(request, id, id1):
     bsb = get_object_or_404(BSB, id=id)
     answer = get_object_or_404(BsbQuizBall, id=id1)
-    if request.user == answer.user or request.user.is_staff or request.user.is_teacher and bsb.type == 'Test':
+    if request.user.is_authenticated and request.user == answer.user or request.user.is_staff or request.user.is_teacher and bsb.type == 'Test':
         return render(request, 'bsb/quiz_answer.html', {'bsb':bsb, 'answer': answer})
     else:
         return render(request, '404.html')
@@ -465,9 +531,9 @@ def quiz_answer(request, id, id1):
 def results(request, id):
     bsb = get_object_or_404(BSB, id=id)
     if bsb.type == 'Topshiriq':
-        answers = bsb.yakuniy.all()
+        answers = bsb.yakuniy.all().order_by('-ball')
     elif bsb.type == 'Masala':
-        answers = bsb.yakuniy.all()
+        answers = bsb.yakuniy.all().order_by('-ball')
     else:
-        answers = bsb.balls.all()
+        answers = bsb.balls.all().order_by('-scope')
     return render(request, 'bsb/results.html', {'bsb':bsb, 'answers':answers})

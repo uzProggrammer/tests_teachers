@@ -1,0 +1,69 @@
+{% extends 'assignments/base.html' %}
+
+{% block title %}Javoblar{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/assignments/">Topshiriqlar</a></li>
+    <li class="breadcrumb-item"><a href="/assignments/assignment/{{assignment.id}}/">{{assignment.title|title}}</a></li>
+    <li class="breadcrumb-item bg-dark" aria-current="page">Javoblar</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class='card bg-dark mb-3'>
+    <ul class="nav nav-tabs bg-dark">
+        <li class="nav-item">
+            <a class="nav-link" href="/assignments/assignment/{{assignment.id}}/"><i class='fa fa-person-chalkboard'></i> Dars</a>
+        </li>
+        {% if user.is_staff or user.is_teacher %}
+        <li class="nav-item">
+            <a class="nav-link" href="/assignments/assignment/{{assignment.id}}/edit/"><i class='fa fa-pen'></i> Tahrirlash</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link bg-danger text-white" href="/assignments/assignment/{{assignment.id}}/delete/"><i class='fa fa-trash'></i> O'chirish</a>
+        </li>
+        {% endif %}
+        {% if user.sinf == assignment.sinf and user in assignment.javoblar.all %}
+        <li class="nav-item">
+            <a class="nav-link" href="/assignments/assignment/{{assignment.id}}/my-answer/"><i class='fa fa-file-pen'></i> Mening javobim</a>
+        </li>
+        {% endif %}
+        {% if now > assignment.qachongacha or user.is_staff or user.is_teacher %}
+        <li class="nav-item">
+            <a class="nav-link  bg-primary text-white" aria-current="page"><i class='fa fa-check'></i> Javoblar</a>
+        </li>
+        {% endif %}
+        <li class="nav-item">
+            <a class="nav-link" href="/assignments/assignment/{{assignment.id}}/prices/"><i class='fa fa-medal'></i> Baholar</a>
+        </li>
+
+    </ul>
+</div>
+<div class="table-responsive card p-1 bg-dark mt-2">
+    <table class="table" id="not-stripted">
+        <thead>
+            <tr>
+                <th>O'quvchi</th>
+                <th>Topshirilgan vaqt</th>
+                <th>Ball</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for masala in answers %}
+                <tr class="{% if user in masala.javoblar %}border-success{% else %}{% endif %}">
+                    <td><a href="/assignments/assignment/{{assignment.id}}/answers/{{masala.id}}/">{{masala.student.get_full_name}}</td>
+                    <td>{{masala.date_created|date:'d.m.Y | h:m'}}</td>
+                    <td>{% if masala.student_answer %}{{masala.student_answer.first.ball}} ball{% else %}Ball berilmagan{% endif %}</td>
+
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3" class="text-center">
+                        <i class="fa fa-x bg-danger" style="font-size: 90px;padding: 25px 35px;border-radius: 50%;"></i><br><br> Afsuski Hech narsa Topilmadi
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock content %}

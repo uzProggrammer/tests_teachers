@@ -1,0 +1,25 @@
+{% extends 'tests/base.html' %}
+
+{% block extrahead %}
+<script>window.CKEDITOR_BASEPATH = '/static/ckeditor/ckeditor/';</script>
+{{ block.super }}
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/tests/">Testlar</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Yangi test qo'shish</li>
+{% endblock breadcrumb %}
+
+{% block title %}Yangi Test{% endblock title %}
+
+{% block content %}
+    <form method="post">{% csrf_token %}
+        {{ form.media }}
+        {{form.as_p}}
+        <div class="my-3">
+            <button type="submit" class="btn btn-outline-primary">Saqlash</button>
+        </div>
+    </form>
+
+{% endblock content %}

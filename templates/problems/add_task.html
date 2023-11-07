@@ -1,0 +1,236 @@
+{% extends 'problems/base.html' %}
+
+{% block extrahead %}
+<script>window.CKEDITOR_BASEPATH = '/my_static/ckeditor/ckeditor/';</script>
+{{ block.super }}
+{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+<li class="breadcrumb-item"><a href="/informatics/problems/">Masalalar</a></li>
+<li class="breadcrumb-item active" aria-current="page">Qo'shish</li>
+{% endblock breadcrumb %}
+
+{% block title %}Masala Qo'shish{% endblock title %}
+{% load static %}
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor-init.js' %}"></script>
+<script type="text/javascript" src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+
+
+{% comment %}
+{% block content %}
+<h3 class="text-white">New Task</h3>
+<hr>
+
+<form method="POST" class="bg-dark text-white" id="my_form">
+    {% csrf_token %}
+    {{ form.media }}
+    <div>
+        {% for field in form %}
+        <div class="mb-3">
+            <span class="m-05" style="margin-top:20px;">{{ field.label }}</span>
+            {{ field }}
+        </div>
+
+        {% endfor %}
+
+    </div>
+    <button class="btn btn-outline-primary" style="margin-left:50px;" type="submit" id="submit_button">Saqlash</button>
+</form>
+<script>
+    tinymce.init({
+        themes: "modern",
+        skin: "oxide-dark",
+        content_css: "dark",
+        selector: 'textarea.for_tiny',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+    });
+</script>
+<script>
+    CKEDITOR.addCss('.cke_editable { background-color: #222327; color: white }');
+    var my_form = document.querySelector('#my_form')
+    submit_button = document.querySelector('#submit_button');
+    submit_button.addEventListener('click', () => {
+        my_form.submit();
+    })
+</script>
+{% endblock content %}
+{% endcomment %}
+
+{% block content %}
+<div class="card bg-dark ">
+    <div class="card-header p-2">
+        <h4>Masala Qo'shish</h4>
+    </div>
+    <div class="card-body">
+        <form method="post">{% csrf_token %}
+            <div class="mb-3">
+                <label for="form-label" for="title">Sarlovha</label>
+                <input type="text" class="form-control bg-dark" value="{{title}}" placeholder="Masalaning sarlovhasi" name="title"
+                    id="title">
+            </div>
+            <div class="mb-3">
+                <label for="form-label" for="body">Masala matni</label>
+                <textarea name="body" id="body" placeholder="Masalaning matni"
+                    class="bg-dark form-control tiny">{{body|safe}}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="form-label" for="info_in">Masala Kirish Oqimi</label>
+                <textarea name="info_in" id="info_in" placeholder="Masalaning Kirish oqimi"
+                    class="bg-dark form-control tiny">{{info_in|safe}}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="form-label" for="info_out">Masala Chiqish Oqimi</label>
+                <textarea name="info_out" id="info_out" placeholder="Masalaning matni"
+                    class="bg-dark form-control tiny">{{info_out|safe}}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="form-label" for="simple_tests">Masala Misollari</label>
+                <textarea name="simple_tests" id="simple_tests" placeholder="Masalaning Misollari"
+                    class="bg-dark form-control">{{simple|safe}}</textarea>
+            </div>
+            <div class="mb-3">
+                <label for="form-label" for="tests">Masala Testlari</label>
+                <textarea name="tests" id="tests" placeholder="Masalaning Testlari"
+                    class="bg-dark form-control">{{tests|safe}}</textarea>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label for="difficulty" class="form-label">Qiyinchiligi</label>
+                    <input type="number" name="difficulty" id="difficulty" class="form-control bg-dark"
+                        placeholder="Qiyinchiligi" value="{{diff}}">
+                </div>
+                <div class="col-md-4">
+                    <label for="time" class="form-label">Vaqt Chegarasi</label>
+                    <input type="number" name="time" id="time" class="form-control bg-dark"
+                        placeholder="Vaqt Chegarasi" value="{{time}}">
+                </div>
+                <div class="col-md-4">
+                    <label for="memory" class="form-label">Xotira Chegarasi</label>
+                    <input type="number" name="memory" id="memory" class="form-control bg-dark"
+                        placeholder="Xotira Chegarasi" value="{{memory}}">
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="form-label" for="solve">Masala Yechimi</label>
+                <textarea name="solve" id="solve" placeholder="Masalaning Yechimi"
+                    class="bg-dark form-control tiny">{{solve|safe}}</textarea>
+            </div>
+
+            <button class="btn btn-success" type="submit">Saqlash</button> <button class="btn btn-primary" type="button"
+                data-bs-toggle="modal" data-bs-target="#problem_modal"><i class="fa fa-eye"></i></button>
+
+            <div class="modal fade" id="problem_modal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog bg-dark modal-fullscreen">
+                    <div class="modal-content bg-dark">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Masalaning ko'rinishi</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card bg-dark text-white" style="border:none;">
+                                <div class="card-header text-center">
+                                    <h3 id="title-show"></h3>
+                                    <span><span class="mx-2" style="color:rgb(194, 194, 194);">Qiyinchiligi: <span id="diff-show"></span> %</span> <span class="mx-2" style="color:rgb(194, 14, 194);">Vaqt chegarasi: <span id="time-show"></span> ms</span> <span class="mx-2" style="color:rgb(94, 14, 234);">Xotira cheklovi: <span id="memory-show"></span> MB</span></span>
+                                </div>
+                                <div class="card-body">
+                                    <hr class="bg-light"><a href=""><div class="card-middle">
+                                        <div class="bg-dark text-white user-status">
+                                            <div class="card-body d-inline p-1">
+                                                <img src="https://icon-library.com/images/teacher-icon-png/teacher-icon-png-17.jpg" width="40" class="header__img">
+                                                <span style="font-size:20px;">{{user.first_name|title}} {{user.last_name|title}}</span><br><span class="fw-lighter px-3 text-white-50" style="font-size:15px;">{{user.email}}</span>
+                                            </div>
+                                        </div>
+                                    </div></a><hr>
+                                    <h4 class="text-primary">Sharti:</h4>
+                                    <div id="body-show"></div>
+                                    <hr>
+                                    <h4 class="text-primary">Kiruvchi ma'lumotlar:</h4><span id="in-show"></span><hr>
+                                    <h4 class="text-primary">Chiquvchi ma'lumotlar:</h4><span id="out-show"></span><hr>
+                                        <h4 class="text-primary">Misollar:</h4>
+                                        <table class="table bg-dark table-responsive text-white table-bordered border-light">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">input.txt</th>
+                                                    <th scope="col">output.txt</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tests-show">
+                                                    
+                                            </tbody>
+                                        </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Yopish</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
+
+{% block js1 %}
+<script>
+    document.querySelector('#title').addEventListener('keyup', ()=>{
+        document.querySelector('#title-show').innerHTML=document.querySelector('#title').value;
+    });
+    document.querySelector('#memory').addEventListener('keyup', ()=>{
+        document.querySelector('#memory-show').innerHTML = document.querySelector('#memory').value;
+    });
+    document.querySelector('#time').addEventListener('keyup', ()=>{
+        document.querySelector('#time-show').innerHTML = document.querySelector('#time').value;
+    });
+    document.querySelector('#difficulty').addEventListener('keyup', ()=>{
+        document.querySelector('#diff-show').innerHTML = document.querySelector('#difficulty').value;
+    });
+    
+    tinymce.init({
+        themes: "modern",
+        skin: "oxide-dark",
+        content_css: "dark",
+        selector: 'textarea.tiny',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
+    });
+    setInterval(()=>{
+        document.querySelector('#body-show').innerHTML = tinymce.get('body').getContent();
+        document.querySelector('#in-show').innerHTML = tinymce.get('info_in').getContent();
+        document.querySelector('#out-show').innerHTML = tinymce.get('info_out').getContent();
+        
+    }, 2000);
+    
+    function testJSON(text) {
+        if (typeof text !== "string") {
+            return false;
+        }
+        try {
+            JSON.parse(text);
+            return true;
+        } catch (error) {
+            return false;
+        }
+    }
+
+    document.querySelector('#simple_tests').addEventListener('keyup', ()=>{
+        if(testJSON(document.querySelector('#simple_tests').value)){
+            var json = JSON.parse(document.querySelector('#simple_tests').value);
+            var html = ''
+            for(const[key,value] of Object.entries(json)){
+                html+=`
+                <tr>
+                    <th>${key}</th>
+                    <th>${value}</th>
+                </tr>
+                `;
+            };
+            document.querySelector('#tests-show').innerHTML=html;
+        }
+    });
+</script>
+{% endblock %}

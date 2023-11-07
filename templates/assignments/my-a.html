@@ -1,0 +1,51 @@
+{% extends 'assignments/base.html' %}
+
+{% block title %}{{assignment.title|safe}}{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/assignments/">Topshiriqlar</a></li>
+    <li class="breadcrumb-item"><a href="/assignments/assignment/{{assignment.id}}/">{{assignment.title|title}}</a></li>
+    <li class="breadcrumb-item bg-dark" aria-current="page">Mening javobim</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <div class='card bg-dark mb-3'>
+        <ul class="nav nav-tabs bg-dark">
+            <li class="nav-item">
+                <a class="nav-link" href="/assignments/assignment/{{assignment.id}}/"><i class='fa fa-person-chalkboard'></i> Dars</a>
+            </li>
+            {% if user.is_staff or user.is_teacher %}
+            <li class="nav-item">
+                <a class="nav-link bg-dark" href="/assignments/assignment/{{assignment.id}}/edit/"><i class='fa fa-pen'></i> Tahrirlash</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link bg-danger text-white" href="/assignments/assignment/{{assignment.id}}/delete/"><i class='fa fa-trash'></i> O'chirish</a>
+            </li>
+            {% endif %}
+            {% if user.sinf == assignment.sinf and user in assignment.javoblar.all %}
+            <li class="nav-item">
+                <a class="nav-link bg-primary text-white" aria-current="page"><i class='fa fa-file-pen'></i> Mening javobim</a>
+            </li>
+            {% endif %}
+            {% if now > assignment.qachongacha or user.is_staff or user.is_teacher %}
+            <li class="nav-item">
+                <a class="nav-link bg-dark" href="/assignments/assignment/{{assignment.id}}/answers/"><i class='fa fa-check'></i> Javoblar</a>
+            </li>
+            {% endif %}
+            <li class="nav-item">
+                <a class="nav-link bg-dark" href="/assignments/assignment/{{assignment.id}}/prices/"><i class='fa fa-medal'></i> Baholar</a>
+            </li>
+
+        </ul>
+    </div>
+
+    <div class="card bg-dark p-3">
+        {{s_answer.answer|safe}}
+
+        <br>
+        {% if s_answer.student_answer %}
+            Siz olgan ball - {{s_answer.student_answer.first.ball}}
+        {% endif %}
+    </div>
+{% endblock content %}

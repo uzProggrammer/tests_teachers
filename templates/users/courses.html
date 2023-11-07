@@ -5,12 +5,9 @@
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
 <li class="breadcrumb-item"><a
-        href="{% if profile.is_teacher %}/users/teachers/{% else %}/users/teachers/{% endif %}">
-        {% if profile.is_teacher %}O'qituvchilar{% else %}O'quvchilar{% endif %}</a></li>
-<li class="breadcrumb-item"><a
-        href="{% if profile.is_teacher %}/users/teachers/{{profile.username}}/{% else %}/users/teachers/{{profile.username}}/{% endif %}">
-        {% if profile.is_teacher %}O'qituvchilar{% else %}O'quvchilar{% endif %}</a></li>
-<li class="breadcrumb-item active text-white" aria-current="page">{{profile.username|title}}</li>
+        href="/users/user/{{profile.username}}/">
+        {{profile.username|title}}</a></li>
+<li class="breadcrumb-item active bg-dark" aria-current="page">Kurslar</li>
 {% endblock breadcrumb %}
 
 {% block content %}
@@ -30,9 +27,8 @@
                 {% if user == profile %}
                 <li><a href="/users/update/"><i class="fa fa-pen"></i> Tahirirlash</a></li>
                 <li><a href="/chats/"><i class="fa fa-comment"></i> Suhbatlar</a></li>
-                <li><a href="/users/profile/{{profile.username}}/liked-posts/"><i class="fa fa-heart"></i> Yoqgan E'lonlar</a></li>
                 {% endif %}
-                {% if not profile.is_teacher or not profle.is_staff %}
+                {% if not profile.is_teacher and not profle.is_staff %}
                 <li><a href="/users/profile/{{profile.username}}/prices/assignment/"><i class="bx bx-football"></i> Topshiriqdan  olgan ballar</a></li>
                 <li><a href="/users/profile/{{profile.username}}/prices/controls/"><i class="bx bx-football"></i> Nazoratlardan olgan ballar</a></li>
                 {% else %}
@@ -53,7 +49,7 @@
             <div class="col-md-6 mb-3">
                 <a href="course/{{course.id}}/" class="card bg-dark">
                     <img src="/static/logo/courses.png" class="card-img-top course-img" alt="Courses.png">
-                    
+
                     <div class="card-body">
                         <h5>{{course.title}}</h5>
                         <p class="card-text">{{course.summary|safe}}</p>

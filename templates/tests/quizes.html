@@ -10,7 +10,7 @@
     <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
     <li class="breadcrumb-item"><a href="/tests/">Testlar</a></li>
     <li class="breadcrumb-item"><a href="/tests/test/{{test.id}}/">{{test.title|title}}</a></li>
-    <li class="breadcrumb-item active text-white" aria-current="page">Savollar</li>
+    <li class="breadcrumb-item bg-dark" aria-current="page">Savollar</li>
 {% endblock breadcrumb %}
 
 {% block content %}
@@ -134,7 +134,7 @@
                     {% endif %}
                     {% endfor %}<br>
                     <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#exampleModal">Yuborish</button>
-                    
+
                 </ul>
             </div>
         </div>
@@ -271,7 +271,7 @@
                 e.preventDefault();
                 const draggedElementId = e.dataTransfer.getData('text/plain');
                 const draggedElement = document.getElementById(draggedElementId);
-                
+
                 if(draggedElement.getAttribute('data-id')===this.getAttribute('data-id')){
                     if(dd_s.hasOwnProperty(this.getAttribute('data-key-id'))){
                         dd_s[this.getAttribute('data-key-id')].push(draggedElement.getAttribute('data-value-id'));

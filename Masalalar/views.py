@@ -103,7 +103,7 @@ def masala_view(request: HttpRequest, slug):
                     code = request.POST.get('code')
                     urinish = Urinish.objects.create(user=request.user, masala=masala, tests={
                     }, memory=0, time=0, olcham=len(code), til=lang, turi='Tekshirilmoqda', body=code)
-                    
+
                     UrinishYaratuvchiThread(request.user.username, masala, lang, urinish).start()
                 messages.success(request, urinish.turi)
                 return HttpResponseRedirect(f'/informatics/problems/problem/{masala.slug}/')
@@ -166,15 +166,15 @@ def masala_qoshish(request: HttpRequest):
                 body = '...'
                 if 'body' in request.POST:
                     body = request.POST.get('body')
-                
+
                 _in = None
                 if 'in' in request.POST:
                     _in = request.POST.get('in')
-                
+
                 out = None
                 if 'out' in request.POST:
                     out = request.POST.get('out')
-                
+
                 checker = None
                 if 'checker' in request.POST:
                     checker = request.POST.get('checker')
@@ -196,7 +196,7 @@ def masala_qoshish(request: HttpRequest):
                 masala = Masala.objects.create(title=title, difficulty=diff, memory_limit=memory, time_limit=time, body=body,
                     info_in=_in, out=out, checker=checker, type=type, yechim = yechim, korinadigan_testlar = testcases, slug=pwd, author=request.user
                 )
-                
+
                 if 'teg' in request.POST:
                     tegs = request.POST.getlist('teg')
                     for teg in tegs:
@@ -212,13 +212,6 @@ def masala_qoshish(request: HttpRequest):
 
 def masalaemas_view(request: HttpRequest, slug):
     masala = get_object_or_404(Masala, slug=slug, is_archived=False)
-    masala.empty = True
-    masala.save()
-    masala.empty = True
-    masala.save()
-    masala.empty = True
-    masala.save()
-    print(masala.title)
     attempts = []
     user_like = False
     user_dislike = False
@@ -246,7 +239,7 @@ def masalaemas_view(request: HttpRequest, slug):
                     code = request.POST.get('code')
                     urinish = Urinish.objects.create(user=request.user, masala=masala, tests={
                     }, memory=0, time=0, olcham=len(code), til=lang, turi='Tekshirilmoqda', body=code)
-                    
+
                     UrinishYaratuvchiThread(request.user.username, masala, lang, urinish).start()
                 messages.success(request, urinish.turi)
                 return HttpResponseRedirect(f'/informatics/problems/unproblem/{masala.slug}/')
@@ -261,7 +254,7 @@ def testcases(request, slug):
             json = False
             if 'from-json' in request.GET:
                 json = True
-            
+
             json1 = ''
             if request.method == 'POST':
                 if 'json' in request.POST:
@@ -301,7 +294,7 @@ def testcases_post_view(request, slug):
             return render(request, '403.html', status=403)
     else:
         return render(request, '403.html', status=403)
-    
+
 def to_archive(request: HttpRequest, slug):
     masala = get_object_or_404(Masala, slug=slug)
     if request.user.is_authenticated:
@@ -325,7 +318,7 @@ def add_yechim_view(request, slug):
             if masala.is_archived:
                 return HttpResponseRedirect(f'/informatics/problems/problem/{masala.slug}/')
             else:
-                return HttpResponseRedirect(f'/informatics/unproblems/problem/{masala.slug}/')
+                return HttpResponseRedirect(f'/informatics/problems/unproblem/{masala.slug}/')
         else:
             return render(request, '403.html', status=403)
     else:
@@ -334,7 +327,7 @@ def add_yechim_view(request, slug):
 def yechim_view(request, slug):
     masala = get_object_or_404(Masala, slug=slug)
     if request.user.is_authenticated:
-        if request.user.is_staff and masala.yechim:
+        if masala.yechim:
             return render(request, f'masalalar/yechim.html', {"masala":masala})
         else:
             return render(request, '404.html', status=404)
@@ -362,7 +355,7 @@ def edit_testcase_view(request, slug):
             return render(request, '403.html', status=403)
     else:
         return render(request, '403.html', status=403)
-        
+
 def urinishlar_view(request):
     masalalar = Paginator(Urinish.objects.all().order_by('-id'), 20)
     if 'page' in request.GET:

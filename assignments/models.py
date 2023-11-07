@@ -14,7 +14,7 @@ class Assignment(models.Model):
     is_readed = models.BooleanField(default=False)
     qachongacha = models.DateTimeField(blank=True, null=True)
     date_created = models.DateTimeField(auto_now_add=True)
-
+    javoblar=models.ManyToManyField(MyUser, related_name='topshirilgan_topshiriqlar', null=True, blank=True)
     max_ball = models.FloatField(default=2.0)
 
     def __str__(self):
@@ -45,7 +45,7 @@ class StudentAnswerBall(models.Model):
     ball = models.FloatField()
     is_readed = models.BooleanField(default=False)
     xatolar_va_kamchiliklar = RichTextField(null=True, blank=True)
-
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, related_name='assigment_answer_balls')
     date_created = models.DateTimeField(auto_now_add=True)
 
     likes = models.ManyToManyField(MyUser, related_name='teacher_ball_likes', null=True, blank=True)

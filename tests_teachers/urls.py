@@ -102,6 +102,7 @@ urlpatterns = [
     path('olympiad-solutions/', include('olimpiads.urls')),
     path('api1/', get_counts_api),
     path('api2/', get_api_2),
+    path('api/v1/', include('apiv1.routes'))
 ]
 
 handler404 = notFound

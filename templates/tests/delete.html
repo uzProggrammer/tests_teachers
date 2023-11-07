@@ -1,0 +1,56 @@
+{% extends 'tests/base.html' %}
+
+{% block title %}
+    {{test.title|title}}
+{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/tests/">Testlar</a></li>
+    <li class="breadcrumb-item bg-dark" aria-current="page">{{test.title|title}}</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="card bg-dark p-2 my-3">
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link" href="/tests/test/{{test.id}}/"><i class="fa fa-question"></i> Test</a>
+        </li>
+        {% if user.is_staff or user == test.author %}
+        <li class="nav-item">
+            <a class="nav-link" href="/tests/test/{{test.id}}/edit/"><i class="fa fa-pen"></i> Tahrirlash</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/tests/test/{{test.id}}/add-quiz/"><i class="fa fa-plus"></i> Savol Qo'shish</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link bg-primary text-white"><i class="fa fa-trash"></i> O'chirish</a>
+        </li>
+        {% if not test.is_public %}
+        <li class="nav-item">
+            <a class="nav-link" href="/tests/test/{{test.id}}/public/"><i class="fa fa-globe"></i> Ommaviy qilish</a>
+        </li>
+        {% endif %}
+        {% endif %}
+        <li class="nav-item">
+            <a class="nav-link" href="/tests/test/{{test.id}}/results/"><i class="fa fa-chart-bar"></i> Natijalar</a>
+        </li>
+        {% if user in test.users.all %}
+        <li class="nav-item">
+            <a class="nav-link" href="/tests/test/{{test.id}}/result/"><i class="fa fa-chart-simple"></i> Natijam</a>
+        </li>
+        {% endif %}
+    </ul>
+</div>
+
+<div class="card bg-dark text-white p-3">
+    <h4>Rostdan ham ushbu testni o'chirib tashlamoqchimiz. Bu bilan birga barcha javoblar va ballar ham o'chib ketadi?</h4>
+    <div class="mt-3">
+        <form method="post">
+            {% csrf_token %}
+            <button class="btn btn-danger" type="submit"><i class="fa fa-trash"></i> O'chirish</button>
+            <a class="btn btn-primary" href="/">Yo'q</a>
+        </form>
+    </div>
+</div>
+{% endblock content %}

@@ -9,12 +9,14 @@ from quizess.views.detail import (
     results_view,
     result_view,
     result1_view,
+    delete_test,
 )
 from django.urls import path
 
 urlpatterns = [
     path('', all_view),
     path('test/<int:id>/', deteil_view),
+    path('test/<int:id>/delete/', delete_test),
     path('test/<int:id>/start/', start_test_view),
     path('test/<id>/quizes/', quizes_view),
     path('test/<int:id>/quizes/post/', quizes_post_view),

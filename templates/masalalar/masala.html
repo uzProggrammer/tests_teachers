@@ -13,6 +13,13 @@
 {% endblock breadcrumb %}
 
 {% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100;200;300;400;500;600;700;800&display=swap');
+    .attempt-type{
+        font-family: 'Playpen Sans', cursive;
+        font-weight: 600;
+    }
+</style>
     <div class="card bg-dark p-2">
         <ul class="nav nav-tabs bg-dark mb-3">
             <li class="nav-item">
@@ -25,7 +32,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/solve/"><i class="fa fa-pen"></i> Yechim</a>
             </li>
-            {% endif %} 
+            {% endif %}
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false"><i class="fa fa-star"></i> Reyting</a>
                 <ul class="dropdown-menu bg-dark">
@@ -57,7 +64,7 @@
         <p><span class="badge p-1" style="background-color: {{masala.get_diff_color}};">{{masala.get_diff}}</span> | <span class="bg-info badge p-1"><a href="/users/profile/{{masala.author.username}}/">{{masala.author.first_name}} {{masala.author.last_name}}</a></span>
             | <span class="badge bg-success p-1">{{masala.time_limit}} ms</span> | <span class="badge p-1 bg-secondary">{{masala.memory_limit}} MB</span> | {% for teg in masala.get_1_teg %} <span class="badge p-1 bg-primary"> {{teg}}</span>{% endfor %}
         </p>
-        <p><button class="btn btn-{% if not user_like %}outline-{% endif %}primary" id="like_btn"><i class="fa fa-thumbs-up"></i> <span class="likes_count">{{masala.get_likes}}</span></button> <button class="btn btn-{% if not user_dislike %}outline-{% endif %}danger" id="dislike_btn"><i class="fa fa-thumbs-down"></i> <span class="dislikes_count">{{masala.get_dislikes}}</span></button></p>
+        <p>
         <hr>
         <div class="p-3">
             <div>
@@ -102,12 +109,11 @@
         {% if user.is_authenticated %}
             <form method="post">{% csrf_token %}
                 <h4>Javobini yuborish</h4>
-                <textarea name="code" id="editor" class="bg-dark form-control">{{attempts.first.body}}</textarea>
-                
+                <textarea name="code" id="editor" class="">{{attempts.first.body}}</textarea>
                 <label for="lang" class="mt-3 form-label" >Tilni tanlang:</label>
                 <select name="lang" id="lang" class="mb-3 form-select bg-dark" required>
-                    <option value="python" id="python">Python</option>
-                    <option value="node" id="node">Javascript</option>
+                    <option value="python" id="python" {% if attempts.first.lang == 'python' %}selected{% endif %}>Python</option>
+                    <option value="node" id="node" {% if attempts.first.lang == 'node' %}selected{% endif %}>Javascript</option>
                 </select>
                 {% if not masala.is_archived %}
                 <input type="hidden" value="1" name="is_unproblem">
@@ -136,7 +142,7 @@
                     {% for urinish in attempts %}
                         <tr class="attempts">
                             <td><a href="/informatics/attempts/attempt/{{urinish.id}}/">{{urinish.id}}</a></td>
-                            <td class="attempt-type {% if urinish.turi == 'Qabul Qilindi' %}text-success{% elif 'Tekshirilmoqda' in urinish.turi %}text-info{% elif urinish.turi == 'Navbatda' %}text-white{% else %}text-danger{% endif %}" data-id="{{urinish.id}}"><span class="">{{urinish.turi}}</span></td>
+                            <td class="attempt-type {% if urinish.turi == 'Qabul Qilindi' %}text-success{% elif 'Tekshirilmoqda' in urinish.turi %}text-info{% elif urinish.turi == 'Navbatda' %}text-white{% else %}text-danger{% endif %}" data-id="{{urinish.id}}"><span class="attempt-type">{{urinish.turi}}</span></td>
                             <td><img src="{% if urinish.til == 'python' %}https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/121px-Python-logo-notext.svg.png{% elif urinish.til == 'node' %}https://algorithmshub.uz/static/javascript.png{% endif %}" width="30" style="border-radius: 15px;" alt="language"></td>
                             <td id="time-{{urinish.id}}">{{urinish.time|floatformat:'2'}} ms</td>
                             <td id="memory-{{urinish.id}}">{{urinish.memory|floatformat:'2'}} KB</td>
@@ -162,8 +168,8 @@
                                 success: data=>{
                                     if(!data['type'].includes('Tekshirilmoqda')){
                                         el.innerHTML = data.type;
-                                        document.querySelector('time-'+el.getAttribute('data-id')).innerHTML = data.time;
-                                        document.querySelector('memory-'+el.getAttribute('data-id')).innerHTML = data.memory;
+                                        document.querySelector('#time-'+el.getAttribute('data-id')).innerHTML = data.time;
+                                        document.querySelector('#memory-'+el.getAttribute('data-id')).innerHTML = data.memory;
                                         if(data['is_acc']){
                                             el.classList.remove('text-info');
                                             el.classList.add('text-success');
@@ -189,10 +195,11 @@
             if (lang.value==='python') til = 'python'
             var editor = CodeMirror.fromTextArea(document.getElementById('editor'), {
                 mode: til,
-                lineNumbers: true,
-                tabSize: 4,
-                theme: 'dracula',
-                lineWrapping: false
+				theme: "lesser-dark",
+				lineWrapping: true,
+				lineNumbers: true,
+				styleActiveLine: true,
+				matchBrackets: true,
             });
             lang.addEventListener('change', ()=>{
                 localStorage.setItem('lang', lang.value);
@@ -202,60 +209,9 @@
             });
             editor.save()
             document.querySelector(`#${localStorage.getItem('lang')}`).selected = true;
-        </script>
-        <script>
-            var likes = document.querySelector('.likes_count');
-            var btn_like = document.querySelector('#like_btn');
-            var dislikes_count = document.querySelector('.dislikes_count');
-            var dislike_btn = document.querySelector('#dislike_btn');
-            btn_like.addEventListener('click', ()=>{
-                $.ajax(
-                    {
-                        type: 'get',
-                        url: '/informatics/problems/problem/sIHwmkb5EReAu9lOGpF8LYoS4nMWgc2Pxt1ja6zB/like-toggle?type=like',
-                        success: (data)=>{
-                            if(data['status']==='ok'){
-                                likes.innerHTML = data['likes'];
-                                dislikes_count.innerHTML = data['count1'];
-                                if(btn_like.classList.contains('btn-outline-primary')){
-                                    btn_like.classList.remove('btn-outline-primary');
-                                    btn_like.classList.add('btn-primary');
-                                    dislike_btn.classList.remove('btn-danger');
-                                    dislike_btn.classList.add('btn-outline-danger');
-                                }
-                            };
-                        },
-                        error: (e)=>{
-                            console.error(e);
-                        }
-                    }
-                )
-            });
 
-            dislike_btn.addEventListener('click', ()=>{
-                $.ajax(
-                    {
-                        type: 'get',
-                        url: '/informatics/problems/problem/sIHwmkb5EReAu9lOGpF8LYoS4nMWgc2Pxt1ja6zB/like-toggle?type=dislike',
-                        success: (data)=>{
-                            if(data['status']==='ok'){
-                                likes.innerHTML = data['likes'];
-                                dislikes_count.innerHTML = data['count1'];
-                                if(dislike_btn.classList.contains('btn-outline-danger')){
-                                    dislike_btn.classList.remove('btn-outline-danger');
-                                    dislike_btn.classList.add('btn-danger');
-                                    btn_like.classList.remove('btn-primary');
-                                    btn_like.classList.add('btn-outline-primary');
-                                }
-                            };
 
-                        },
-                        error: (e)=>{
-                            console.error(e);
-                        }
-                    }
-                )
-            });
         </script>
+
     {% endif %}
 {% endblock js1 %}

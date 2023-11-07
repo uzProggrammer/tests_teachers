@@ -28,9 +28,8 @@ Yoqtirgan Po'stlarim
                 {% if user == profile %}
                 <li><a href="/users/update/"><i class="fa fa-pen"></i> Tahirirlash</a></li>
                 <li><a href="/chats/"><i class="fa fa-comment"></i> Suhbatlar</a></li>
-                <li class="active-profile-item"><a href="#"><i class="fa fa-heart"></i> Yoqgan E'lonlar</a></li>
                 {% endif %}
-                {% if not profile.is_teacher or not profle.is_staff %}
+                {% if not profile.is_teacher and not profle.is_staff %}
                 <li><a href="/users/profile/{{profile.username}}/prices/assignment/"><i class="bx bx-football"></i> Topshiriqdan  olgan ballar</a></li>
                 <li><a href="/users/profile/{{profile.username}}/prices/controls/"><i class="bx bx-football"></i> Nazoratlardan olgan ballar</a></li>
                 {% else %}
@@ -46,7 +45,7 @@ Yoqtirgan Po'stlarim
         </div>
     </div>
     <div class="col-md-9">
-        
+
         {% for masala in page_obj.object_list %}
         <div class="card bg-dark mb-3">
             <div class="row g-3">

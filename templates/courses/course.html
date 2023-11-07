@@ -43,13 +43,13 @@
     {{course.about|safe}}
 </div>
 <div class="card bg-dark p-2 mt-3">
-    <div class="card-header">Mavzular 
+    <div class="card-header">Mavzular
         {% if user == course.author or user.is_staff %}<button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-primary mx-2" id="add_lesson"><i class="fa fa-plus"></i> Mavzu qo'shish</button>
           <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog bg-dark modal-fullscreen">
                 <form method="post" action="/courses/course/{{course.id}}/lesson-add/" class="modal-content bg-dark">
                     {% csrf_token %}
-                    <input type="hidden" name="url" id="url" url="course">
+                    <input type="hidden" name="url" id="url" value="course">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="staticBackdropLabel">Mavzu qo'shish</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -87,7 +87,7 @@
                         <div class="accordion-body p-4">
                             {{lesson.summary|safe}}
 
-                            
+
                             {% if user.is_staff or user == course.author %}
                             <br><br>
                             <div class="text-end">
@@ -102,7 +102,7 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            
+
                                             <div class="mb-2">
                                                 <label for="title-lesson" class="form-label">Mavzu nomi</label>
                                                 <input type="text" class="form-control bg-dark" required placeholder="Dars nomi" id="title-lesson" name="title" value="{{lesson.title}}">

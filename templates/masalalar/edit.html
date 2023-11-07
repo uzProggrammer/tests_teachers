@@ -1,12 +1,12 @@
 {% extends 'masalalar/base.html' %}
 
-{% block title %}Masala yaratish{% endblock %}
+{% block title %}Masala tahrirlash{% endblock %}
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
     <li class="breadcrumb-item"><a href="/informatics/{% if not masala.is_archived %}un{% endif %}problems/">Algoritmik Masalalar</a></li>
     <li class="breadcrumb-item"><a href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}">{{masala.title|title}}</a></li>
-    <li class="breadcrumb-item active bg-dark" aria-current="page">tahrirlash</li>
+    <li class="breadcrumb-item active bg-dark" aria-current="page">Tahrirlash</li>
 {% endblock breadcrumb %}
 
 {% block content %}
@@ -15,7 +15,7 @@
         <a class="nav-link"  href="{% if masala.is_archived %}/informatics/problems/problem/{{masala.slug}}/{% else %}/informatics/problems/unproblem/{{masala.slug}}/{% endif %}"><i class="fa fa-book"></i> Masala</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link" href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/attempts/"></a>><i class="fab fa-strava"></i> Urinishlar</a>
+        <a class="nav-link" href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/attempts/"><i class="fab fa-strava"></i> Urinishlar</a>
     </li>
     {% if masala.have_yechim or user == masala.author or user.is_staff %}
         <li class="nav-item">
@@ -84,7 +84,7 @@
                         <span class="input-group-text bg-dark">ms</span>
                     </div>
                 </div>
-                
+
             </div>
             <div class="mb-3">
                 <label for="body" class="form-label">Masala sharti</label>
@@ -120,15 +120,6 @@
                     <span class="input-group-text bg-dark"><i class="fa fa-eye"></i></span>
                 </div>
             </div>
-            <div class="my-3">
-                Teglar
-                <div class="row" id="tegs">
-                    <div class="col-md-2">
-                        <input type="text" class="bg-dark form-control mb-2" name="teg">
-                    </div>
-                </div>
-                <button type="button" id="add_teg_input" class="btn btn-primary"><i class="fa fa-plus"></i> Teg qo'shish</button>
-            </div>
             {% csrf_token %}
             <button type="submit" class="btn btn-primary mt-3">Yaratish</button>
         </form>
@@ -156,14 +147,5 @@
                 matchBrackets: true,
             });
         editor.save();
-
-        document.querySelector('#add_teg_input').addEventListener('click', ()=>{
-            var container = document.querySelector('#tegs');
-            var html = '<input type="text" class="bg-dark form-control mb-2" name="teg">';
-            var div = document.createElement('div');
-            div.className = 'col-md-2';
-            div.innerHTML = html;
-            container.appendChild(div);
-        });
     </script>
 {% endblock js1 %}

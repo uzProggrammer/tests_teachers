@@ -20,6 +20,9 @@
     #back-button{
         display: block !important;
     }
+    .text p{
+        display: inline;
+    }
 }
 
 </style>
@@ -84,9 +87,6 @@
                             <button class="text text{{m.id}}" style="border:none;outline:none;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 {{m.message|safe}}
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-dark position-fixed t-0 bg-dark" style="z-index:1;">
-                              <li><button class="dropdown-item delete_message" onclick="delete_message({{m.id}})">O'chirish</button></li>
-                            </ul>
                           </div>
                           <div class="time">{{m.date_created|date:"d.m.Y | H.i"}}</div>
                         </section>
@@ -100,9 +100,7 @@
                             <button class="text text{{m.id}}" style="border:none;outline:none;" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 {{m.message|safe}}
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-dark position-fixed t-0 bg-dark" style="z-index:1;">
-                              <li><button class="dropdown-item delete_message" onclick="delete_message({{m.id}})">O'chirish</button></li>
-                            </ul>
+
                           </div>
                           <div class="time">{{m.date_created|date:"d.m.Y | H.i"}}</div>
                         </section>

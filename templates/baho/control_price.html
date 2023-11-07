@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
+{% load djutils %}
 
 {% block title %}{{profile.username}}{% endblock title %}
+
 
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
@@ -26,11 +28,10 @@
                 {% if user == profile %}
                 <li><a href="/users/update/"><i class="fa fa-pen"></i> Tahirirlash</a></li>
                 <li><a href="/chats/"><i class="fa fa-comment"></i> Suhbatlar</a></li>
-                <li><a href="/users/profile/{{profile.username}}/liked-posts/"><i class="fa fa-heart"></i> Yoqgan E'lonlar</a></li>
                 {% endif %}
-                {% if profile.is_teacher or profle.is_staff %}
+                {% if not profile.is_teacher and not profle.is_staff %}
                 <li><a href="/users/profile/{{profile.username}}/prices/assignment/"><i class="bx bx-football"></i> Topshiriqdan  olgan ballar</a></li>
-                <li><a href="/users/profile/{{profile.username}}/prices/controls/"><i class="bx bx-football"></i> Nazoratlardan olgan ballar</a></li>
+                <li class='active-profile-item'><a href="/users/profile/{{profile.username}}/prices/controls/"><i class="bx bx-football"></i> Nazoratlardan olgan ballar</a></li>
                 {% else %}
                 <li><a href="/users/profile/{{profile.username}}/assignments/"><i class="bx bx-football"></i> Topshiriqlar</a></li>
                 <li><a href="/users/profile/{{profile.username}}/controls/"><i class="bx bx-football"></i> Nazoratlar</a></li>
@@ -59,8 +60,8 @@
                     <tbody>
                         {% for answer in object.object_list %}
                         <tr>
-                            <td><a href="{% url 'bsb' answer.id %}">{{answer.title}}</a></td>
-                            <td>{% if answer.type == 'Masala' %}{{problem_bal}}{% elif answer.type == 'Topshiriq' %}{{answer.assignment_balls.first.ball}}{% else %}{{answer.balls.first.scope}}{% endif %}</td>
+                            <td><a href="{% url 'bsb' answer.id %}">{{answer.title}} {{ass_ball|safe}}</a></td>
+                            <td>{% if answer.type == 'Masala' %}{{problem_bal|get_value_from_dict:answer.id}}{% elif answer.type == 'Topshiriq' %}{{ass_ball|get_value_from_dict:answer.id}}{% else %}{{test_ball|get_value_from_dict:answer.id}}{% endif %}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -70,12 +71,12 @@
                 {% block paginate %}
                 {% if object.num_pages != 1 %}
             <div class="pages text-center">
-    
+
                 <nav aria-label="Page navigation example" class="text-center">
                     <ul class="pagination bg-dark text-center justify-content-center my-3">
                         {% if page_obj.has_previous %}
                             <li class="page-item bg-dark"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Orqaga</a></li>
-    
+
                             {% if page_obj.number > 3 %}
                                 <li class="page-item"> <a class="page-link" href="?page=1">1</a></li>
                                     {% if page_obj.number > 4 %}
@@ -83,21 +84,21 @@
                                     {% endif %}
                                 {% endif %}
                             {% endif %}
-    
+
                             {% for num in page_obj.paginator.page_range %}
                                 {% if page_obj.number == num %}
                                     <li class="page-item"><a class="page-link active disabled bg-dark" href="?page={{ num }}">{{ num }}</a></li>
                                     {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
                                 {% endif %}
                             {% endfor %}
-    
+
                             {% if page_obj.has_next %}
                                 {% if page_obj.number < page_obj.paginator.num_pages|add:'-3' %} <span class="page-link">...</span>
                                     <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
                                 {% elif page_obj.number < page_obj.paginator.num_pages|add:'-2' %} <li class="page-item"><a class="page-link"
                                         href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
                             {% endif %}
-    
+
                             <li class="page-item"><a href="?page={{ page_obj.next_page_number }}" class="page-link">Oldinga</a></li>
                         {% endif %}
                     </ul>
@@ -121,9 +122,9 @@
             .then(response => response.json())
             .then(data => {
                 if (data.is_online) {
-                    status.innerHTML = '<p style="color: green !important;">Online</p>'
+                    status.innerHTML = '<p style="color: green !important;font-weight:800;letter-spacing:2px;">Online</p>'
                 } else {
-                    status.innerHTML = `<p style="color: rgb(230,10,10) !important;">${data.time}</p>`
+                    status.innerHTML = `<p style="color: rgb(230,10,10) !important;font-weight:800;letter-spacing:2px;">${data.time}</p>`
                 }
             })
             .catch(error => console.log(error));

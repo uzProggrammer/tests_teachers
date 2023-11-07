@@ -10,6 +10,13 @@ Algoritmik Masalalar
 {% endblock breadcrumb %}
 
 {% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100;200;300;400;500;600;700;800&display=swap');
+    .attempt-type{
+        font-family: 'Playpen Sans', cursive;
+        font-weight: 600;
+    }
+</style>
 <div class="card bg-dark p-3">
     <form class="row">
         <div class="col-md-4 mb-3">
@@ -19,7 +26,7 @@ Algoritmik Masalalar
         <div class="col-md-4 mb-3">
             <label for="type">Holati</label>
             <select id="type" class="form-control bg-dark" name="type" value="{{search_type}}">
-                
+
                 <option value="0" {% if type == "0" %}selected{% endif %}>Hammasi</option>
                 <option value="1" {% if type == 1 %}selected{% endif %}>Xato ishlangan</option>
                 <option value="2" {% if type == 2 %}selected{% endif %}>Ishlangan</option>
@@ -73,7 +80,7 @@ Algoritmik Masalalar
                             <ul class="pagination bg-dark text-center justify-content-center my-3">
                                 {% if page_obj.has_previous %}
                                     <li class="page-item bg-dark"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Orqaga</a></li>
-    
+
                                     {% if page_obj.number > 3 %}
                                         <li class="page-item"> <a class="page-link" href="?page=1">1</a></li>
                                             {% if page_obj.number > 4 %}
@@ -81,21 +88,21 @@ Algoritmik Masalalar
                                             {% endif %}
                                         {% endif %}
                                     {% endif %}
-    
+
                                     {% for num in page_obj.paginator.page_range %}
                                         {% if page_obj.number == num %}
                                             <li class="page-item"><a class="page-link active disabled bg-dark" href="?page={{ num }}">{{ num }}</a></li>
                                             {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
                                         {% endif %}
                                     {% endfor %}
-    
+
                                     {% if page_obj.has_next %}
                                         {% if page_obj.number < page_obj.paginator.num_pages|add:'-3' %} <span class="page-link">...</span>
                                             <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
                                         {% elif page_obj.number < page_obj.paginator.num_pages|add:'-2' %} <li class="page-item"><a class="page-link"
                                                 href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
                                     {% endif %}
-    
+
                                     <li class="page-item"><a href="?page={{ page_obj.next_page_number }}" class="page-link">Oldinga</a></li>
                                 {% endif %}
                             </ul>

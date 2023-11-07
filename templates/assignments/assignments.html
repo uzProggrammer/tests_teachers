@@ -4,49 +4,122 @@
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Topshiriqlar</li>
+    <li class="breadcrumb-item bg-dark" aria-current="page">Topshiriqlar</li>
 {% endblock breadcrumb %}
 
 {% block content %}
-    <div class="row row-cols-2 row-cols-lg-5 g-2 g-lg-3">
-        {% for assignment in object.object_list %}
-            <div class="card bg-dark text-white m-2">
-                <div class="card-header p-2">
-                    <p><a href="{% url 'assignment' assignment.id %}" style="font-size:23px;">{{assignment.title|safe}}</a>{% if user.us_student and assignment.is_readed == False %}<span class="translate-middle badge rounded-pill bg-danger m-1">1</span>{% elif user.is_teacher %}<span class="translate-middle badge rounded-pill bg-danger m-1">{{assignment.assigment_answer.count}}</span>{% endif %}</p>
-                </div>
-                <div class="card-body">
-                    {{assignment.qachongacha|date:"d.m.Y | H.i"}} - shu vaqtgacha
-                </div>
-                <div class="card-footer">
-                    {% if assignment.sinf %}{{assignment.sinf}} - sinf uchun{% else %}<a href="{% url 'profile' assignment.student.username %}">{{assignment.student|title}}</a> uchun{% endif %}
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-        {% block paginate %}
-            <div class="d-flex mt-3">
-                <div class="mx-auto">
-                    <div>
-                        <nav>
-                            <ul class="pagination">
-                                <li class="page-item {% if object_list.has_previous  %}{% else %}disabled{% endif %}" aria-disabled="true">
-                                    {% if object.has_previous %}
-                                        <a class="btn btn-success" href="?page={{ object.previous_page_number }}">&laquo; Oldingi</a>
-                                    {% else %}
-                                        <a class="btn btn-success disabled" href="#">&laquo; Oldingi</a>
+    <div class="card bg-dark p-3">
+    <form method="get">
+        <label for="search">Qidiruv</label>
+        <div class="input-group">
+            <input type="text" name="search" id="search" class="form-control bg-dark" placeholder="Qidirish..." value="{{search}}">
+            <button class="btn bg-dark input-group-text"><i class="fa fa-search"></i></button>
+        </div>
+    </form>
+</div>
+<div class="table-responsive card p-1 bg-dark mt-2">
+    <table class="table" id="not-stripted">
+        <thead>
+            <tr>
+                <th>Nomi</th>
+                <th>Muallif</th>
+                <th>Oxirgi topshirish kuni</th>
+                <th>Javoblar soni</th>
+                <th>Sinf</th>
+                <th>Ball</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for masala in page_obj.object_list %}
+                <tr class="{% if user in masala.javoblar %}border-success{% else %}{% endif %}">
+                    <td><a href="/assignments/assignment/{{masala.id}}/">{{masala.title}}</td>
+                    <td><a href="/users/profile/{{masala.author.username}}">{{masala.author.first_name}} {{masala.author.last_name}}</a></td>
+                    <td>{{masala.qachongacha|date:'d.m.Y | h:m'}}</td>
+                    <td>{{masala.javoblar.count}}</td>
+                    <td>{{masala.sinf}}</td>
+                    <td>{{masala.max_ball}}</td>
+
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center">
+                        <i class="fa fa-x bg-danger" style="font-size: 90px;padding: 25px 35px;border-radius: 50%;"></i><br><br> Afsuski Hech narsa Topilmadi
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+        {% if object.num_pages != 1 %}
+        <tfoot>
+            <tr>
+                <th colspan="3">
+                    <div class="pages text-center">
+
+                        <nav aria-label="Page navigation example" class="text-center">
+                            <ul class="pagination bg-dark text-center justify-content-center my-3">
+                                {% if search %}
+                                    {% if page_obj.has_previous %}
+                                        <li class="page-item bg-dark"><a class="page-link" href="?search={{search}}&page={{ page_obj.previous_page_number }}">Orqaga</a></li>
+
+                                        {% if page_obj.number > 3 %}
+                                            <li class="page-item"> <a class="page-link" href="?search={{search}}&page=1">1</a></li>
+                                                {% if page_obj.number > 4 %}
+                                                    <li class="page-item"><span class="page-link">...</span></li>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}
+
+                                        {% for num in page_obj.paginator.page_range %}
+                                            {% if page_obj.number == num %}
+                                                <li class="page-item"><a class="page-link active disabled bg-dark" href="?search={{search}}&page={{ num }}">{{ num }}</a></li>
+                                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <li class="page-item"><a class="page-link" href="?search={{search}}&page={{ num }}">{{ num }}</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        {% if page_obj.has_next %}
+                                            {% if page_obj.number < page_obj.paginator.num_pages|add:'-3' %} <span class="page-link">...</span>
+                                                <li class="page-item"><a class="page-link" href="?search={{search}}&page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+                                            {% elif page_obj.number < page_obj.paginator.num_pages|add:'-2' %} <li class="page-item"><a class="page-link"
+                                                    href="?search={{search}}&page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+                                        {% endif %}
+
+                                        <li class="page-item"><a href="?search={{search}}&page={{ page_obj.next_page_number }}" class="page-link">Oldinga</a></li>
                                     {% endif %}
-                                </li>
-                                <li class="page-item {% if object_list.has_next  %}{% else %}disabled{% endif %}">
-                                    {% if object.has_next  %}
-                                        <a class="btn btn-success" href="?page={{ object.next_page_number }}">Keyingi &raquo;</a>
-                                    {% else %}
-                                        <a class="btn btn-success disabled" href="#">Keyingi &raquo;</a>
+                                {% else %}
+                                    {% if page_obj.has_previous %}
+                                        <li class="page-item bg-dark"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Orqaga</a></li>
+
+                                        {% if page_obj.number > 3 %}
+                                            <li class="page-item"> <a class="page-link" href="?page=1">1</a></li>
+                                                {% if page_obj.number > 4 %}
+                                                    <li class="page-item"><span class="page-link">...</span></li>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}
+
+                                        {% for num in page_obj.paginator.page_range %}
+                                            {% if page_obj.number == num %}
+                                                <li class="page-item"><a class="page-link active disabled bg-dark" href="?page={{ num }}">{{ num }}</a></li>
+                                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %} <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        {% if page_obj.has_next %}
+                                            {% if page_obj.number < page_obj.paginator.num_pages|add:'-3' %} <span class="page-link">...</span>
+                                                <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+                                            {% elif page_obj.number < page_obj.paginator.num_pages|add:'-2' %} <li class="page-item"><a class="page-link"
+                                                    href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a></li>
+                                        {% endif %}
+
+                                        <li class="page-item"><a href="?page={{ page_obj.next_page_number }}" class="page-link">Oldinga</a></li>
                                     {% endif %}
-                                </li>
+                                {% endif %}
                             </ul>
                         </nav>
                     </div>
-                </div>
-            </div>
-        {% endblock paginate %}
+                </th>
+            </tr>
+        </tfoot>
+        {% endif %}
+    </table>
+</div>
 {% endblock content %}

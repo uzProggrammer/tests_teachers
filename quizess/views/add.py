@@ -14,14 +14,14 @@ def add_quiz(request: HttpRequest):
                 diff = request.POST.get('diff')
                 time = request.POST.get('time') if 'time' in request.POST else '00:10'
                 test = Quiz.objects.create(title=title,summary=body, type=diff, time=time, author=request.user)
-                messages.success(request, 'Test muvvofiqiyatli tizimga qo\'shildi')
+                messages.success(request, 'Test muvaffaqiyatli tizimga qo\'shildi')
                 return HttpResponseRedirect(f'/tests/test/{test.id}/')
             return render(request, 'tests/add.html', )
         else:
             return render(request, '403.html', status=403)
     else:
         return render(request, '403.html', status=403)
-    
+
 def add_test_view(request: HttpRequest, id):
     test =  get_object_or_404(Quiz, id=id)
     if request.user.is_authenticated:

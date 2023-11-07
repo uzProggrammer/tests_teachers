@@ -8,7 +8,7 @@
     <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
     <li class="breadcrumb-item"><a href="/tests/">Testlar</a></li>
     <li class="breadcrumb-item"><a href="/tests/test/{{test.id}}">{{test.title|title}}</a></li>
-    <li class="breadcrumb-item active text-white" aria-current="page">TSavol qo'shish</li>
+    <li class="breadcrumb-item bg-dark" aria-current="page">Savol qo'shish</li>
 {% endblock breadcrumb %}
 
 {% block content %}
@@ -23,6 +23,9 @@
         </li>
         <li class="nav-item">
             <a class="nav-link bg-primary text-white" aria-current="page" href="#"><i class="fa fa-plus"></i> Savol Qo'shish</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link bg-danger text-white" href="/tests/test/{{test.id}}/delete/"><i class="fa fa-trash"></i> O'chirish</a>
         </li>
         {% if not test.is_public %}
         <li class="nav-item">
@@ -49,11 +52,11 @@
             <option value="multi-quiz">Ko'p variantli test</option>
             <option value="drag-and-drop">Moshlashtiradigan test</option>
             <option value="closed-test">Yopiq test</option>
-            
+
         </select>
     </div>
     <div id="quiz-add-container">
-        
+
     </div>
 </form>
 {% endblock %}
@@ -70,7 +73,7 @@
                 </div>
                 <div class="mb-3 p-3" id='variants'>
                     <div class="mb-3">
-                        <button type="button" class="btn btn-primary" id="quiz-1-add"><i class="fa fa-plus"></i> Savol qo'shish</button>
+                        <button type="button" class="btn btn-primary" id="quiz-1-add"><i class="fa fa-plus"></i> Javob qo'shish</button>
                     </div>
                     <div class="mb-3">
                         <label for="quiz-1-body">Savolni kiriting:</label>
@@ -81,7 +84,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="mb-3">
                     <label for="ball">Savol balini kiriting:</label>
                     <input id='ball' type="number" step="0.00001" name="ball" class="form-control bg-dark" required>
@@ -89,7 +92,7 @@
                 <button type="submit" class="btn btn-success">Saqlash</button>
                 `;
 
-                
+
 
                 document.querySelector('#quiz-add-container').innerHTML = html;
                 var editor1 = tinymce.init({
@@ -135,7 +138,7 @@
                             el.parentElement.parentElement.remove()
                         });
                     });
-                        
+
                 });
 
                 document.querySelectorAll('.variant-minus').forEach(el=>{
@@ -164,7 +167,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="mb-3">
                     <label for="ball">Savol balini kiriting:</label>
                     <input id='ball' type="number" step="0.00001" name="ball" class="form-control bg-dark" required>
@@ -303,7 +306,7 @@
                 <button type="submit" class="btn btn-success">Saqlash</button>
                 `;
 
-                
+
 
                 document.querySelector('#quiz-add-container').innerHTML = html;
                 var editor1 = tinymce.init({
@@ -349,7 +352,7 @@
                             el.parentElement.parentElement.remove()
                         });
                     });
-                        
+
                 });
 
                 document.querySelectorAll('.variant-minus').forEach(el=>{

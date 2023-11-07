@@ -5,7 +5,7 @@
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
     <li class="breadcrumb-item"><a href="/controls/">Nazorat ishlari</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Yangi yaratish</li>
+    <li class="breadcrumb-item bg-dark" aria-current="page">Yangi yaratish</li>
 {% endblock breadcrumb %}
 
 {% block content %}
@@ -47,10 +47,6 @@
                         </select>
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Ozroq ma'lumot</label>
-                    <textarea name="info">{{bsb.body}}</textarea>
-                </div>
                 <div class="my-3">
                     <button class="btn btn-primary">
                         Saqlash
@@ -59,14 +55,5 @@
             </form>
         </div>
     </div>
-<script>
-    tinymce.init({
-        themes: "modern",
-        skin: "oxide-dark",
-        content_css: "dark",
-        selector: 'textarea',
-        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
-        toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
-    });
-</script>
+
 {% endblock content %}

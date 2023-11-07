@@ -3,7 +3,7 @@
         {% if user.is_staff or user.is_teacher %}
         <a href="{% url 'bsb' bsb.id %}" class="btn btn-primary mx-1">Nazorat ishi haqida</a>
         <a class="btn btn-primary  mx-1" href="{% url 'bsb_edit' bsb.id %}">Tahrirlash</a>
-        <a class="btn btn-primary  mx-1" href="{% if bsb.type == 'Topshiriq' %}{% url 'add_bsb_assignment' bsb.id %}{% elif bsb.type == 'Masala' %}{% url 'add_bsb_problem' bsb.id %}{% else %}tests/add/{% endif %}">{% if bsb.type == 'Topshiriq' %} Savol qo'shish{% elif bsb.type == 'Masala' %} Masala qo'shish {% else %} Test qo'shish{% endif %}</a>
+        <a class="btn btn-primary  mx-1" href="{% if bsb.type == 'Topshiriq' %}{% url 'add_bsb_assignment' bsb.id %}{% elif bsb.type == 'Masala' %}{% url 'add_bsb_problem' bsb.id %}{% else %}/controls/control/{{bsb.id}}/tests/add/{% endif %}">{% if bsb.type == 'Topshiriq' %} Savol qo'shish{% elif bsb.type == 'Masala' %} Masala qo'shish {% else %} Test qo'shish{% endif %}</a>
         {% if bsb.holati == 'Tugagan' or bsb.holati == 'Dovom etmoqda' %}<a class="btn btn-primary mx-1" href="{% url 'bsb_results' bsb.id %}">Natijalar</a>{% endif %}
         {% else %}
         {% if bsb.holati == 'Tugagan' %}

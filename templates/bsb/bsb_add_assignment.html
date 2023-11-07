@@ -7,11 +7,41 @@
     <li class="breadcrumb-item"><a href="/controls/">Nazorat ishlari</a></li>
     <li class="breadcrumb-item"><a href="/controls/control/{{bsb.id}}">{{bsb.title|title}}</a></li>
     <li class="breadcrumb-item"><a href="/controls/control/{{bsb.id}}/assignments">Topshiriqlar</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Yangi topshiriq qo'shish</li>
+    <li class="breadcrumb-item bg-dark" aria-current="page">Yangi topshiriq qo'shish</li>
 {% endblock breadcrumb %}
 
 {% block content %}
-    {% include 'bsb/bsb_header.html' %}
+    <div class="card bg-dark p-1 mb-3">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link" href="/controls/control/{{bsb.id}}/"><i class="fa fa-bar-chart"></i> Nazorat ishi</a>
+            </li>
+            {% if user.is_teacher or user.is_staff %}
+            <li class="nav-item">
+                <a class="nav-link" href="/controls/control/{{bsb.id}}/edit/"><i class="fa fa-pen"></i> Tahrirlash</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/controls/control/{{bsb.id}}/edit/"><i class="fa-regular fa-clone"></i> Klonlash</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link bg-primary text-white" aria-current="page"><i class="fa fa-plus"></i> {% if bsb.type == 'Topshiriq' %} Savol qo'shish{% elif bsb.type == 'Masala' %} Masala qo'shish {% else %} Test qo'shish{% endif %}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link bg-danger text-white"  href="/controls/control/{{bsb.id}}/delete/"><i class="fa fa-trash"></i> O'chirish</a>
+            </li>
+            {% endif %}
+            {% if bsb.holati == 'Tugagan' or bsb.holati == 'Dovom etmoqda' or user.is_staff or user.is_teacher %}
+            <li class="nav-item">
+                <a class="nav-link"  href="{% if bsb.type == 'Topshiriq' %}{% url 'bsb_assignments' bsb.id %}{% elif bsb.type == 'Masala' %}{% url 'bsb_problems' bsb.id %}{% else %}/controls/control/{{bsb.id}}/tests/{% endif %}"><i class="fa fa-question"></i> {% if bsb.type == 'Topshiriq' %} Savollar{% elif bsb.type == 'Masala' %} Masalalar {% else %} Testlar{% endif %}</a>
+            </li>
+            {% endif %}
+            {% if bsb.holati == 'Tugagan' or bsb.holati == 'Dovom etmoqda' %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'bsb_results' bsb.id %}"><i class="fa-solid fa-square-poll-vertical"></i> Natijalar</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@ttskch/select2-bootstrap4-theme@x.x.x/dist/select2-bootstrap4.min.css">
     <div class="card bg-dark text-white">
         <div class="card-header p-3">
@@ -25,7 +55,7 @@
                     <div id="titleHelp" class="form-text text-white">Siz o'quvchi yoki sinf uchun taynlayotgan topshiriqning nomi</div>
                 </div>
                 <div class="m-3">
-                    <label for="info">Topshiriq nomi</label>
+                    <label for="info">Topshiriq matni</label>
                     <textarea name="info" class="form-control" id="info" aria-describedby="infoHelp"></textarea>
                     <div id="infoHelp" class="form-text text-white">Siz o'quvchi yoki sinf uchun taynlayotgan topshiriqning matni</div>
                 </div>

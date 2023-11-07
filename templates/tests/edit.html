@@ -7,7 +7,7 @@
     <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
     <li class="breadcrumb-item"><a href="/tests/">Testlar</a></li>
     <li class="breadcrumb-item"><a href="/tests/test/{{test.id}}/">{{test.title}}</a></li>
-    <li class="breadcrumb-item active text-white" aria-current="page">Tahrirlash</li>
+    <li class="breadcrumb-item bg-dark" aria-current="page">Tahrirlash</li>
 {% endblock breadcrumb %}
 
 {% block content %}
@@ -23,6 +23,9 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" href="/tests/test/{{test.id}}/add-quiz/"><i class="fa fa-plus"></i> Savol Qo'shish</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link bg-danger text-white" href="/tests/test/{{test.id}}/delete/"><i class="fa fa-trash"></i> O'chirish</a>
         </li>
         {% if not test.is_public %}
         <li class="nav-item">

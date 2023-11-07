@@ -4,9 +4,8 @@
 
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
-<li class="breadcrumb-item"><a href="{% if profile.is_teacher %}/users/teachers/{% else %}/users/teachers/{% endif %}">{% if profile.is_teacher %}O'qituvchilar{% else %}O'quvchilar{% endif %}</a></li>
-<li class="breadcrumb-item"><a href="{% url 'profile' profile.username %}">{{profile.username|title}}</a></li>
-<li class="breadcrumb-item active">Testlar</li>
+<li class="breadcrumb-item"><a href="{% url 'profile' profile.username %}">{{profile.get_full_name|title}}</a></li>
+<li class="breadcrumb-item active bg-dark">Testlar</li>
 {% endblock breadcrumb %}
 
 {% block content %}

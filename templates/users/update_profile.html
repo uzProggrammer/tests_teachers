@@ -4,9 +4,8 @@
 
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
-<li class="breadcrumb-item"><a href="/users/">Foydalanuvchilar</a></li>
-<li class="breadcrumb-item"><a href="{% url 'profile' profile.username %}">{{profile.username}}</a></li>
-<li class="breadcrumb-item active text-white" aria-current="page">Tahrirlash</li>
+<li class="breadcrumb-item"><a href="{% url 'profile' profile.username %}">{{profile.get_full_name|title}}</a></li>
+<li class="breadcrumb-item active bg-dark" aria-current="page">Tahrirlash</li>
 {% endblock breadcrumb %}
 
 
@@ -27,9 +26,8 @@
                 {% if user == profile %}
                 <li class="active-profile-item"><a href="#"><i class="fa fa-pen"></i> Tahirirlash</a></li>
                 <li><a href="/chats/"><i class="fa fa-comment"></i> Suhbatlar</a></li>
-                <li><a href="/users/profile/{{profile.username}}/liked-posts/"><i class="fa fa-heart"></i> Yoqgan E'lonlar</a></li>
                 {% endif %}
-                {% if not profile.is_teacher or not profle.is_staff %}
+                {% if not profile.is_teacher and not profle.is_staff %}
                 <li><a href="/users/profile/{{profile.username}}/prices/assignment/"><i class="bx bx-football"></i> Topshiriqdan  olgan ballar</a></li>
                 <li><a href="/users/profile/{{profile.username}}/prices/controls/"><i class="bx bx-football"></i> Nazoratlardan olgan ballar</a></li>
                 {% else %}

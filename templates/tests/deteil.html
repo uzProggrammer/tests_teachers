@@ -7,7 +7,7 @@
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
     <li class="breadcrumb-item"><a href="/tests/">Testlar</a></li>
-    <li class="breadcrumb-item active text-white" aria-current="page">{{test.title|title}}</li>
+    <li class="breadcrumb-item bg-dark" aria-current="page">{{test.title|title}}</li>
 {% endblock breadcrumb %}
 
 {% block content %}
@@ -22,6 +22,9 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" href="/tests/test/{{test.id}}/add-quiz/"><i class="fa fa-plus"></i> Savol Qo'shish</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link bg-danger text-white" href="/tests/test/{{test.id}}/delete/"><i class="fa fa-trash"></i> O'chirish</a>
         </li>
         {% if not test.is_public %}
         <li class="nav-item">
@@ -64,6 +67,6 @@
         </table>
         <div class="">
             {% if user in test.users.all %} <a href="result/" class="btn btn-primary">Natijam</a>{% elif user in test.not_actioned_users.all %}<a href="quizes/" class="btn btn-primary">Savollarga o'tish</a>{% else %}<a href="start/" class="btn btn-success">Testda ishtirok etish</a>{% endif %}
-        </div> 
+        </div>
     </div>
 {% endblock content %}

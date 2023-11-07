@@ -1,0 +1,80 @@
+{% extends 'bsb/base.html' %}
+
+{% block title %}{{bsb.title}}{% endblock title %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+    <li class="breadcrumb-item"><a href="/controls/">Nazorat ishlari</a></li>
+    <li class="breadcrumb-item"><a href="/controls/control/{{bsb.id}}">{{bsb.title|title}}</a></li>
+    <li class="breadcrumb-item bg-dark" aria-current="page">Klonlash</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+    <div class="card bg-dark p-1 mb-3">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link" href="/controls/control/{{bsb.id}}/"><i class="fa fa-bar-chart"></i> Nazorat ishi</a>
+            </li>
+            {% if user.is_teacher or user.is_staff %}
+            <li class="nav-item">
+                <a class="nav-link" href="/controls/control/{{bsb.id}}/edit/"><i class="fa fa-pen"></i> Tahrirlash</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link bg-primary text-white" aria-current="page"><i class="fa-regular fa-clone"></i> Klonlash</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% if bsb.type == 'Topshiriq' %}{% url 'add_bsb_assignment' bsb.id %}{% elif bsb.type == 'Masala' %}{% url 'add_bsb_problem' bsb.id %}{% else %}/controls/control/{{bsb.id}}/tests/add/{% endif %}"><i class="fa fa-plus"></i> {% if bsb.type == 'Topshiriq' %} Savol qo'shish{% elif bsb.type == 'Masala' %} Masala qo'shish {% else %} Test qo'shish{% endif %}</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link bg-danger text-white"  href="/controls/control/{{bsb.id}}/delete/"><i class="fa fa-trash"></i> O'chirish</a>
+            </li>
+            {% endif %}
+            {% if bsb.holati == 'Tugagan' or bsb.holati == 'Dovom etmoqda' or user.is_staff or user.is_teacher %}
+            <li class="nav-item">
+                <a class="nav-link"  href="{% if bsb.type == 'Topshiriq' %}{% url 'bsb_assignments' bsb.id %}{% elif bsb.type == 'Masala' %}{% url 'bsb_problems' bsb.id %}{% else %}/controls/control/{{bsb.id}}/tests/{% endif %}"><i class="fa fa-question"></i> {% if bsb.type == 'Topshiriq' %} Savollar{% elif bsb.type == 'Masala' %} Masalalar {% else %} Testlar{% endif %}</a>
+            </li>
+            {% endif %}
+            {% if bsb.holati == 'Tugagan' or bsb.holati == 'Dovom etmoqda' %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'bsb_results' bsb.id %}"><i class="fa-solid fa-square-poll-vertical"></i> Natijalar</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+    <div class="card bg-dark text-white">
+        <div class="card-header p-3">
+            <h2><u>{{bsb.title}}</u>ni klonlash</h2>
+        </div>
+        <div class="card-body">
+            <form method="post" class="row g-3">{% csrf_token %}
+                <div class="mb-3 row">
+                    <div class="col-md-6">
+                        <label for="formFileSm1" class="form-label">Nazorat ishi ning boshlanish vaqti</label>
+                        <input required name="d_start" class="form-control bg-dark text-white" id="formFileSm1" type="datetime-local" value="{{bsb.date_statrted|date:'Y-m-d H:i'}}">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="formFileSm2" class="form-label">Nazorat ishi ning tugash vaqti</label>
+                        <input required name="d_end" class="form-control bg-dark text-white" id="formFileSm2" type="datetime-local" value="{{bsb.date_ended|date:'Y-m-d H:i'}}">
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-md-12">
+                        <label for="formFileSm5" class="form-label">Nazorat ishi olinadigan sinf</label>
+                        <select name="sinf" class="form-control bg-dark text-white" id="formFileSm5">
+                            {% for sinf in sinflar %}
+                            {% if sinf.nom != bsb.sinf.nom %}
+                            <option value="{{sinf.id}}">{{sinf.nom}}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="my-3">
+                    <button class="btn btn-primary">
+                        Saqlash
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

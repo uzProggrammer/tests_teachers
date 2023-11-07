@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'ckeditor_uploader',
     'django_user_agents',
     'whitenoise',
+    'corsheaders',
+    'djutils',
     'users',
     'posts',
     'quizess',
@@ -58,6 +60,7 @@ INSTALLED_APPS = [
     'courses',
     'Masalalar',
     'olimpiads',
+    'apiv1',
 ]
 
 MIDDLEWARE = [
@@ -65,6 +68,7 @@ MIDDLEWARE = [
     "whitenoise.middleware.WhiteNoiseMiddleware",
 
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -74,6 +78,7 @@ MIDDLEWARE = [
     'users.middlewares.SetLastVisitMiddleware'
 
 ]
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'tests_teachers.urls'
 

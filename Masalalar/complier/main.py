@@ -20,7 +20,7 @@ class Complier:
         self.checker = checker
         self.delta1 = 0.0
         self.delta = 0.0
-        self.command = ['python' if self.lang == 'python' else '/home/SSchool/.nvm/versions/node/v20.5.1/bin/node', f"{BASE_DIR}\\{username}.py" if self.lang=='python' else f'{BASE_DIR}\\{username}.js']
+        self.command = ['python' if self.lang == 'python' else '/home/itmacomsc/.nvm/versions/node/v21.0.0/bin/node', f"{BASE_DIR}\\{username}.py" if self.lang=='python' else f'{BASE_DIR}\\{username}.js']
         self.file = f"{BASE_DIR}\\{username}.py" if self.lang=='python' else f'{BASE_DIR}\\{username}.js'
         if self.checker:
             self.checker_command = ['python', f"{BASE_DIR}\\checker.py"]
@@ -61,8 +61,8 @@ class Complier:
                         procces = subprocess.Popen(self.command, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                         procces.stdin.write(self._in)
                         start = time.time()
-                        communicate = procces.communicate(timeout=self.time_limit/10)
-                        self.delta1 = (time.time() - start) * 10
+                        communicate = procces.communicate(timeout=self.time_limit/100)
+                        self.delta1 = (time.time() - start) * 100
                         a = False
                         chcker_proccess = subprocess.Popen(self.checker_command, stdout=subprocess.PIPE, stdin=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                         chcker_proccess.stdin.write(str({'code': str(self.body), 'in': self._in, 'out': self.out}))

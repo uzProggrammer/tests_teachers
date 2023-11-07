@@ -3,6 +3,16 @@
 {% block title %}{{urinish.masala.title}}{% endblock title %}
 
 {% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100;200;300;400;500;600;700;800&display=swap');
+    .attempt-type{
+        font-family: 'Playpen Sans', cursive;
+        font-weight: 600;
+    }
+    .test-result{
+        font-size:13px;
+    }
+</style>
     <div class="card bg-dark p-3">
         <div class="row">
             <div class="col-md-9">
@@ -13,7 +23,7 @@
                     <thead>
                         <tr>
                             <th class="text-center py-3" colspan="2">
-                                <span class="fs-3 my-3 {% if urinish.turi == 'Qabul Qilindi' %}text-success{% elif 'Tekshirilmoqda' in urinish.turi %}text-info{% else %}text-danger{% endif %}">{{urinish.turi}}</span>
+                                <span class="fs-3 my-3 attempt-type {% if urinish.turi == 'Qabul Qilindi' %}text-success{% elif 'Tekshirilmoqda' in urinish.turi %}text-info{% else %}text-danger{% endif %}">{{urinish.turi}}</span>
                             </th>
                         </tr>
                     </thead>
@@ -45,15 +55,13 @@
         </pre>
         {% endif %}
         <br>
-        
+
     </div>
     <div class="card bg-dark p-3 mt-3">
         Testlar:
-        <div class="row">
+        <div class="">
         {% for key, value in urinish.tests.items %}
-            <div class="col-md-1 mx-3">
-                <span class="badge {% if value.status == 'Qabul qilindi' %}bg-success{% else %}bg-danger{% endif %} p-2">{{key}}. {{value.time|floatformat:"2"}} ms, {{value.memory|floatformat:"2"}} KB</span>
-            </div>
+            <span class="test-result border p-1 px-2 rounded mx-2 d-inline-block my-1 mr-2 {% if value.status == 'Qabul qilindi' %}bg-success{% else %}bg-danger{% endif %} p-2">{{key}}. {{value.time|floatformat:"2"}} ms, {{value.memory|floatformat:"2"}} KB</span>
         {% endfor %}
         </div>
     </div>
@@ -64,10 +72,11 @@
     <script>
         var editor = CodeMirror.fromTextArea(document.getElementById('code'), {
             mode: '{% if urinish.til == "python" %}python{% elif urinish.til == "node" %}javascript{% endif %}',
-            theme:  'dracula',
-            indentUnit: 4,
-            matchBrackets: true,
-            readOnly: true
+			theme: "lesser-dark",
+			lineWrapping: true,
+			lineNumbers: true,
+			styleActiveLine: true,
+			matchBrackets: true,
         });
         editor.setSize(null, 340);
     </script>

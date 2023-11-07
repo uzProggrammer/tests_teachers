@@ -35,7 +35,7 @@ def create_lesson(request: HttpRequest, id):
             body = '...'
             if 'body' in request.POST:
                 body = request.POST.get('body')
-            
+
             letters = string.ascii_letters
             digits = string.digits
             all_ch = letters+digits
@@ -128,7 +128,7 @@ def create_quiz_view(request: HttpRequest, id, slug):
                     t+=1
             answers_count = t
             foiz = 0
-            
+
             if course_items!=0:
                 foiz = round((answers_count/course_items)*100)
             lektures = lesson.lektures.all()
@@ -189,7 +189,7 @@ def create_multiquiz_view(request: HttpRequest, id, slug):
                     t+=1
             answers_count = t
             foiz = 0
-            
+
             if course_items!=0:
                 foiz = round((answers_count/course_items)*100)
             lektures = lesson.lektures.all()
@@ -213,7 +213,7 @@ def create_lecture_view(request: HttpRequest, id, slug):
                 body = '...'
                 if 'body' in request.POST:
                     body = request.POST.get('body')
-                
+
                 letters = string.ascii_letters
                 digits = string.digits
                 all_ch = letters+digits
@@ -243,7 +243,7 @@ def create_lecture_view(request: HttpRequest, id, slug):
                     t+=1
             answers_count = t
             foiz = 0
-            
+
             if course_items!=0:
                 foiz = round((answers_count/course_items)*100)
             lektures = lesson.lektures.all()
@@ -268,7 +268,7 @@ def create_closedtest_view(request: HttpRequest, id, slug):
                 body = '...'
                 if 'body' in request.POST:
                     body = request.POST.get('body')
-                
+
                 letters = string.ascii_letters
                 digits = string.digits
                 all_ch = letters+digits
@@ -298,7 +298,7 @@ def create_closedtest_view(request: HttpRequest, id, slug):
                     t+=1
             answers_count = t
             foiz = 0
-            
+
             if course_items!=0:
                 foiz = round((answers_count/course_items)*100)
             lektures = lesson.lektures.all()
@@ -356,7 +356,7 @@ def create_drag_and_drop_view(request: HttpRequest, id, slug):
                     t+=1
             answers_count = t
             foiz = 0
-            
+
             if course_items!=0:
                 foiz = round((answers_count/course_items)*100)
             lektures = lesson.lektures.all()

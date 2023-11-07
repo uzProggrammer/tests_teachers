@@ -134,7 +134,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            messages.success(request, 'Muvoffiqiyatli tizimga kirdingiz!')
+            messages.success(request, 'Muvaffaqiyatli tizimga kirdingiz!')
             return redirect('home')
         else:
             messages.error(request, 'Bunday foydalanuvchi tizimda topilmadi. Hohlasangiz ro\'yxatdan o\'ting: <a href="/users/signup">Ro\'yxatdan o\'tish</a>')
@@ -184,12 +184,12 @@ def own_assignment(request, username):
             if 'answers_count' in request.GET:
                 if request.GET.get('answers_count') != 'all':
                     assignments = assignments.filter(assigment_answer=request.GET.get('answers_count'))
-            object = Paginator(assignments, 40)
+            assignments = Paginator(assignments, 40)
             if 'page' in request.GET:
-                object.page(request.GET['page'])
+                object = assignments.page(request.GET['page'])
             else:
-                object.page(1)
-            return render(request, 'users/own_assignments.html', {'profile': profile, 'object':object, 'search': search})
+                object=assignments.page(1)
+            return render(request, 'users/own_assignments.html', {'profile': profile, 'page_obj':object,'object':assignments, 'search': search})
         else:
             return render(request, '404.html')
     else:
@@ -258,9 +258,11 @@ def own_controls(request, username):
                 controls = profile.author_BSB.filter(
                     type=request.GET.get('type')
                 )
+        search = ''
         if 'search' in request.GET:
+            search=request.GET.get('search')
             controls = profile.author_BSB.filter(
-                Q(title__icontains=request.GET.get('search'))
+                Q(title__icontains=search) | Q(sinf__nom__icontains=search)
             )
             if 'type' in request.GET:
                 if request.GET.get('type') != 'all':
@@ -268,12 +270,12 @@ def own_controls(request, username):
                         type=request.GET.get('type')
                     )
 
-        object = Paginator(controls, 40)
+        controls = Paginator(controls, 5)
         if 'page' in request.GET:
-            object.page(request.GET['page'])
+            object = controls.page(request.GET['page'])
         else:
-            object.page(1)
-        return render(request, 'users/own_controls.html', {'profile':profile, 'object':object})
+            object = controls.page(1)
+        return render(request, 'users/own_controls.html', {'profile':profile, 'object':controls, 'page_obj':object, 'search':search})
     else:
         return HttpResponseRedirect('users/login/')
 
@@ -386,6 +388,7 @@ def add_admin_view(request, type=None):
                 user = get_object_or_404(MyUser, username=username)
                 user.is_staff = is_staff
                 user.is_teacher = True
+
                 user.save()
                 messages.success(request, f'{user.username} muvoffiqiyatli o\'qituvchi qilib tayinlandi')
                 return HttpResponseRedirect(f'/users/profile/{user.username}/')

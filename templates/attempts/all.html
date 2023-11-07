@@ -8,6 +8,13 @@
 {% endblock breadcrumb %}
 
 {% block content %}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@100;200;300;400;500;600;700;800&display=swap');
+    .attempt-type{
+        font-family: 'Playpen Sans', cursive;
+        font-weight: 600;
+    }
+</style>
     <h1>Urinishlar</h1>
     <div class="table-responsive">
         <table class="table m-0 table-hover table-borderless table-striped text-left slim-table">
@@ -29,7 +36,7 @@
                         <td><a {% if urinish.user == user or user.is_staff %}href="/informatics/attempts/attempt/{{urinish.id}}/"{% endif %}>{{urinish.id}}</a></td>
                         <td><a href="/users/profile/{{ urinish.user.username }}/">{{ urinish.user.first_name }} {{ urinish.user.last_name }}</a></td>
                         <td><a href="/informatics/problems/{% if not urinish.masala.is_archived %}un{% endif %}problem/{{urinish.masala.slug}}/">{{urinish.masala.title}}</a></td>
-                        <td><span class="{% if urinish.turi == 'Qabul Qilindi' %}text-success{% elif 'Tekshirilmoqda' in urinish.turi %}text-info{% elif urinish.turi == 'Navbatda' %}text-white{% else %}text-danger{% endif %}">{{urinish.turi}}</span></td>
+                        <td><span class="attempt-type {% if urinish.turi == 'Qabul Qilindi' %}text-success{% elif 'Tekshirilmoqda' in urinish.turi %}text-info{% elif urinish.turi == 'Navbatda' %}text-white{% else %}text-danger{% endif %}">{{urinish.turi}}</span></td>
                         <td><img src="{% if urinish.til == 'python' %}https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/121px-Python-logo-notext.svg.png{% elif urinish.til == 'node' %}https://algorithmshub.uz/static/javascript.png{% endif %}" width="30" style="border-radius: 15px;" alt="language"></td>
                         <td>{{urinish.time|floatformat:'2'}} ms</td>
                         <td>{{urinish.memory|floatformat:'2'}} KB</td>

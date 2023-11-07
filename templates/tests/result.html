@@ -27,6 +27,9 @@
         <li class="nav-item">
             <a class="nav-link" href="/tests/test/{{test.id}}/add-quiz/"><i class="fa fa-plus"></i> Savol Qo'shish</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link bg-danger text-white" href="/tests/test/{{test.id}}/delete/"><i class="fa fa-trash"></i> O'chirish</a>
+        </li>
         {% if not test.is_public %}
         <li class="nav-item">
             <a class="nav-link" href="/tests/test/{{test.id}}/public/"><i class="fa fa-globe"></i> Ommaviy qilish</a>

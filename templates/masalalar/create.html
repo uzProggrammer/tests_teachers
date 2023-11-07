@@ -43,7 +43,7 @@
                         <span class="input-group-text bg-dark">ms</span>
                     </div>
                 </div>
-                
+
             </div>
             <div class="mb-3">
                 <label for="body" class="form-label">Masala sharti</label>
@@ -109,12 +109,13 @@
         });
 
         var editor = CodeMirror.fromTextArea(document.getElementById('checker'), {
-                mode: "python",
-                theme: 'dracula',
-                indentUnit: 4,
-                matchBrackets: true,
-            });
-        editor.save()
+            mode: 'python',
+			theme: "lesser-dark",
+			lineWrapping: true,
+			lineNumbers: true,
+			styleActiveLine: true,
+			matchBrackets: true,
+        });
 
 
         document.querySelector('#add_teg_input').addEventListener('click', ()=>{
