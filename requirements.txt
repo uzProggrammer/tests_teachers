@@ -4,6 +4,6 @@ django-ckeditor
 django-user-agents
 pip
 gunicorn==19.7.1
-psycopg2
+psycopg2-binary
 whitenoise
-sw-django-utils
+beautifulsoup4

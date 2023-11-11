@@ -18,6 +18,9 @@ from django.http import JsonResponse
 from django.urls import path, include
 from django.shortcuts import render
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 from bsb.models import BSB
 from posts.models import Post
 from users.models import MyUser
@@ -104,6 +107,7 @@ urlpatterns = [
     path('api2/', get_api_2),
     path('api/v1/', include('apiv1.routes'))
 ]
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 handler404 = notFound
 handler403 = permission_denied
