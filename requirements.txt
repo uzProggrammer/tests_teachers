@@ -7,3 +7,4 @@ gunicorn==19.7.1
 psycopg2-binary
 whitenoise
 beautifulsoup4
+django-cors-headers
