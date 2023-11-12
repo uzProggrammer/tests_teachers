@@ -19,7 +19,7 @@ Natijalar
         <li class="nav-item">
             <a class="nav-link" href="/tests/test/{{test.id}}/"><i class="fa fa-question"></i> Test</a>
         </li>
-        {% if user.is_staff or user == test.author %}
+        {% if user.is_staff or user == test.author or user.is_create_test %}
         <li class="nav-item">
             <a class="nav-link" href="/tests/test/{{test.id}}/edit/"><i class="fa fa-pen"></i> Tahrirlash</a>
         </li>
@@ -61,7 +61,7 @@ Natijalar
         <tbody>
             {% for masala in page_obj.object_list %}
                 <tr class="{% if user == masala.user %}border-success{% endif %}">
-                    <td>{% if user.is_staff or user == test.author %}<a href="/tests/test/{{test.id}}/result/{{masala.id}}/">{{forloop.counter|add_qirq:page}}</a> {% elif user != masala.user %}{{forloop.counter|add_qirq:page}}{% else %}<a href="/tests/test/{{test.id}}/result/">{{forloop.counter|add_qirq:page}}</a>{% endif %}</td>
+                    <td>{% if user.is_staff or user == test.author or user.is_create_test %}<a href="/tests/test/{{test.id}}/result/{{masala.id}}/">{{forloop.counter|add_qirq:page}}</a> {% elif user != masala.user %}{{forloop.counter|add_qirq:page}}{% else %}<a href="/tests/test/{{test.id}}/result/">{{forloop.counter|add_qirq:page}}</a>{% endif %}</td>
                     <td><a href="/users/profile/{{masala.user.username}}/">{{masala.user.first_name|title}} {{masala.user.last_name|title}}</a></td>
                     <td><a href="/tests/test/{{test.id}}/">{{test.title|title}}</a></td>
                     <td>{{masala.time|date:"H:i:s"}}</td>

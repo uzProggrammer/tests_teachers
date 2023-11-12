@@ -51,6 +51,12 @@
 
 {% block js1 %}
 <script>
+    document.addEventListener('keydown', e=>{
+        if (e.ctrlKey && e.key=='s'){
+            e.preventDefault();
+            document.querySelector('form').submit();
+        }
+    });
 tinymce.init({
     themes: "modern",
     skin: "oxide-dark",

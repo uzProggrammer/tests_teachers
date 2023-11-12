@@ -9,89 +9,176 @@
 {% endblock breadcrumb %}
 
 {% block content %}
-    <div class="card p-3 bg-dark">
-        <form method='post'>
-            <div class="mb-3">
-                <label for="title" class="form-label">Masala nomi</label>
-                <input id="title" name="title" class="form-control bg-dark" value="{{masala.title}}" placeholder="Masala nomi" required>
-            </div>
-            <div class="mb-3">
-                <label for="diff" class="form-label">Masala qiyinchiligi</label>
-                <select id="diff" class="form-control bg-dark" name="diff" required>
-                    <option value="1" {% if masala.difficulty == 1 %}selected{% endif %}>Bo'shlang'ish</option>
-                    <option value="2" {% if masala.difficulty == 2 %}selected{% endif %}>Asoslar</option>
-                    <option value="3" {% if masala.difficulty == 3 %}selected{% endif %}>Normal</option>
-                    <option value="4" {% if masala.difficulty == 4 %}selected{% endif %}>O'rtacha</option>
-                    <option value="5" {% if masala.difficulty == 5 %}selected{% endif %}>Ilg'or</option>
-                    <option value="6" {% if masala.difficulty == 6 %}selected{% endif %}>Qiyin</option>
-                    <option value="7" {% if masala.difficulty == 7 %}selected{% endif %}>Juda Qiyin</option>
-                    <option value="8" {% if masala.difficulty == 8 %}selected{% endif %}>Ekspert uchun</option>
-                </select>
-            </div>
-            <div class="mb-3 row">
-                <div class="col-md-6">
-                    <label for="memory" class="form-label">Masala xotira cheklovi</label>
-                    <div class="input-group">
-                        <input type="number"  name="memory" max="256" required value="6" id="memory" class="bg-dark form-control">
-                        <span class="input-group-text bg-dark">MB</span>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <label for="time" class="form-label">Masala vaqt cheklovi</label>
-                    <div class="input-group">
-                        <input type="number" name="time" max="8000" required value="1000" id="time" class="bg-dark form-control">
-                        <span class="input-group-text bg-dark">ms</span>
-                    </div>
-                </div>
-
-            </div>
-            <div class="mb-3">
-                <label for="body" class="form-label">Masala sharti</label>
-                <textarea name="body" id="body" class="form-control bg-dark tiny">{{masala.body}}</textarea>
-            </div>
-            <div class="mb-3">
-                <label for="in" class="form-label">Masala Kirish ma'lumotlari</label>
-                <textarea name="in" id="in" class="form-control bg-dark tiny">{{masala.info_in}}</textarea>
-            </div>
-            <div class="mb-3">
-                <label for="out" class="form-label">Masala Chiqish ma'lumotlari</label>
-                <textarea name="out" id="out" class="form-control bg-dark tiny">{{masala.out}}</textarea>
-            </div>
-            <div class="mb-3">
-                <label for="checker" class="form-label">Masala Tekshruvchisi</label>
-                <textarea name="checker" id="checker" class="form-control bg-dark checker">{{masala.checker}}</textarea>
-            </div>
-            <div class="mb-3">
-                <label for="type" class="form-label">Masala turi</label>
-                <select name="type" id="type" class="form-select bg-dark">
-                    <option value="masala" {% if masala.type == 'masala' %}selected{%endif %}>Masala</option>
-                    <option value="bitta" {% if masala.type == 'bitta urinish' %}selected{%endif %}>Bir urinish</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="yechim" class="form-label">Masala Yechimi</label>
-                <textarea name="yechim" id="yechim" class="form-control bg-dark tiny">{{masala.yechim}}</textarea>
-            </div>
-            <div class=".mb-3">
-                <label for="testcases" class="form-label">Misol testcaselar soni</label>
-                <div class="input-group">
-                    <input type="number" max="6" name="testcases" required value="2" id="testcases" class="bg-dark form-control">
-                    <span class="input-group-text bg-dark"><i class="fa fa-eye"></i></span>
-                </div>
-            </div>
-            <div class="my-3">
-                Teglar
-                <div class="row" id="tegs">
-                    <div class="col-md-2">
-                        <input type="text" class="bg-dark form-control mb-2" name="teg">
-                    </div>
-                </div>
-                <button type="button" id="add_teg_input" class="btn btn-primary"><i class="fa fa-plus"></i> Teg qo'shish</button>
-            </div>
-            {% csrf_token %}
-            <button type="submit" class="btn btn-primary mt-3">Yaratish</button>
-        </form>
+<style>
+    .nav-link.active{
+        background-color: rgb(30,30,90) !important;
+        color: white !important;
+    }
+    code{
+        border-radius: 4px !important;
+    }
+    .d-none{
+        display: none !important;
+    }
+</style>
+<nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+        <button class="nav-link" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-info" type="button" role="tab" aria-controls="nav-info" aria-selected="false">Ma'lumot</button>
+        <button class="nav-link active" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-form" type="button" role="tab" aria-controls="nav-form" aria-selected="true">Form</button>
     </div>
+</nav>
+<div class="tab-content mt-3" id="nav-tabContent">
+    <div class="tab-pane fade" id="nav-info" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+        <div class="card bg-dark p-3">
+            <p> <span class="text-info fw-bold">Masala nomi</span> <span class="text-danger fw-bold">*</span> - Yaratayotgan masalangizni nomi. Misol uchun: A+B</p>
+            <p> <span class="text-info fw-bold">Masala matni</span> <span class="text-danger fw-bold">*</span> - Yaratayotgan masalangizni sharti. Misol uchun: Sizga ikkita A va B butun sonlari beriladi. Ularning yig'indisini hisoblang.</p>
+            <p> <span class="text-info fw-bold">Masala vaqt chegarasi (ms)</span> <span class="text-danger fw-bold">*</span> - Yaratayotgan masalangiz uchun vaqt chegarasi. Misol uchun: 1000</p>
+            <p> <span class="text-info fw-bold">Masala xotira chegarasi (MB)</span> <span class="text-danger fw-bold">*</span> - Yaratayotgan masalangiz uchun xatira chegarasi. Misol uchun: 16</p>
+            <p> <span class="text-info fw-bold">Masala qiyinchiligi </span> <span class="text-danger fw-bold">*</span> - Yaratayotgan masalangiz qiyinchilik darajasi. Misol uchun: Boshlang'ich</p>
+            <p> <span class="text-info fw-bold">Masala kirish ma'lumotlari </span>Yaratayotgan masalangizni kirivchi ma'lumotlari haqida ma'lumot(Default holatda: Kirish ma'lumotlari mavjud emas). Misol uchun: Bitta qatorda A va B(0 &lt;= A, B &lt; 10^18) butun sonlari beriladi.</p>
+            <p> <span class="text-info fw-bold">Masala chiqish ma'lumotlari </span> - Yaratayotgan masalangizni chiquvchi ma'lumotlari haqida ma'lumot(Default holatda: Masala javobi).  Misol uchun: A va B sonlari yig'indisini.</p>
+            <div class="card bg-dark p-3">
+                <p><span class="text-info fw-bold">Masala tekshiruvchisi </span> - Ushbu qism masalani yechayotganda cheklovlar qo'yish yoki o'quvchi tomonidan yuborilgan ko'dni tekshirish uchun ishlatiladi.
+                    Tekshiruvchini ichida quyidagi o'zgaruvchilardan foydalanishingiz mumkin:
+                    <ul>
+                        <li>
+                            <span class="text-success fw-bold">code</span> - O'quvchi tomonidan yuborilgan ko'd. String ma'lumot turida beriladi
+                        </li>
+                        <li>
+                            <span class="text-success fw-bold">in_</span> - O'quvchi tomonidan yuborilgan ko'dga kiritilishi kerak bo'lgan ma'lumot. String ma'lumot turida beriladi
+                        </li>
+                        <li>
+                            <span class="text-success fw-bold">out</span> - O'quvchi tomonidan yuborilgan ko'dga chiqishi kerak bo'lgan ma'lumot. String ma'lumot turida beriladi
+                        </li>
+                        <li>
+                            <span class="text-success fw-bold">user_out</span> - O'quvchi tomonidan yuborilgan ko'ddan chiqgan ma'lumot. String ma'lumot turida beriladi
+                        </li>
+                    </ul>
+                    Bunda tekshiruvchi <span class="text-primary">python</span> dasturlash tilida yozilishi kerak. Bunda xato turlari mavjud:
+                    <ul>
+                        <li>
+                            <span class="text-danger fw-bold">MemoryLimitError</span> - Agarda o'quvchi foydalangan algoritm xato bo'lsa ishlatiladi. Misol uchun:
+                            <pre class="language-python">
+                                <code>if len(code)>1000:
+    raise MemoryLimitError('Ushbu masalani malsimal 999 ta simvol bilan yechish mumkin')</code>
+                            </pre>
+                        </li>
+                        <li>
+                            <span class="text-danger fw-bold">TimeLimitError</span> - Agarda o'quvchi tsikldan yoki ko'proq vaqt oladigan algoritmdan foydalansa chaqirilsa bo'ladi. Misol uchun:
+                            <pre class="language-python">
+                                <code>if 'for' in code or 'while' in code:
+    raise TimeLimitError('Ushbu tsikldan foydalanish mumkin emas')</code>
+                            </pre>
+                        </li>
+                        <li>
+                            <span class="text-danger fw-bold">ComplationError</span> - Agarda o'quvchi dasturda ortiqcha simvoldan foydalansa yoki dasturning natijasi Komplatsiya xatosiga to'g'ri tushsa yana bir error. Misol uchun:
+                            <pre class="language-python">
+                                <code>if '\\n' in code:
+    raise ComplationError('Ko\'dingiz bir qatordan iborat bo\'lishi kerak')</code>
+                            </pre>
+                        </li>
+                        <li>
+                            <span class="text-danger fw-bold">WrongAnswerError</span> - Agarda o'quvchi tuzgandasturidagi chiqishi kerakbo'lgan natija testcasening chiqishi kerak bo'lgan natijaga to'g'ri tushmasa ishlatiladigan xato turi. Misol uchun:
+                            <pre class="language-python">
+                                <code>if out != user_out:
+    raise WrongAnswerError('Ushbu natija chiqishi kerak emas')</code>
+                            </pre>
+                        </li>
+                    </ul>
+                    <p class="text-danger fw-bold">Agarda ushbu narsalar kerak bo'lmasa tekshiruvchini shunday tashlab keting!</p>
+                </p>
+            </div>
+            <p> <span class="text-info fw-bold">Masala yechimi</span> - Yaratayotgan masalangizni yechimi. Yechim agar to'g'ri bo'lsa admin tomonidan tekshiriladi va o'quvchi ushbu javob orqali yana yangi narsalar o'rgana olishi mumkin</p>
+            <p> <span class="text-info fw-bold">Masala testcaselar soni</span> <span class="text-danger fw-bold">*</span> - O'quvchi ko'rishi mumkin bo'lgan testcaselar. Budnda testcaselarni masala yaratganingizdan keyin qo'shishingiz mumkin</p>
+            <p> <span class="text-info fw-bold">Masala teglari</span> <span class="text-danger fw-bold">*</span> - Masala kategoriyasi </p>
+        </div>
+    </div>
+    <div class="tab-pane fade show active" id="nav-form" role="tabpanel" aria-labelledby="nav-form-tab" tabindex="0">
+        <div class="card p-3 bg-dark">
+            <form method='post'>
+                <div class="mb-3">
+                    <label for="title" class="form-label">Masala nomi</label>
+                    <input id="title" name="title" class="form-control bg-dark" value="{{masala.title}}" placeholder="Masala nomi" required>
+                </div>
+                <div class="mb-3">
+                    <label for="diff" class="form-label">Masala qiyinchiligi</label>
+                    <select id="diff" class="form-control bg-dark" name="diff" required>
+                        <option value="1" {% if masala.difficulty == 1 %}selected{% endif %}>Bo'shlang'ish</option>
+                        <option value="2" {% if masala.difficulty == 2 %}selected{% endif %}>Asoslar</option>
+                        <option value="3" {% if masala.difficulty == 3 %}selected{% endif %}>Normal</option>
+                        <option value="4" {% if masala.difficulty == 4 %}selected{% endif %}>O'rtacha</option>
+                        <option value="5" {% if masala.difficulty == 5 %}selected{% endif %}>Ilg'or</option>
+                        <option value="6" {% if masala.difficulty == 6 %}selected{% endif %}>Qiyin</option>
+                        <option value="7" {% if masala.difficulty == 7 %}selected{% endif %}>Juda Qiyin</option>
+                        <option value="8" {% if masala.difficulty == 8 %}selected{% endif %}>Ekspert uchun</option>
+                    </select>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-md-6">
+                        <label for="memory" class="form-label">Masala xotira cheklovi</label>
+                        <div class="input-group">
+                            <input type="number"  name="memory" max="256" required value="6" id="memory" class="bg-dark form-control">
+                            <span class="input-group-text bg-dark">MB</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="time" class="form-label">Masala vaqt cheklovi</label>
+                        <div class="input-group">
+                            <input type="number" name="time" max="8000" required value="1000" id="time" class="bg-dark form-control">
+                            <span class="input-group-text bg-dark">ms</span>
+                        </div>
+                    </div>
+    
+                </div>
+                <div class="mb-3">
+                    <label for="body" class="form-label">Masala sharti</label>
+                    <textarea name="body" id="body" class="form-control bg-dark tiny">{{masala.body}}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="in" class="form-label">Masala Kirish ma'lumotlari</label>
+                    <textarea name="in" id="in" class="form-control bg-dark tiny">{{masala.info_in}}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="out" class="form-label">Masala Chiqish ma'lumotlari</label>
+                    <textarea name="out" id="out" class="form-control bg-dark tiny">{{masala.out}}</textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="checker" class="form-label">Masala Tekshruvchisi</label>
+                    <textarea name="checker" id="checker" class="form-control bg-dark checker"></textarea>
+                </div>
+                <div class="mb-3 d-none">
+                    <label for="type" class="form-label">Masala turi</label>
+                    <select hidden name="type" id="type" class="form-select bg-dark">
+                        <option value="masala" {% if masala.type == 'masala' %}selected{%endif %}>Masala</option>
+                        <option value="bitta" {% if masala.type == 'bitta urinish' %}selected{%endif %}>Bir urinish</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="yechim" class="form-label">Masala Yechimi</label>
+                    <textarea name="yechim" id="yechim" class="form-control bg-dark tiny">{{masala.yechim}}</textarea>
+                </div>
+                <div class=".mb-3">
+                    <label for="testcases" class="form-label">Misol testcaselar soni</label>
+                    <div class="input-group">
+                        <input type="number" max="6" name="testcases" required value="2" id="testcases" class="bg-dark form-control">
+                        <span class="input-group-text bg-dark"><i class="fa fa-eye"></i></span>
+                    </div>
+                </div>
+                <div class="my-3">
+                    Teglar
+                    <div class="row" id="tegs">
+                        <div class="col-md-2">
+                            <input type="text" class="bg-dark form-control mb-2 teg" name="teg" required>
+                        </div>
+                    </div>
+                    <button type="button" id="add_teg_input" class="btn btn-primary"><i class="fa fa-plus"></i> Teg qo'shish</button>
+                </div>
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-primary mt-3"><i class="fa fa-save"></i>  Yaratish</button>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock content %}
 
 {% block js1 %}
@@ -116,11 +203,29 @@
 			styleActiveLine: true,
 			matchBrackets: true,
         });
-
-
+        document.addEventListener('keydown', e=>{
+            if (e.ctrlKey && e.key=='s'){
+                e.preventDefault();
+                var value = tinymce.get('body').getContent();
+                if(value!=='' && document.querySelector('#title').value!=='' && document.querySelector('#memory').value!==''  && document.querySelector('#time').value!==''  && document.querySelector('#testcases').value!==''){
+                    document.querySelector('form').submit();
+                }else{
+                    alert('Iltimos barcha qatorlarni to\'g\'ri to\'ldiring.');
+                }
+            }
+        })
+        document.querySelector('form').addEventListener('submit', e=>{
+            e.preventDefault();
+            var value = tinymce.get('body').getContent();
+            if(value!=='' && document.querySelector('#title').value!=='' && document.querySelector('#memory').value!==''  && document.querySelector('#time').value!==''  && document.querySelector('#testcases').value!==''){
+                document.querySelector('form').submit();
+            }else{
+                alert('Iltimos barcha qatorlarni to\'g\'ri to\'ldiring.');
+            }
+        })
         document.querySelector('#add_teg_input').addEventListener('click', ()=>{
             var container = document.querySelector('#tegs');
-            var html = '<input type="text" class="bg-dark form-control mb-2" name="teg">';
+            var html = '<input type="text" class="bg-dark form-control mb-2" name="teg" required>';
             var div = document.createElement('div');
             div.className = 'col-md-2';
             div.innerHTML = html;

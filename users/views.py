@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.paginator import Paginator
-from django.http import HttpResponseRedirect, JsonResponse, HttpResponseNotFound
-from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpRequest, HttpResponseRedirect, JsonResponse, HttpResponseNotFound
+from django.shortcuts import render, get_object_or_404, redirect, get_list_or_404
 from django.utils import timezone
 
 from Masalalar.models import Masala, Urinish
@@ -334,7 +334,7 @@ def check_user_status(request, username):
     except:
         user.last_visit=user.date_joined
         user.save()
-    return JsonResponse({'is_online': False, 'time': naturaltime(user.last_visit)})
+    return JsonResponse({'is_online': False, 'time': user.status()})
 
 def check_users_status(request, id):
     users = Sinf.objects.get(id=id).students.all()
@@ -494,3 +494,62 @@ def tests_view(request, username):
         else:
             object = masalalar.page(1)
         return render(request, 'users/quizess.html', {'profile': profile, 'object_list': object, 'object': masalalar})
+    
+def onlines(request):
+    users = MyUser.objects.all()
+    return render(request, 'users/onlines.html', {'users': users})
+
+def update_user_with_admin_view(request: HttpRequest, username):
+    if request.user.is_staff:
+        profile = get_object_or_404(MyUser, username=username)
+
+        if request.method == "POST":
+            first_name = request.POST.get('first_name')
+            profile.first_name = first_name
+
+            last_name = request.POST.get('last_name')
+            profile.last_name = last_name
+
+            email = request.POST.get('email')
+            profile.email =email
+
+            date_joined = request.POST.get('date_joined')
+            profile.date_joined = date_joined
+            
+            username1 = request.POST.get('username')
+            try:
+                profile.username = username1
+            except:
+                messages.error('Kiritilgan foydalanuvchi nomi tizim qoidasiga to\'g\g\'ri kelmaydi.')
+                return HttpResponseRedirect(f'/users/profile/{username}')
+            if 'password' in request.POST:
+                password = request.POST.get('password') if request.POST.get('password')!='' else None
+                if password:
+                    profile.set_password(password)
+            is_staff=request.POST.get('is_staff')=='on'
+            profile.is_staff =is_staff
+
+            is_create_course = request.POST.get('is_create_course')=='on'
+            profile.is_create_course = is_create_course
+
+            is_create_test = request.POST.get('is_create_test')=='on'
+            profile.is_create_test = is_create_test
+
+            is_create_ass = request.POST.get('is_create_ass')=='on'
+            profile.is_create_ass = is_create_ass
+
+            is_create_masala = request.POST.get('is_create_masala')=='on'
+            profile.is_create_masala = is_create_masala
+
+            is_create_yechim = request.POST.get('is_create_yechim')=='on'
+            profile.is_create_yechim = is_create_yechim
+
+            is_create_bsb = request.POST.get('is_create_bsb')=='on'
+            profile.is_create_bsb = is_create_bsb
+
+            profile.save()
+            messages.success(request, 'Foydalanuvchi muvaffaqiyatli tahrirlandi')
+            return HttpResponseRedirect(f'/users/profile/{profile.username}/')
+
+        return render(request, 'users/user_admin_admin.html', {'profile': profile}) if request.user!=profile else render(request, '404.html')
+    return render(request, '404.html')

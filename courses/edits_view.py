@@ -11,7 +11,7 @@ import random, string
 def edit_course_view(request: HttpRequest, id):
     course = get_object_or_404(Course, id=id)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user.is_teacher:
+        if request.user.is_staff or request.user.is_teacher or request.user.is_create_course:
             if request.method == 'POST':
                 body = '...'
                 if 'body' in request.POST:
@@ -38,7 +38,7 @@ def edit_lesson_view(request: HttpRequest, id, slug):
     course = get_object_or_404(Course, id=id)
     lesson = get_object_or_404(Lessons, slug=slug)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user == course.author:
+        if request.user.is_staff or request.user == course.author or request.user.is_create_course:
             body = '...'
             if 'body' in request.POST:
                 body = request.POST.get('body')
@@ -66,7 +66,7 @@ def edit_lecture_view(request, id, slug, slug1):
     lesson = get_object_or_404(Lessons, slug=slug, course=course)
     lecture = get_object_or_404(Lectures, slug=slug1)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user == course.author:
+        if request.user.is_staff or request.user == course.author or request.user.is_create_course:
             if request.method == 'POST':
                 lecture.body = request.POST.get('body')
                 lecture.save()
@@ -112,7 +112,7 @@ def edit_drag_and_drop_view(request: HttpRequest, id, slug, slug1):
     lesson = get_object_or_404(Lessons, slug=slug)
     quiz = get_object_or_404(DragAndDropQuiz, slug=slug1)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user == course.author:
+        if request.user.is_staff or request.user == course.author or request.user.is_create_course:
             if request.method == 'POST':
                 variants = quiz.variants.all()
                 for variant in variants:
@@ -167,13 +167,14 @@ def edit_closedtest_view(request: HttpRequest, id, slug, slug1):
     lesson = get_object_or_404(Lessons, slug=slug)
     quiz = get_object_or_404(CourseYopiqTest, slug=slug1)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user == course.author:
+        if request.user.is_staff or request.user == course.author or request.user.is_create_course:
             if request.method == 'POST':
                 body = '...'
                 if 'body' in request.POST:
                     body = request.POST.get('body')
                 quiz.body=body
                 quiz.answer=request.POST.get('answer')
+                quiz.save()
                 messages.success(request, 'Muffovviqiyatli Test tahrirlandi')
                 return HttpResponseRedirect(f'/courses/course/{course.id}/lesson/{lesson.slug}/closed-test/{quiz.slug}/')
             course_items = course.drag_and_drop_quizes.count() + course.lectures.count() + \
@@ -216,7 +217,7 @@ def edit_multiquiz_view(request: HttpRequest, id, slug, slug1):
     lesson = get_object_or_404(Lessons, slug=slug)
     quiz = get_object_or_404(CourseMultiQuiz, slug=slug1)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user == course.author:
+        if request.user.is_staff or request.user == course.author or request.user.is_create_course:
             if request.method == 'POST':
                 quiz1 = request.POST
                 quiz.body=request.POST['quiz-title']
@@ -276,7 +277,7 @@ def edit_quiz_view(request: HttpRequest, id, slug, slug1):
     lesson = get_object_or_404(Lessons, slug=slug)
     quiz = get_object_or_404(CourseQuiz, slug=slug1)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user == course.author:
+        if request.user.is_staff or request.user == course.author or request.user.is_create_course:
             if request.method == 'POST':
                 quiz1 = request.POST
                 quiz.body=request.POST['quiz-title']

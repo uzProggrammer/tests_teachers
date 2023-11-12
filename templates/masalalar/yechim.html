@@ -19,7 +19,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/attempts/"><i class="fab fa-strava"></i> Urinishlar</a>
             </li>
-            {% if masala.have_yechim or user == masala.author or user.is_staff %}
+            {% if masala.have_yechim or user == masala.author or user.is_staff or user.is_create_masala %}
             <li class="nav-item">
                 <a class="nav-link bg-primary text-white" ><i class="fa fa-pen"></i> Yechim</a>
             </li>
@@ -32,7 +32,7 @@
                     <li><a class="dropdown-item bg-dark"  href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/rating/memory/">Xotira</a></li>
                 </ul>
             </li>
-            {% if user.is_staff or user == masala.author %}
+            {% if user.is_staff or user == masala.author or user.is_create_masala %}
             <li class="nav-item">
                 <a class="nav-link" href="{% if masala.is_archived %}/informatics/problems/problem/{{masala.slug}}/testcases{% else %}/informatics/problems/unproblem/{{masala.slug}}/testcases{% endif %}"><i class="fa fa-question"></i> Testcaselar</a>
             </li>
@@ -40,12 +40,12 @@
                 <a href="{% if masala.is_archived %}/informatics/problems/problem/{{masala.slug}}/edit/{% else %}/informatics/problems/unproblem/{{masala.slug}}/edit/{% endif %}" class="nav-link"><i class="bx bx-pen"></i> Tahriralsh</a>
             </li>
             {% endif %}
-            {% if user.is_staff and not masala.is_archived %}
+            {% if user.is_staff and not masala.is_archived or user.is_create_masala %}
             <li class="nav-item">
                 <a class="nav-link" href="/informatics/problems/unproblem/{{masala.slug}}/to-archive/"><i class="fa fa-check"></i> Ommaviy qilish</a>
             </li>
             {% endif %}
-            {% if not masala.have_yechim and masala.yechim and user.is_staff %}
+            {% if not masala.have_yechim and masala.yechim and user.is_staff or user.is_create_masala %}
             <li class="nav-item">
                 <a class="nav-link" href="/informatics/problems/unproblem/{{masala.slug}}/add-solve/"><i class="fa fa-check"></i> Javobini ko'rsatish</a>
             </li>

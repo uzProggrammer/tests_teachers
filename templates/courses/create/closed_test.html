@@ -3,9 +3,9 @@
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
     <li class="breadcrumb-item"><a href="/courses/">Kurslar</a></li>
-    <li class="breadcrumb-item"><a href="/courses/course/{{course.slug}}/">{{course.title}}</a></li>
-    <li class="breadcrumb-item"><a href="/courses/course/{{course.slug}}/lesson/{{lesson.slug}}/">{{lesson.title}}</a></li>
-    <li class="breadcrumb-item active" aria-current="page">MA'lumot Qo'shish</li>
+    <li class="breadcrumb-item"><a href="/courses/course/{{course.id}}/">{{course.title}}</a></li>
+    <li class="breadcrumb-item"><a href="/courses/course/{{course.id}}/lesson/{{lesson.slug}}/">{{lesson.title}}</a></li>
+    <li class="breadcrumb-item active bg-dark" aria-current="page">Yopiq test qo'shish</li>
 {% endblock breadcrumb %}
 
 {% block title %}
@@ -63,7 +63,7 @@
                 </ol>
             </div>
             <div class="card-footer text-end">
-                {% if user == course.author or user.is_staff %}<button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-primary mx-2" id="add_lesson"><i class="fa fa-plus"></i> Mavzu qo'shish</button>
+                {% if user == course.author or user.is_staff or user.is_create_course %}<button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-primary mx-2" id="add_lesson"><i class="fa fa-plus"></i> Mavzu qo'shish</button>
                 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                     <div class="modal-dialog text-start bg-dark modal-fullscreen">
                         <form method="post" action="/courses/course/{{course.id}}/lesson-add/" class="modal-content bg-dark">
@@ -214,19 +214,17 @@
                     </div>
                 {% endif %}
                 <div class="card bg-dark text-white">
-                    <form method="post">{% csrf_token %}
+                    <form method="post" id="cl-form">{% csrf_token %}
                         <div class="input">
-                            <div class="card bg-dark text-white">
-                                <div class="card-header">
+                            <div class="card bg-dark p-3">
                                     <label for="id_title" class="form-label">Yopiq test matni</label>
                                     <textarea name="body" id="id_title" class="form-control bg-dark text-white"></textarea>
                                     <label for="answer" class="mt-3 form-label">To'g'ri javob</label>
                                     <input required type="text" class="form-control bg-dark" placeholder="To'g'ri javob" name="answer">
-                                </div>
                             </div>
                         </div>
                         <div class="my-3 mx-2">
-                            <button type="submit" class="btn btn-outline-primary">Saqlash</button>
+                            <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Saqlash</button>
                         </div>
                     </form>
                 </div>
@@ -238,6 +236,12 @@
 
 {% block js1 %}
 <script>
+    document.addEventListener('keydown', e=>{
+        if (e.ctrlKey && e.key=='s'){
+            e.preventDefault();
+            document.querySelector('#cl-form').submit();
+        }
+    });
     $.ajax(
         {
             type: 'GET',

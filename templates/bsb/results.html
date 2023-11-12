@@ -18,7 +18,7 @@
         <li class="nav-item">
             <a class="nav-link" href="/controls/control/{{bsb.id}}/"><i class="fa fa-bar-chart"></i> Nazorat ishi</a>
         </li>
-        {% if user.is_teacher or user.is_staff %}
+        {% if user.is_teacher or user.is_staff or user.is_create_bsb %}
         <li class="nav-item">
             <a class="nav-link" href="/controls/control/{{bsb.id}}/edit/"><i class="fa fa-pen"></i> Tahrirlash</a>
         </li>
@@ -32,7 +32,7 @@
             <a class="nav-link bg-danger text-white"  href="/controls/control/{{bsb.id}}/delete/"><i class="fa fa-trash"></i> O'chirish</a>
         </li>
         {% endif %}
-        {% if bsb.holati == 'Tugagan' or bsb.holati == 'Dovom etmoqda' or user.is_staff or user.is_teacher %}
+        {% if bsb.holati == 'Tugagan' or bsb.holati == 'Dovom etmoqda' or user.is_staff or user.is_teacher or user.is_create_bsb %}
         <li class="nav-item">
             <a class="nav-link"  href="{% if bsb.type == 'Topshiriq' %}{% url 'bsb_assignments' bsb.id %}{% elif bsb.type == 'Masala' %}{% url 'bsb_problems' bsb.id %}{% else %}/controls/control/{{bsb.id}}/tests/{% endif %}"><i class="fa fa-question"></i> {% if bsb.type == 'Topshiriq' %} Savollar{% elif bsb.type == 'Masala' %} Masalalar {% else %} Testlar{% endif %}</a>
         </li>
@@ -62,13 +62,13 @@
                     {% for answer in answers %}
                             {% if bsb.type == 'Topshiriq' %}
                             <tr>
-                                <td>{% if user.is_staff or user.is_teacher %}<a>{{ forloop.counter }}</a>{% else %}{{ forloop.counter }}{% endif %}</td>
+                                <td>{% if user.is_staff or user.is_teacher or user.is_create_bsb %}<a>{{ forloop.counter }}</a>{% else %}{{ forloop.counter }}{% endif %}</td>
                                 <td><a href="{% url 'profile' answer.user.username %}">{{answer.user.username|safe}}</a></td>
                                 <td>{{answer.ball}}</td>
                             </tr>
                             {% elif bsb.type == 'Masala' %}
                                 <tr>
-                                    <td>{% if user.is_staff or user.is_teacher %}<a>{{ forloop.counter }}</a>{% else %}{{ forloop.counter }}{% endif %}</td>
+                                    <td>{% if user.is_staff or user.is_teacher or user.is_create_bsb %}<a>{{ forloop.counter }}</a>{% else %}{{ forloop.counter }}{% endif %}</td>
                                     <td><a href="{% url 'profile' answer.user.username %}">{{answer.user.username|safe}}</a></td>
                                     <td>{{answer.ball}}</td>
                                 </tr>
@@ -77,7 +77,7 @@
                 {% else %}
                     {% for answer in answers %}
                         <tr>
-                            <td>{% if user.is_staff or user.is_teacher %}<a href="{% url 'bsb_quiz_answer' bsb.id answer.id %}">{{ forloop.counter }}</a>{% else %}{{ forloop.counter }}{% endif %}</td>
+                            <td>{% if user.is_staff or user.is_teacher or user.is_create_bsb %}<a href="{% url 'bsb_quiz_answer' bsb.id answer.id %}">{{ forloop.counter }}</a>{% else %}{{ forloop.counter }}{% endif %}</td>
                             <td><a href="{% url 'profile' answer.user.username %}">{{answer.user.username|safe}}</a></td>
                             <td>{{answer.scope}}</td>
                         </tr>

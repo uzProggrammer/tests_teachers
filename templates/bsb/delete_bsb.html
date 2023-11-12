@@ -15,7 +15,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="/controls/control/{{bsb.id}}/"><i class="fa fa-bar-chart"></i> Nazorat ishi</a>
             </li>
-            {% if user.is_teacher or user.is_staff %}
+            {% if user.is_teacher or user.is_staff or user.is_create_bsb %}
             <li class="nav-item">
                 <a class="nav-link" href="/controls/control/{{bsb.id}}/edit/"><i class="fa fa-pen"></i> Tahrirlash</a>
             </li>
@@ -29,7 +29,7 @@
                 <a class="nav-link bg-primary text-white" aria-current="page"><i class="fa fa-trash"></i> O'chirish</a>
             </li>
             {% endif %}
-            {% if bsb.holati == 'Tugagan' or bsb.holati == 'Dovom etmoqda' or user.is_staff or user.is_teacher %}
+            {% if bsb.holati == 'Tugagan' or bsb.holati == 'Dovom etmoqda' or user.is_staff or user.is_teacher or user.is_create_bsb %}
             <li class="nav-item">
                 <a class="nav-link"  href="{% if bsb.type == 'Topshiriq' %}{% url 'bsb_assignments' bsb.id %}{% elif bsb.type == 'Masala' %}{% url 'bsb_problems' bsb.id %}{% else %}/controls/control/{{bsb.id}}/tests/{% endif %}"><i class="fa fa-question"></i> {% if bsb.type == 'Topshiriq' %} Savollar{% elif bsb.type == 'Masala' %} Masalalar {% else %} Testlar{% endif %}</a>
             </li>

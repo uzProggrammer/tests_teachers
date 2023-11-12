@@ -11,10 +11,10 @@
 {% endblock breadcrumb %}
 
 {% block content %}
-{% if user.is_staff or user == sol.author %}
+{% if user.is_staff or user == sol.author or user.is_create_yechim %}
 
 {% endif %}
-{% if user.is_staff or user == sol.author %}
+{% if user.is_staff or user == sol.author or user.is_create_yechim %}
 <div class="card bg-dark p-2 mb-3">
     <ul class="nav nav-tabs">
         <li class="nav-item">

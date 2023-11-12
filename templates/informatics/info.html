@@ -3,86 +3,131 @@
 {% block title %}Informatika haqida{% endblock title %}
 
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
-    <li class="breadcrumb-item"><a href="/informatics/problems/">Masalalar</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Haqida</li>
+<li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+<li class="breadcrumb-item"><a href="/informatics/problems/">Masalalar</a></li>
+<li class="breadcrumb-item active bg-dark" aria-current="page">Haqida</li>
 {% endblock breadcrumb %}
 
 {% block content %}
-    <div class="card bg-dark text-white">
-        <div class="card-header">
-            Masalalar haqida
+<div class="card mb-3 p-3 bg-dark">
+    Har bir masalani yechishingiz uchun quyidagi dasturlash tillari mavjud:
+    <hr>
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="pills-home-tab" data-id="python" data-bs-toggle="pill" data-bs-target="#pills-home"
+                type="button" role="tab" aria-controls="pills-home" aria-selected="true"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/121px-Python-logo-notext.svg.png" width="20" style="border-radius: 15px;" alt="language"> Python 3.10.11</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-profile-tab" data-id="javascript" data-bs-toggle="pill" data-bs-target="#pills-profile"
+                type="button" role="tab" aria-controls="pills-profile" aria-selected="false"><img src="https://algorithmshub.uz/static/javascript.png" width="20" style="border-radius: 15px;" alt="language"> Js v21.0.0</button>
+        </li>
+    </ul>
+    <div class="tab-content" id="pills-tabContent">
+        <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab"
+            tabindex="0">
+            <textarea id="python">print(sum(map(int,input().split())))</textarea>
         </div>
-        <div class="card-body">
-            Siz masala uchun avval algoritm tuzasiz va uni python ko'diga o'zgartirasiz. Misol uchun:<br>
-            <p><pre><code class="language-python">print("Salom dunyo")</code></pre></p>
-            Bu ko'd ekranga <i>Salom dunyo</i> so'zini chop etadi.
-            <p></p>
-            Undan tashqari python orqali bir qatorda ikkita sonni olish uchun ishlatilanadigan kod
-            <p><pre><code class="language-python">a,b=map(int,input().split())</code></pre></p>
-            <p></p>
-            Agarda dastur uzundan uzun bo'lib ketadigan bo'lsa qisqartmalar ham mavjud:
-            <p><pre><code class="language-python"># Bir qatorda if else
-print(True if 3>5 else False)
+        <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">
+            <textarea id="javascript">const fs = require('fs');
+const data = fs.readFileSync(0, 'utf-8');
 
-# Bir qatorda for operatori
-suz='12345'
-l = [i for i in suz]
-# output: ['1','2','3','4','5']
-
-# List malumot turidagi elementlarni bir qatorda yig'indisini hisoblash
-l = [1,2,3,4,5,6,7,8,9,10]
-print(sum(l))
-# output: 45
-
-# if else operatorlarini qisqachayozilishi:
-if 4==0:print("Xato")
-else:print("To'g'ri")
-
-# ....
-</code></pre></p>
+const [a, b] = data.split(' ').map(x => parseInt(x));
+process.stdout.write( '' + (a+b) );</textarea>
         </div>
     </div>
+</div>
 
-    <div class="card bg-dark text-white">
-        <div class="card-herder">
-            <h3>Masalardan qaytgan javoblar:</h3>
-        </div>
-        <div class="card-body table-responsive">
-            <table class="table table-bordered text-white scrollbar table-sm align-middle">
-                <tr class="p-3" style="padding:10px;">
-                    <th class="text-success p-3">Accepted</th>
-                    <td class="text-success p-3">Siz tuzgan dastur barcha testlarning qiymatlariga to'g'ri tushdi. Ya'ni siz tuzgan algaritm masala javobiga tog'ri tushdi.</td>
-                    <td class="text-success p-3">Sizda yetarli ma'lumot bor ekan!</td>
-                </tr>
-                <tr class="p-3" style="padding:10px;">
-                    <th class="text-danger p-3">WrongAnswer(test_soni)</th>
-                    <td class="text-danger p-3">Sizning dasturingizda <i>test_soni</i>dagi qiymatga chiquvchi ma'lumotingiz to'g'ri tushmadi!</td>
-                    <td class="text-danger p-3">Sizning algoritmingiz xoto ishladi. Yoki shunchaki tekshirish uchun qildingiz. Yoki o'zingiz bilmagan holda.</td>
-                </tr>
-                <tr class="p-3" style="padding:10px;">
-                    <th class="text-danger p-3">TimeLimit(test_soni)</th>
-                    <td class="text-danger p-3">Sizning dasturingizda <i>test_soni</i>da cheklangan vaqtdan o'tib ketdi.</td>
-                    <td class="text-danger p-3">DAsturingiz samarasiz yechimga ega. Yoki algoritmingiz xato</td>
-                </tr>
-                <tr class="p-3" style="padding:10px;">
-                    <th class="text-danger p-3">MemoryLimit(test_soni)</th>
-                    <td class="text-danger p-3">Sizning dasturingizda <i>test_soni</i>da cheklanga xotiradan o'tib ketdi</td>
-                    <td class="text-danger p-3">Siz tuzgan algoritm xato!</td>
-                </tr>
-                <tr class="p-3" style="padding:10px;">
-                    <th class="text-danger p-3">ImportError</th>
-                    <td class="text-danger p-3">Siz dasturingizda taqiqlangan kutubxonani ishlatingiz.</td>
-                    <td class="text-danger p-3">Sizning dasturingiz tizim uchun xafli bo'lishi mumkin. Shu sababdan bu Error chiqdi. Siz bunda dasturning qayerida ishlatgan bo'lsangizda xato chiqaveradi. Bular: <i>os</i> <i>sys</i> va boshqalar</td>
-                </tr>
-                <tr class="p-3" style="padding:10px;">
-                    <th class="text-danger p-3">CE</th>
-                    <td class="text-danger p-3">Sizning dasturingiz xato</td>
-                    <td class="text-danger p-3">Siz tuzgan dasturning qaysidir qatori xato. Bunda sizga maslahat dasturni kompyuteringizda qaytadan tekshirib, keyin qaytadan urinib ko'rish maslahat beriladi</td>
-                </tr>
-            </table>
-        </div>
+
+<div class="card bg-dark p-3 mb-3">
+    <div class="card-body">
+        <p>
+            Har bir jo'natilgan yechim serverda eng kamida 10 ta testdan o'tadi.
+            Yechim barcha testlardan o'tgandagina yechilgan hisoblanadi
+            Tekshirish jarayonida xatolik topgan tizim, tekshirishni darhol to'xtatib xatolikni
+            ko'rsatadi.
+            Yechimlaringizning natijalarini "<a target="_blank"
+                                                href="/informatics/attempts/">Oxirgi urinishlar</a>"
+            bo'limida ko'rishingiz mumkin.
+            Bundan tashqari u yerda boshqa foydalanuvchilarning ham natijalari chiqib boradi. Natija o'z
+            ichiga yechimingiz holati, agar tekshirishda xato bo'lsa, nechinchi testda xato bo'lganini
+            oladi.
+            "<a target="_blank" href="/informaticsattempts/">Oxirgi urinishlar</a>"
+            bo'limidagi yechimning soniga bosganda (agar u yechim sizniki bo'lsa) siz o'z yozgan
+            kodingizni va yechimingiz haqida to'liq ma'lumotni olasiz.
+        </p>
+
+        <p>Tizim masalangizni tekshirganda quyidagi ko'rinishdagi javoblarni qaytarishi mumkin:</p>
     </div>
+</div>
+
+<div class="card bg-dark mb-3">
+    <div class="card-body table-responsive p-0">
+        <table class="table m-0 table-hover table-borderless table-striped text-left">
+            <tr>
+                <th>№</th>
+                <th>Holati</th>
+                <th>Hodisa</th>
+                <th>Sabab</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td class="text-success fw-bold">Qabul Qilindi</td>
+                <td>Dastur to'g'ri ishaydi va cheklovlarga muvofiq barcha sinovlardan o'tdi.</td>
+                <td>Jyuri xatosi ;)</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td class="text-danger fw-bold">Nato'g'ri javob (N-test)</td>
+                <td>Javob noto‘g‘ri. Dastur bergan natijalar hakamlar hay'ati javoblariga mos
+                    kelmaydi
+                </td>
+                <td>Noto'g'ri chiqish formati yoki dasturdagi algoritmik xato</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td class="text-danger fw-bold">Vaqt chegarasidan o'tib ketdi (N-test)</td>
+                <td>Masalada belgilangan vaqt cheklovidan o'tib ketdi</td>
+                <td>Dasturda samarasiz yechim yoki algoritmik xato</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td class="text-danger fw-bold">Komplatsiya xatosi (N-test)</td>
+                <td>Kompilyatsiya xatosi.</td>
+                <td>Dasturning sintaktik xatosi. Java tilida amalga oshirayotganda "Main" dan
+                    tashqari sinf ishlatilgan bo'lishi mumkin
+                </td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td class="text-danger fw-bold">Xotira chegararidan o\'tib ketdi (N-test)</td>
+                <td>Dastur masalada belgilangan xotira cheklovidan oshib ketdi. Dastur o'rnatilgan
+                    xotira hajmidan ko'proq foydalanadi.
+                </td>
+                <td>Algoritmning samarasizligi yoki xotiraning noto'g'ri joylashishi</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td class="text-danger fw-bold">Import Error</td>
+                <td>Tizim ruxsat bergmagan kutubxonalardan foydalandingiz. Iltimos Dasturni qaytadan yozing
+                </td>
+                <td>Bu faqat python dasturlash tili uchun ishlatiladi. 
+                </td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td class="text-danger fw-bold">Chekerda Xatolik (N-test)</td>
+                <td>Masala uchun yozilgan chekerda xatolik bor</td>
+                <td>Iltimos adminga yoki masala yaratuvchisiga murojat qiling</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td class="text-info fw-bold">Tekshirilmoqda (N-test)</td>
+                <td>Dastur ishlatilmoqda</td>
+                <td>Dastur mavjud testlar orqali tekshirilmoqda</td>
+            </tr>
+        </table>
+    </div>
+</div>
 {% endblock content %}
 
 {% block js %}
@@ -90,6 +135,35 @@ else:print("To'g'ri")
 <script>
     document.querySelector('li.s-item.active').classList.remove('active');
     document.querySelector('#problems').classList.add('active');
+
+    const initMap = {};
+    document.querySelectorAll('.nav-link').forEach(
+        el=>{
+            el.addEventListener('click', e=>{
+                const alreadyInit = initMap[`${el.getAttribute('data-id')}`] === true
+
+                if (alreadyInit) {
+                    return ;
+                };
+
+                const editorIO = CodeMirror.fromTextArea(document.getElementById(`${el.getAttribute('data-id')}`), {
+                    lineNumbers: true,
+                    theme: 'monokai',
+                    mode: `${el.getAttribute('data-id')}`,
+                });
+
+                editorIO.setOption('readOnly', true);
+
+                setTimeout(() => {
+                    editorIO.refresh();
+                }, 300)
+
+                initMap[`${el.getAttribute('data-id')}`] = true;
+                console.log(initMap)
+            });
+        }
+    )
+    $("button.nav-link.active").trigger('click');
 </script>
 
 {% endblock js %}

@@ -16,7 +16,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="/controls/control/{{bsb.id}}/"><i class="fa fa-bar-chart"></i> Nazorat ishi</a>
             </li>
-            {% if user.is_teacher or user.is_staff %}
+            {% if user.is_teacher or user.is_staff or user.is_create_bsb %}
             <li class="nav-item">
                 <a class="nav-link" href="/controls/control/{{bsb.id}}/edit/"><i class="fa fa-pen"></i> Tahrirlash</a>
             </li>
@@ -30,7 +30,7 @@
                 <a class="nav-link bg-danger text-white" href="/controls/control/{{bsb.id}}/delete/"><i class="fa fa-trash"></i> O'chirish</a>
             </li>
             {% endif %}
-            {% if bsb.holati == 'Tugagan' or bsb.holati == 'Dovom etmoqda' or user.is_staff or user.is_teacher %}
+            {% if bsb.holati == 'Tugagan' or bsb.holati == 'Dovom etmoqda' or user.is_staff or user.is_teacher or user.is_create_bsb %}
             <li class="nav-item">
                 <a class="nav-link bg-primary text-white" aria-current="page"><i class="fa fa-question"></i> {% if bsb.type == 'Topshiriq' %} Savollar{% elif bsb.type == 'Masala' %} Masalalar {% else %} Testlar{% endif %}</a>
             </li>
@@ -52,13 +52,13 @@
     {% include 'bsb/bsb_header.html' %}
     <div class="card bg-dark text-white">
         <div class="card-header p-4">
-            <h1>{{assignment.title|safe}}</h1>{% if user.is_staff or user.is_teacher %} <a href="edit/" class="btn btn-primary m-2"> Tahrirlash</a>{% endif %}
+            <h1>{{assignment.title|safe}}</h1>{% if user.is_staff or user.is_teacher or user.is_create_bsb %} <a href="edit/" class="btn btn-primary m-2"> Tahrirlash</a>{% endif %}
         </div>
         <div class="card-body">
             {{assignment.info|safe}}
         </div>
     </div>
-    {% if user.is_staff or user.is_teacher or user.is_superuser %}
+    {% if user.is_staff or user.is_teacher or user.is_superuser or user.is_create_bsb %}
     <div class="card bg-dark text-white my-3">
         <div class="card-header p-3">
             <h3>Javoblar</h3>
@@ -75,7 +75,7 @@
                 <div id="answer{{ass.id}}" class="accordion-collapse collapse bg-dark text-white" aria-labelledby="headingOne" data-bs-parent="#answerca">
                   <div class="accordion-body">
                     {{ass.body|safe}}
-                      {% if not ass.student_answer_ball.exists or user.is_teacher or user.is_staff %}
+                      {% if not ass.student_answer_ball.exists or user.is_teacher or user.is_staff or user.is_create_bsb %}
                       <div class="accordion my-3 bg-dark text-white" id="accordionExample">
                           <div class="accordion-item bg-dark text-white">
                             <h2 class="accordion-header">

@@ -19,7 +19,7 @@ def all_view(request):
     return render(request, 'tests/all.html', {'page_obj': object, 'object': masalalar,})
 
 def delete_test(request, id):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_teacher or request.user.is_staff or request.user.is_create_test:
         test = get_object_or_404(Quiz,id=id)
         if request.method=='POST':
             test.delete()
@@ -32,7 +32,7 @@ def delete_test(request, id):
 def deteil_view(request, id):
     if request.user.is_authenticated:
         test = get_object_or_404(Quiz,id=id)
-        if test.is_public or request.user.is_staff or request.user == test.author:
+        if test.is_public or request.user.is_staff or request.user == test.author or request.user.is_create_test:
             return render(request, 'tests/deteil.html', {'test': test})
         else:
             return render(request, '403.html', status=403)
@@ -42,7 +42,7 @@ def deteil_view(request, id):
 def start_test_view(request, id):
     if request.user.is_authenticated:
         test = get_object_or_404(Quiz,id=id)
-        if test.is_public or request.user.is_staff or request.user == test.author:
+        if test.is_public or request.user.is_staff or request.user == test.author or request.user.is_create_test:
             if test.quizes_count != 0:
                 test.not_actioned_users.add(request.user)
                 test.save()
@@ -57,7 +57,7 @@ def start_test_view(request, id):
 def quizes_view(request: HttpRequest, id):
     if request.user.is_authenticated:
         test = get_object_or_404(Quiz,id=id)
-        if test.is_public or request.user.is_staff or request.user == test.author:
+        if test.is_public or request.user.is_staff or request.user == test.author or request.user.is_create_test:
 
             if test.quizes_count != 0 and request.user in test.not_actioned_users.all() and request.user not in test.users.all():
                 started_time = StartedTime.objects.filter(user=request.user, quiz=test, time=test.time)
@@ -83,7 +83,7 @@ def quizes_view(request: HttpRequest, id):
 def quizes_post_view(request, id):
     if request.user.is_authenticated:
         test = get_object_or_404(Quiz,id=int(id))
-        if test.is_public or request.user.is_staff or request.user == test.author:
+        if test.is_public or request.user.is_staff or request.user == test.author or request.user.is_create_test:
 
             if test.quizes_count != 0 and request.user in test.not_actioned_users.all() and request.user not in test.users.all():
                 trues = []
@@ -206,7 +206,7 @@ def get_started_time_api(request: HttpRequest, id):
 def public_api(request: HttpRequest, id):
     if request.user.is_authenticated:
         test = get_object_or_404(Quiz,id=id)
-        if request.user.is_staff or request.user.is_teacher:
+        if request.user.is_staff or request.user.is_teacher or request.user.is_create_test:
             test.is_public = True
             test.save()
             messages.success(request, f'Test Ommaviy qilindi')
@@ -241,7 +241,7 @@ def result_view(request, id):
 def result1_view(request, id, id1):
     test = get_object_or_404(Quiz, id=id)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user == test.author:
+        if request.user.is_staff or request.user == test.author or request.user.is_create_test:
             result = get_object_or_404(Result, id=id1)
             return render(request, 'tests/result1.html', {'test': test, 'result': result})
         else:

@@ -16,7 +16,7 @@
         <li class="nav-item">
             <a class="nav-link bg-primary text-white" aria-current="page" href="#"><i class="fa fa-question"></i> Test</a>
         </li>
-        {% if user.is_staff or user == test.author %}
+        {% if user.is_staff or user == test.author or user.is_create_test %}
         <li class="nav-item">
             <a class="nav-link" href="/tests/test/{{test.id}}/edit/"><i class="fa fa-pen"></i> Tahrirlash</a>
         </li>

@@ -97,7 +97,11 @@ class Masala(models.Model):
         for test in self.testlar.all():
             urinish.turi = f'Tekshirilmoqda {i}'
             urinish.save()
-            data = Complier(body=urinish.body, time_limit=self.time_limit, memory_limit = self.memory_limit, username=username, _in=test.t_in, out=test.out, checker=self.checker if self.checker else None, lang=urinish.til)
+            checker_value = ''
+            checkerca = None
+            if checker_value!=self.checker:
+                checkerca = self.checker
+            data = Complier(body=urinish.body, time_limit=self.time_limit, memory_limit = self.memory_limit, username=username, _in=test.t_in, out=test.out, checker=checkerca, lang=urinish.til)
             data = data.run()
             urinish.time = data['time']
             urinish.memory = data['memory']

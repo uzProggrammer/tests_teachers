@@ -24,7 +24,7 @@ def baho(request, username):
         return render(request, '404.html')
 
 def assignment_baho(request, username):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and not request.user.is_staff and not request.user.is_teacher:
         profile = get_object_or_404(MyUser, username=username)
         answers = profile.assignment_answers.all()
         object = Paginator(answers, 40)
@@ -35,10 +35,10 @@ def assignment_baho(request, username):
             object = object.page(1)
         return render(request, 'baho/ass_price.html', {'profile': profile, 'answers':answers, 'object':object})
     else:
-        return render(request, '403.html', status=404)
+        return render(request, '404.html', status=404)
 
 def bsb_ball(request, username):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and not request.user.is_staff and not request.user.is_teacher:
         profile = get_object_or_404(MyUser, username=username)
         sinf = get_object_or_404(Sinf, nom=profile.sinf)
         bsb = BSB.objects.filter(sinf=sinf)

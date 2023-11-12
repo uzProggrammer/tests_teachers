@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% load replace_text_n %}
+
+{% block title %}Online Foydalanuvchilar{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+<li class="breadcrumb-item active bg-dark" aria-current="page">Online Foydalanuvchilar</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<div class="card bg-dark p-1">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Foydalanuvchi</th>
+                    <th>Sinf</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user1 in users %}
+                {% if user1.status == 'Online' %}
+                <tr>
+                    <td><a href="/users/profile/{{user1.username}}/">{{user1.get_full_name}}</a></td>
+                    <td>{% if user1|get_class %}<a href="/classes/class/{{user1|get_class}}/">{{user1.sinf}}</a>{% else %}Admin{% endif %}</td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

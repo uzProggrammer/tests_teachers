@@ -15,7 +15,7 @@
 {% block title %}{{test.title}} Edit{% endblock title %}
 
 {% block content %}
-    {% if user.is_staff or user.is_teacher %}
+    {% if user.is_staff or user.is_teacher or user.is_create_test %}
         <div class="card bg-dark text-white">
             <div class="card-body">
                 <a href="{% url 'test_detail' test.id %}" class="btn btn-outline-primary mx-2">Test haqida</a>

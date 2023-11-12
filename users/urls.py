@@ -3,7 +3,7 @@ from .views import own_assignment, all_teachers, all_students, profile_view, the
     update_profile, \
     own_problems, own_tests, own_posts, own_controls, add_friends, all_freiends, check_user_status, \
     check_users_status, get_top_users, add_admin_view, liked_posts, solved_problems, profile_attempts_view, \
-    courses_view,tests_view
+    courses_view,tests_view, onlines, update_user_with_admin_view
 from searchs.views import last_searchs, all_searchs_delete
 
 urlpatterns = [
@@ -26,4 +26,6 @@ urlpatterns = [
     path('users_status/<int:id>/', check_users_status, name='check_users_status'),
     path('get_top_users/', get_top_users, name='get_top_users'),
     path('add-super-user', add_admin_view),
+    path('onlines/', onlines),
+    path('profile/<str:username>/edit-admin/', update_user_with_admin_view, name='update_user_with_admin_view'),
 ]

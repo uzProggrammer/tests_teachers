@@ -39,6 +39,9 @@
                 <li><a href="/users/profile/{{profile.username}}/courses/"><i class="fa fa-book"></i> Kurslar</a></li>
                 <li><a href="/users/profile/{{profile.username}}/questions/"><i class="fa fa-question"></i> Testlar</a></li>
                 <li><a href="/users/profile/{{profile.username}}/friends/"><i class="fa fa-users"></i> Do'stlar</a></li>
+                {% if user.is_staff and user != profile %}
+                <li><a href="/users/profile/{{profile.username}}/edit-admin/"><i class="fa fa-pen"></i> Tahrirlash</a></li>
+                {% endif %}
             </ul>
         </div>
     </div>

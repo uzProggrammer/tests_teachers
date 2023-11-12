@@ -37,7 +37,7 @@ def get_problem_view(request, id, id1):
 
 def add_view(request):
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user.is_teacher:
+        if request.user.is_staff or request.user.is_teacher or request.user.is_create_yechim:
             if request.method == 'POST':
                 title = request.POST.get('title')
                 url = request.POST.get('url')
@@ -50,7 +50,7 @@ def add_view(request):
 def edit_view(request, id):
     sol = get_object_or_404(Olimpiada, id=id)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user == sol.author:
+        if request.user.is_staff or request.user == sol.author or request.user.is_create_yechim:
             if request.method == 'POST':
                 title = request.POST.get('title')
                 sol.title = title
@@ -65,7 +65,7 @@ def edit_view(request, id):
 def add_solution1_view(request, id):
     sol = get_object_or_404(Olimpiada, id=id)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user == sol.author:
+        if request.user.is_staff or request.user == sol.author or request.user.is_create_yechim:
             if request.method == 'POST':
                 title = request.POST.get('title')
                 url = request.POST.get('url')
@@ -80,7 +80,7 @@ def edit2_view(request, id, id1):
     sol = get_object_or_404(Olimpiada, id=id)
     pr = get_object_or_404(Problem, id=id1, olimpiada=sol)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user == sol.author:
+        if request.user.is_staff or request.user == sol.author or request.user.is_create_yechim:
             if request.method == 'POST':
                 title = request.POST.get('title')
                 pr.title = title

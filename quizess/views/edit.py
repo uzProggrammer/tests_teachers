@@ -6,7 +6,7 @@ from django.contrib import messages
 def edit_quiz_view(request: HttpRequest, id):
     test = get_object_or_404(Quiz, id=id)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user == test.author:
+        if request.user.is_staff or request.user == test.author or request.user.is_create_test:
             if request.method == 'POST':
                 title = request.POST.get('title')
                 test.title = title

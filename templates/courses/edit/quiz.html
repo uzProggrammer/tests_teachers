@@ -5,7 +5,7 @@
     <li class="breadcrumb-item"><a href="/courses/">Kurslar</a></li>
     <li class="breadcrumb-item"><a href="/courses/course/{{course.slug}}/">{{course.title}}</a></li>
     <li class="breadcrumb-item"><a href="/courses/course/{{course.slug}}/lesson/{{lesson.slug}}/">{{lesson.title}}</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Test Qo'shish</li>
+    <li class="breadcrumb-item active bg-dark" aria-current="page">Test Qo'shish</li>
 {% endblock breadcrumb %}
 
 {% block title %}
@@ -63,7 +63,7 @@
                 </ol>
             </div>
             <div class="card-footer text-end">
-                {% if user == course.author or user.is_staff %}<button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-primary mx-2" id="add_lesson"><i class="fa fa-plus"></i> Mavzu qo'shish</button>
+                {% if user == course.author or user.is_staff or user.is_create_course %}<button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-primary mx-2" id="add_lesson"><i class="fa fa-plus"></i> Mavzu qo'shish</button>
                 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                     <div class="modal-dialog text-start bg-dark modal-fullscreen">
                         <form method="post" action="/courses/course/{{course.id}}/lesson-add/" class="modal-content bg-dark">
@@ -213,36 +213,26 @@
                         </div>
                     </div>
                 {% endif %}
-                <div class="card bg-dark text-white">
-                    <div class="card-header">
-                        Savol qo'shish
-                    </div>
-                    <div class="card-body">
-                        <form method="post">{% csrf_token %}
-                            <div class="input">
-                                <div class="card bg-dark text-white">
-                                    <div class="card-header">
-                                        <label for="id_title" class="form-label">Test matni</label>
-                                        <textarea name="quiz-title" id="id_title" class="form-control bg-dark text-white"></textarea>
-                                    </div>
-                                    <div class="card-body" id="answers">
-                                        <button type="button" id="add_button" class="btn btn-outline-primary m-3"><i class="bx bx-plus"></i></button>
-                                        {% for variant in quiz.variants.all %}
-                                            <div class="input-group mb-3 bg-dark">
-                                                <span class="input-group-text bg-dark" id="basic-addon1"><input {% if variant.is_true %}checked{% endif %} type="radio" value="{{variant.id}}" name="is_true" class="form-check-input"></span>
-                                                <textarea class="form-control" name="answer-{{variant.id}}">{{variant.body|safe}}</textarea>
-                                                <span class="input-group-text btn btn-danger bx bx-minus variant-minus"></span>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
+                    <form method="post" id="q-form">{% csrf_token %}
+                        <div class="input">
+                                <label for="id_title" class="form-label">Test matni</label>
+                                <textarea name="quiz-title" id="id_title" class="form-control bg-dark text-white"></textarea>
+                                <button type="button" id="add_button" class="btn btn-outline-primary my-3"><i class="bx bx-plus"></i> Variant qo'shish</button>
+                                <div class="card-body mt-3" id="answers">
+                                    {% for variant in quiz.variants.all %}
+                                        <div class="input-group mb-3 bg-dark">
+                                            <span class="input-group-text bg-dark" id="basic-addon1"><input {% if variant.is_true %}checked{% endif %} type="radio" value="{{variant.id}}" name="is_true" class="form-check-input"></span>
+                                            <textarea class="form-control" name="answer-{{variant.id}}">{{variant.body|safe}}</textarea>
+                                            <span class="input-group-text btn btn-danger bx bx-minus variant-minus"></span>
+                                        </div>
+                                    {% endfor %}
                                 </div>
                             </div>
-                            <div class="my-3 mx-2">
-                                <button type="submit" class="btn btn-outline-primary">Saqlash</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                        </div>
+                        <div class="my-3 mx-2">
+                            <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Saqlash</button>
+                        </div>
+                    </form>
             </div>
         </div>
     </div>
@@ -251,6 +241,12 @@
 
 {% block js1 %}
 <script>
+    document.addEventListener('keydown', e=>{
+        if (e.ctrlKey && e.key=='s'){
+            e.preventDefault();
+            document.querySelector('#q-form').submit();
+        }
+    });
     $.ajax(
         {
             type: 'GET',

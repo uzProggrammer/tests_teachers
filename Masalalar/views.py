@@ -156,7 +156,7 @@ def rating(request, slug, type1):
 
 def masala_qoshish(request: HttpRequest):
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user.is_teacher:
+        if request.user.is_staff or request.user.is_teacher or request.user.is_create_masala:
             if request.method == 'POST':
                 title = request.POST.get('title')
                 diff = request.POST.get('diff')
@@ -177,7 +177,9 @@ def masala_qoshish(request: HttpRequest):
 
                 checker = None
                 if 'checker' in request.POST:
-                    checker = request.POST.get('checker')
+                    ch_v1 = """"""
+                    if request.POST.get('checker')!=ch_v1:
+                        checker = request.POST.get('checker')
 
                 type = request.POST.get('type')
 
@@ -200,8 +202,9 @@ def masala_qoshish(request: HttpRequest):
                 if 'teg' in request.POST:
                     tegs = request.POST.getlist('teg')
                     for teg in tegs:
-                        teg1 = Teg.objects.create(name=teg)
-                        MasalaTeg.objects.create(problem=masala,tag=teg1)
+                        if teg != '':
+                            teg1 = Teg.objects.create(name=teg)
+                            MasalaTeg.objects.create(problem=masala,tag=teg1)
                 messages.success(request, 'Masala muvvofiqiyatli yaratildi')
                 return HttpResponseRedirect(f'/informatics/problems/unproblem/{masala.slug}/')
             return render(request, 'masalalar/create.html', )
@@ -248,7 +251,7 @@ def masalaemas_view(request: HttpRequest, slug):
 def testcases(request, slug):
     masala = get_object_or_404(Masala, slug=slug)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user == masala.author:
+        if request.user.is_staff or request.user == masala.author or request.user.is_create_masala:
             testcases = masala.testlar.all()
             masalalar = Paginator(testcases, 50)
             json = False
@@ -282,7 +285,7 @@ def testcases(request, slug):
 def testcases_post_view(request, slug):
     masala = get_object_or_404(Masala, slug=slug)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user == masala.author:
+        if request.user.is_staff or request.user == masala.author or request.user.is_create_masala:
             if request.method == 'POST':
                 key = request.POST.get('key')
                 value = request.POST.get('value')
@@ -298,7 +301,7 @@ def testcases_post_view(request, slug):
 def to_archive(request: HttpRequest, slug):
     masala = get_object_or_404(Masala, slug=slug)
     if request.user.is_authenticated:
-        if request.user.is_staff:
+        if request.user.is_staff or request.user.is_create_masala:
             masala.is_archived = True
             masala.save()
             messages.success(request, 'Masala muvvofiqiyatli arxivlandi')
@@ -311,7 +314,7 @@ def to_archive(request: HttpRequest, slug):
 def add_yechim_view(request, slug):
     masala = get_object_or_404(Masala, slug=slug)
     if request.user.is_authenticated:
-        if request.user.is_staff and masala.yechim:
+        if request.user.is_staff and masala.yechim or request.user.is_create_masala:
             masala.have_yechim = True
             masala.save()
             messages.success(request, 'Masala yechimi muvvofiqiyatli qo\'shildi')
@@ -338,7 +341,7 @@ def yechim_view(request, slug):
 def edit_testcase_view(request, slug):
     masala = get_object_or_404(Masala, slug=slug)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user == masala.author:
+        if request.user.is_staff or request.user == masala.author or request.user.is_create_masala:
             if request.method == 'POST':
                 id = request.POST.get('id')
                 key = request.POST.get('key')
@@ -377,7 +380,7 @@ def urinish_view(request, id):
 def masala_tahrirla_view(request, slug):
     masala = get_object_or_404(Masala, slug=slug)
     if request.user.is_authenticated:
-        if request.user == masala.author or request.user.is_staff:
+        if request.user == masala.author or request.user.is_staff or request.user.is_create_masala:
             if request.method == 'POST':
                 title = request.POST.get('title')
                 masala.title = title

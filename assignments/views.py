@@ -173,7 +173,7 @@ def ballar(request, id):
 def answers(request, id):
     if request.user.is_authenticated:
         assignment = get_object_or_404(Assignment, id=id)
-        if request.user.is_staff or request.user.is_teacher or assignment.qachongacha<timezone.now():
+        if request.user.is_staff or request.user.is_teacher or request.user.is_create_ass or assignment.qachongacha<timezone.now():
             answers = StudentAnswer.objects.filter(assignment=assignment).order_by('-date_created')
 
             return render(request, 'assignments/answers.html', {'assignment': assignment, 'answers':answers})
@@ -186,7 +186,7 @@ def answers(request, id):
 def answer(request, id, id1):
     if request.user.is_authenticated:
         assignment = get_object_or_404(Assignment, id=id)
-        if request.user.is_staff or request.user.is_teacher or assignment.qachongacha<timezone.now():
+        if request.user.is_staff or request.user.is_teacher or request.user.is_create_ass or assignment.qachongacha<timezone.now():
             answer = get_object_or_404(StudentAnswer, assignment=assignment, id=id1)
             if request.method == 'POST':
                 if answer.student_answer_ball.count()==0:
@@ -248,7 +248,7 @@ def add_assignment(request):
 
     if request.user.is_authenticated:
         sinflar = Sinf.objects.all().order_by('nom')
-        if request.user.is_teacher or request.user.is_staff:
+        if request.user.is_teacher or request.user.is_staff or request.user.is_create_ass:
             last = Assignment.objects.last()
             users = MyUser.objects.filter(is_student=True)
             if request.method == 'POST':
@@ -270,7 +270,7 @@ def add_assignment(request):
 
 def delete(request, id):
     ass = get_object_or_404(Assignment, id=id)
-    if request.user.is_staff or request.user.is_teacher:
+    if request.user.is_staff or request.user.is_teacher or request.user.is_create_ass:
         if request.method=='POST':
             ass.delete()
             messages.success(request, 'Dars muvaffaqiyatli o\'chirib tashlandi!')
@@ -284,7 +284,7 @@ def edit(request, id):
     ass = get_object_or_404(Assignment, id=id)
     sinflar = Sinf.objects.all().order_by('nom')
     if request.user.is_authenticated:
-        if request.user.is_teacher or request.user.is_staff:
+        if request.user.is_teacher or request.user.is_staff or request.user.is_create_ass:
             last = Assignment.objects.last()
             users = MyUser.objects.filter(is_student=True)
             if request.method == 'POST':

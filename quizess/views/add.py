@@ -5,7 +5,7 @@ from django.contrib import messages
 
 def add_quiz(request: HttpRequest):
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user.is_teacher:
+        if request.user.is_staff or request.user.is_teacher or request.user.is_create_test:
             if request.method == 'POST':
                 title = request.POST.get('title')
                 body = 'Test'
@@ -25,7 +25,7 @@ def add_quiz(request: HttpRequest):
 def add_test_view(request: HttpRequest, id):
     test =  get_object_or_404(Quiz, id=id)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user == test.author:
+        if request.user.is_staff or request.user.is_teacher or request.user.is_create_test:
             if request.method == 'POST':
                 quiz_type = request.POST.get('quiz-type')
                 if quiz_type == 'quiz':

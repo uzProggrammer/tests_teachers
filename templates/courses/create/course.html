@@ -3,7 +3,7 @@
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
     <li class="breadcrumb-item"><a href="/courses/">Kurslar</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Qo'shish</li>
+    <li class="breadcrumb-item active bg-dark" aria-current="page">Qo'shish</li>
 {% endblock breadcrumb %}
 
 {% block title %}
@@ -11,7 +11,7 @@
 {% endblock title %}
 
 {% block content %}
-<form method="post">{% csrf_token %}
+<form method="post" id="course-post-form">{% csrf_token %}
     <div class="row">
         <div class="col-md-5">
             <img src="/static/logo/courses.png" class="course-img mb-3"
@@ -50,6 +50,12 @@
 
 {% block js1 %}
 <script>
+    document.addEventListener('keydown', e=>{
+        if (e.ctrlKey && e.key=='s'){
+            e.preventDefault();
+            document.querySelector('#course-post-form').submit();
+        }
+    });
 tinymce.init({
     themes: "modern",
     skin: "oxide-dark",

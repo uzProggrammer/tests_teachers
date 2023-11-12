@@ -8,8 +8,8 @@
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
 <li class="breadcrumb-item"><a href="/courses/">Kurslar</a></li>
-<li class="breadcrumb-item"><a href="/courses/course/{{course.id}}">{{course.title|title}}</a></li>
-<li class="breadcrumb-item active" aria-current="page">{{lesson.title|title}}</li>
+<li class="breadcrumb-item"><a href="/courses/course/{{course.id}}/">{{course.title|title}}</a></li>
+<li class="breadcrumb-item bg-dark" aria-current="page">{{lesson.title|title}}</li>
 {% endblock breadcrumb %}
 
 {% block content %}
@@ -64,7 +64,7 @@
                 </ol>
             </div>
             <div class="card-footer text-end">
-                {% if user == course.author or user.is_staff %}<button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-primary mx-2" id="add_lesson"><i class="fa fa-plus"></i> Mavzu qo'shish</button>
+                {% if user == course.author or user.is_staff or user.is_create_course %}<button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-primary mx-2" id="add_lesson"><i class="fa fa-plus"></i> Mavzu qo'shish</button>
                 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                     <div class="modal-dialog text-start bg-dark modal-fullscreen">
                         <form method="post" action="/courses/course/{{course.id}}/lesson-add/" class="modal-content bg-dark">
@@ -130,7 +130,7 @@
                 {% endfor %}
 
 
-                {% if user.is_staff or user == course.author %}
+                {% if user.is_staff or user == course.author or user.is_create_course %}
                     <button style="font-size: 8px;" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1">
                         <i style="font-size: 9px;" class="fa fa-plus"></i>
                     </button>
@@ -217,7 +217,7 @@
                         style="font-size: 8px;"><i style="font-size: 9px;" class="fa fa-question"></i></a>
                     {% endfor %}
 
-                    {% if user.is_staff or user == course.author %}
+                    {% if user.is_staff or user == course.author or user.is_create_course %}
                     <button style="font-size: 8px;" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1">
                         <i style="font-size: 9px;" class="fa fa-plus"></i>
                     </button>
@@ -269,7 +269,7 @@
                 {% if lecture %}
                 {{lecture.body|safe}}
                 <br><br><br>
-                {% if user.is_staff or user == course.author %}
+                {% if user.is_staff or user == course.author or user.is_create_course %}
                 <div class="text-end" >
                     <a href="edit/" class="btn btn-success"><i class="fa fa-pen"></i> Tahrirlash</a>
                 </div>
@@ -286,7 +286,7 @@
                         </label>
                     </div>
                     {% endfor %}
-                    <button class="btn btn-primary my-3" type="submit">Yuborish</button>{% if user.is_staff or user == course.author %}<a href="edit/" class="btn btn-success my-3 mx-2"><i class="fa fa-pen"></i> Tahrirlash</a>{% endif %}
+                    <button class="btn btn-primary my-3" type="submit">Yuborish</button>{% if user.is_staff or user == course.author or user.is_create_course %}<a href="edit/" class="btn btn-success my-3 mx-2"><i class="fa fa-pen"></i> Tahrirlash</a>{% endif %}
                 </form>
                 {% endif %}
                 {% if quiz_yopiq %}
@@ -295,7 +295,7 @@
                     <label for="closed-test-body">Javobingiz</label>
                     <input required type="text" name="closed-test-body" id="closed-test-body" value="{{answer_yopiq.answer}}"
                         class="form-control bg-dark mb-3">
-                    <button class="btn btn-primary my-3" type="submit">Yuborish</button>{% if user.is_staff or user == course.author %} <a href="edit/" class="btn btn-success"><i class="fa fa-pen"></i> Tahrirlash</a>{% endif %}
+                    <button class="btn btn-primary my-3" type="submit">Yuborish</button>{% if user.is_staff or user == course.author or user.is_create_course %} <a href="edit/" class="btn btn-success"><i class="fa fa-pen"></i> Tahrirlash</a>{% endif %}
                 </form>
                 {% endif %}
                 {% if drag_and_drop %}
@@ -317,7 +317,7 @@
                             <div class="quiz col-md bg-dark" id="values">{% for value in drag_and_drop.get_values %}<div class="question" id="question{{value.id}}" draggable="true" data-value-id="{{value.id}}"><i class="fa fa-hand-point-left"></i> {{value.body|safe}}</div>{% endfor %}</div>
                         </div>
                     {% endif %}
-                    <button class="btn btn-primary my-3" id="drag_and_drop_btn">Yuborish</button>{% if user.is_staff or user == course.author %}<a href="edit/" class="btn btn-success mx-2"><i class="fa fa-pen"></i> Tahrirlash</a>{% endif %}
+                    <button class="btn btn-primary my-3" id="drag_and_drop_btn">Yuborish</button>{% if user.is_staff or user == course.author or user.is_create_course %}<a href="edit/" class="btn btn-success mx-2"><i class="fa fa-pen"></i> Tahrirlash</a>{% endif %}
 
                     
                 {% endif %}
@@ -334,7 +334,7 @@
                                     <label for="variant{{variant.id}}" class="form-check-label"> {{variant.body|safe}}</label>
                                 </div>
                         {% endfor %}
-                        <button class="btn btn-primary mt-3" type="submit">Yuborish</button>{% if user.is_staff or user == course.author %}<a href="edit/" class="btn btn-success mt-3 mx-3"><i class="fa fa-pen"></i> Tahrirlash</a>{% endif %}
+                        <button class="btn btn-primary mt-3" type="submit">Yuborish</button>{% if user.is_staff or user == course.author or user.is_create_course %}<a href="edit/" class="btn btn-success mt-3 mx-3"><i class="fa fa-pen"></i> Tahrirlash</a>{% endif %}
                     </form>
                 {% endif %}
             </div>
@@ -358,7 +358,7 @@
                                 <div class="progres-bar" style="border-radius: 25px;font-size: 10px;padding: 0;background-color: var(--sidebar-active-bg);border: 25px;height: 14px;">
                                     <div class="item-progres-bar" style="background: linear-gradient(40deg, blue, red);text-align: center;border-radius: 10px;margin:0;height: 100%;border: 0;width: ${value[0]}%;">${(value[0] !== 0) ? value[0].toString() + '%' : ''}</div>
                                 </div>
-                            </a>{% if user.is_staff or user == course.author %}
+                            </a>{% if user.is_staff or user == course.author or user.is_create_course %}
                             <div class="text-end">
                                 <button class="bg-dark" style="border:none;" data-bs-toggle="modal" data-bs-target="#edit-model${value[1]}"><i class="fa fa-pen"></i> Tahrirlash</button>
                             </div>

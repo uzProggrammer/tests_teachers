@@ -3,9 +3,9 @@
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
     <li class="breadcrumb-item"><a href="/courses/">Kurslar</a></li>
-    <li class="breadcrumb-item"><a href="/courses/course/{{course.slug}}/">{{course.title}}</a></li>
-    <li class="breadcrumb-item"><a href="/courses/course/{{course.slug}}/lesson/{{lesson.slug}}/">{{lesson.title}}</a></li>
-    <li class="breadcrumb-item active" aria-current="page">MA'lumot Qo'shish</li>
+    <li class="breadcrumb-item"><a href="/courses/course/{{course.id}}/">{{course.title}}</a></li>
+    <li class="breadcrumb-item"><a href="/courses/course/{{course.id}}/lesson/{{lesson.slug}}/">{{lesson.title}}</a></li>
+    <li class="breadcrumb-item active bg-dark" aria-current="page">Ma'lumot Qo'shish</li>
 {% endblock breadcrumb %}
 
 {% block title %}
@@ -63,7 +63,7 @@
                 </ol>
             </div>
             <div class="card-footer text-end">
-                {% if user == course.author or user.is_staff %}<button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-primary mx-2" id="add_lesson"><i class="fa fa-plus"></i> Mavzu qo'shish</button>
+                {% if user == course.author or user.is_staff or user.is_create_course %}<button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-primary mx-2" id="add_lesson"><i class="fa fa-plus"></i> Mavzu qo'shish</button>
                 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                     <div class="modal-dialog text-start bg-dark modal-fullscreen">
                         <form method="post" action="/courses/course/{{course.id}}/lesson-add/" class="modal-content bg-dark">
@@ -214,17 +214,15 @@
                     </div>
                 {% endif %}
                 <div class="card bg-dark text-white">
-                    <form method="post">{% csrf_token %}
+                    <form method="post" id="lecture-form">{% csrf_token %}
                         <div class="input">
-                            <div class="card bg-dark text-white">
-                                <div class="card-header">
-                                    <label for="id_title" class="form-label">Ma'lumot matni</label>
-                                    <textarea name="body" id="id_title" class="form-control bg-dark text-white"></textarea>
-                                </div>
+                            <div class="card bg-dark p-3">
+                                <label for="id_title" class="form-label">Ma'lumot matni</label>
+                                <textarea name="body" id="id_title" class="form-control bg-dark text-white"></textarea>
                             </div>
                         </div>
                         <div class="my-3 mx-2">
-                            <button type="submit" class="btn btn-outline-primary">Saqlash</button>
+                            <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Saqlash</button>
                         </div>
                     </form>
                 </div>
@@ -263,7 +261,7 @@
         a.classList.remove('btn-outline-secondary');
         a.classList.add('btn-success');
     }
-    tinymce.init({
+    var editor = tinymce.init({
         themes: "modern",
         skin: "oxide-dark",
         content_css: "dark",
@@ -272,6 +270,11 @@
         toolbar: 'undo redo | fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap',
     });
 
-
+    document.addEventListener('keydown', e=>{
+        if (e.ctrlKey && e.key=='s'){
+            e.preventDefault();
+            document.querySelector('#lecture-form').submit();
+        }
+    });
 </script>
 {% endblock js1 %}

@@ -9,7 +9,7 @@
 <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
 <li class="breadcrumb-item"><a href="/courses/">Kurslar</a></li>
 <li class="breadcrumb-item"><a href="/courses/course/{{course.id}}">{{course.title|title}}</a></li>
-<li class="breadcrumb-item active" aria-current="page">{{lesson.title|title}}</li>
+<li class="breadcrumb-item active bg-dark" aria-current="page">{{lesson.title|title}}</li>
 {% endblock breadcrumb %}
 
 {% block content %}
@@ -64,7 +64,7 @@
                 </ol>
             </div>
             <div class="card-footer text-end">
-                {% if user == course.author or user.is_staff %}<button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-primary mx-2" id="add_lesson"><i class="fa fa-plus"></i> Mavzu qo'shish</button>
+                {% if user == course.author or user.is_staff or user.is_create_course %}<button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-primary mx-2" id="add_lesson"><i class="fa fa-plus"></i> Mavzu qo'shish</button>
                 <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                     <div class="modal-dialog text-start bg-dark modal-fullscreen">
                         <form method="post" action="/courses/course/{{course.id}}/lesson-add/" class="modal-content bg-dark">
@@ -130,7 +130,7 @@
                 {% endfor %}
 
 
-                {% if user.is_staff or user == course.author %}
+                {% if user.is_staff or user == course.author or user.is_create_course %}
                     <button style="font-size: 8px;" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1">
                         <i style="font-size: 9px;" class="fa fa-plus"></i>
                     </button>
@@ -217,7 +217,7 @@
                         style="font-size: 8px;"><i style="font-size: 9px;" class="fa fa-question"></i></a>
                     {% endfor %}
 
-                    {% if user.is_staff or user == course.author %}
+                    {% if user.is_staff or user == course.author or user.is_create_course %}
                     <button style="font-size: 8px;" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal1">
                         <i style="font-size: 9px;" class="fa fa-plus"></i>
                     </button>
@@ -267,7 +267,7 @@
                     {% endif %}
                 {% endif %}
                 {% if lecture %}
-                <form method="post">{% csrf_token %}
+                <form method="post" id="lc-form">{% csrf_token %}
                     <textarea name="body" id="body">{{lecture.body|safe}}</textarea>
                     <button class="btn btn-primary my-3" type="submit" >Saqlash</button>
                 </form>
@@ -319,7 +319,7 @@
 
                 {% if multi_quiz %}
                     {{multi_quiz.body|safe}}
-                    <form method="post" class="my-3">
+                    <form method="post" class="my-3" >
                         {% for variant in multi_quiz.quizes %}
                                 {% csrf_token %}
                                 <div class="mb-2 mx-3" style="display: flex !important;">
@@ -340,6 +340,13 @@
 
 {% block js1 %}
 <script>
+    
+    document.addEventListener('keydown', e=>{
+        if (e.ctrlKey && e.key=='s'){
+            e.preventDefault();
+            document.querySelector('#lc-form').submit();
+        }
+    });
     $.ajax(
         {
             type: 'GET',
@@ -353,7 +360,7 @@
                                 <div class="progres-bar" style="border-radius: 25px;font-size: 10px;padding: 0;background-color: var(--sidebar-active-bg);border: 25px;height: 14px;">
                                     <div class="item-progres-bar" style="background: linear-gradient(40deg, blue, red);text-align: center;border-radius: 10px;margin:0;height: 100%;border: 0;width: ${value[0]}%;">${(value[0] !== 0) ? value[0].toString() + '%' : ''}</div>
                                 </div>
-                            </a>{% if user.is_staff or user == course.author %}
+                            </a>{% if user.is_staff or user == course.author or user.is_create_course %}
                             <div class="text-end">
                                 <button class="bg-dark" style="border:none;" data-bs-toggle="modal" data-bs-target="#edit-model${value[1]}"><i class="fa fa-pen"></i> Tahrirlash</button>
                             </div>

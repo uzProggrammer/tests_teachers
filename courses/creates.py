@@ -9,7 +9,7 @@ import random, string
 
 def create_course(request: HttpRequest):
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user.is_teacher:
+        if request.user.is_staff or request.user.is_teacher or request.user.is_create_course:
             if request.method == 'POST':
                 body = '...'
                 if 'body' in request.POST:
@@ -31,7 +31,7 @@ def create_course(request: HttpRequest):
 def create_lesson(request: HttpRequest, id):
     course = get_object_or_404(Course, id=id)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user == course.author:
+        if request.user.is_staff or request.user == course.author or request.user.is_create_course:
             body = '...'
             if 'body' in request.POST:
                 body = request.POST.get('body')
@@ -60,7 +60,7 @@ def url_to_create(request: HttpRequest, id, slug):
     course = get_object_or_404(Course, id=id)
     lesson = get_object_or_404(Lessons, slug=slug)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user == course.author:
+        if request.user.is_staff or request.user == course.author or request.user.is_create_course:
             if 'type' in request.GET:
                 type = request.GET.get('type')
                 if type == 'one':
@@ -86,7 +86,7 @@ def create_quiz_view(request: HttpRequest, id, slug):
     course = get_object_or_404(Course, id=id)
     lesson = get_object_or_404(Lessons, slug=slug)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user == course.author:
+        if request.user.is_staff or request.user == course.author or request.user.is_create_course:
             if request.method == 'POST':
                 quiz = request.POST
 
@@ -147,7 +147,7 @@ def create_multiquiz_view(request: HttpRequest, id, slug):
     course = get_object_or_404(Course, id=id)
     lesson = get_object_or_404(Lessons, slug=slug)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user == course.author:
+        if request.user.is_staff or request.user == course.author or request.user.is_create_course:
             if request.method == 'POST':
                 quiz = request.POST
 
@@ -208,7 +208,7 @@ def create_lecture_view(request: HttpRequest, id, slug):
     course = get_object_or_404(Course, id=id)
     lesson = get_object_or_404(Lessons, slug=slug)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user == course.author:
+        if request.user.is_staff or request.user == course.author or request.user.is_create_course:
             if request.method == 'POST':
                 body = '...'
                 if 'body' in request.POST:
@@ -263,7 +263,7 @@ def create_closedtest_view(request: HttpRequest, id, slug):
     course = get_object_or_404(Course, id=id)
     lesson = get_object_or_404(Lessons, slug=slug)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user == course.author:
+        if request.user.is_staff or request.user == course.author or request.user.is_create_course:
             if request.method == 'POST':
                 body = '...'
                 if 'body' in request.POST:
@@ -318,7 +318,7 @@ def create_drag_and_drop_view(request: HttpRequest, id, slug):
     course = get_object_or_404(Course, id=id)
     lesson = get_object_or_404(Lessons, slug=slug)
     if request.user.is_authenticated:
-        if request.user.is_staff or request.user == course.author:
+        if request.user.is_staff or request.user == course.author or request.user.is_create_course:
             if request.method == 'POST':
                 letters = string.ascii_letters
                 digits = string.digits

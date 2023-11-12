@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+
+{% block title %}{{profile.username}}{% endblock title %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
+<li class="breadcrumb-item"><a href="/users/profile/{{profile.username}}/">{{profile.get_full_name|title}}</a></li>
+<li class="breadcrumb-item active bg-dark" aria-current="page">Tahrirlash</li>
+{% endblock breadcrumb %}
+
+{% block content %}
+<style>
+    .form-switch .form-check-input{
+        --bs-form-switch-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='rgba%280, 280, 280, 0.7%29'/%3e%3c/svg%3e");
+    }
+    .form-check-input {
+        --bs-form-check-bg: var(--bg-color);
+    }
+</style>
+<div class="row">
+    <div class="col-md-3 text-center profile-sticky">
+        <div class="card bg-dark p-3 mb-3">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f3/Student_%28example%29.svg/444px-Student_%28example%29.svg.png?20180722153736"
+                alt="IMG" width="100%" style="border-radius: 50%;background-color: transparent;">
+            <div class="my-2 fs-3">
+                {{profile.first_name}} {{profile.last_name}}
+            </div>
+            <span style="font-size: 13px;">{{profile.email}}</span>
+            <span  style="font-size: 13px;" class="user-status"></span>
+            <button class="user-menu-opener"><i class="fa-solid fa-user-gear"></i> Hisob menyusi <i class="fa fa-chevron-down"></i></button>
+            <ul class="profile-items my-3">
+                <li><a href="/users/profile/{{profile.username}}/"><i class="fa fa-user"></i> Profil</a></li>
+                {% if user == profile %}
+                <li><a href="/users/update/"><i class="fa fa-pen"></i> Tahirirlash</a></li>
+                <li><a href="/chats/"><i class="fa fa-comment"></i> Suhbatlar</a></li>
+                {% endif %}
+                {% if not profile.is_teacher and not profile.is_staff %}
+                <li><a href="/users/profile/{{profile.username}}/prices/assignment/"><i class="bx bx-football"></i> Topshiriqdan  olgan ballar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/prices/controls/"><i class="bx bx-football"></i> Nazoratlardan olgan ballar</a></li>
+                {% else %}
+                <li><a href="/users/profile/{{profile.username}}/assignments/"><i class="bx bx-football"></i> Topshiriqlar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/controls/"><i class="bx bx-football"></i> Nazoratlar</a></li>
+                {% endif %}
+                <li><a href="/users/profile/{{profile.username}}/solved-problems/"><i class="fa fa-check"></i> Masalalar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/attempts/"><i class="fab fa-strava"></i> Urinishlar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/courses/"><i class="fa fa-book"></i> Kurslar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/questions/"><i class="fa fa-question"></i> Testlar</a></li>
+                <li><a href="/users/profile/{{profile.username}}/friends/"><i class="fa fa-users"></i> Do'stlar</a></li>
+                {% if user.is_staff and user != profile %}
+                <li class="active-profile-item"><a href="#"><i class="fa fa-pen"></i> Tahrirlash</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-9">
+        <div class="card bg-dark p-2 mb-3">
+            <form method="post">{% csrf_token %}
+                <h3 class="text-center">{{profile.get_full_name|title}}ni tahrirlash</h3><hr>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="first_name">Ismi</label>
+                        <input type="text" required placeholder="Ismi" name="first_name" value="{{profile.first_name}}" class="bg-dark form-control">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="first_name">Familyasi</label>
+                        <input type="text"required placeholder="Familyasi" name="last_name" value="{{profile.last_name}}" class="bg-dark form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="first_name">Email manzili</label>
+                        <input type="email"required placeholder="Email manzili" name="email" value="{{profile.email}}" class="bg-dark form-control">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="first_name">Qo'shilgan vaqti</label>
+                        <input required placeholder="Qo'shilgan vaqti" type="datetime-local" name="date_joined" value="{{profile.date_joined|date:'Y-m-d H:i'}}" class="bg-dark form-control">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label  for="first_name">Foydalanuvchi nomi</label>
+                    <input required placeholder="Foydalanuchi nomi" id="username" type="text" name="username" value="{{profile.username}}" class="bg-dark form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="first_name">Parol</label>
+                    <input  placeholder="Parol" type="password" name="password" value="" class="bg-dark form-control">
+                </div>
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input name="is_staff" class="form-check-input" type="checkbox" role="switch" id="is_staff" {% if profile.is_staff %}checked{% endif %}>
+                        <label class="form-check-label" for="is_staff">Admin qilib tayinlash</label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input name="is_create_course" class="form-check-input" type="checkbox" role="switch" id="is_create_course" {% if profile.is_create_course %}checked{% endif %}>
+                        <label class="form-check-label" for="is_create_course">Kurslarni tahrirlash, qo'shish va o'chirish huquqini berish</label>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input name="is_create_test" class="form-check-input" type="checkbox" role="switch" id="is_create_test" {% if profile.is_create_test %}checked{% endif %}>
+                        <label class="form-check-label" for="is_create_test">Testlarni tahrirlash, qo'shish va o'chirish huquqini berish</label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input name="is_create_ass" class="form-check-input" type="checkbox" role="switch" id="is_create_ass" {% if profile.is_create_ass %}checked{% endif %}>
+                        <label class="form-check-label" for="is_create_ass">Topshiriqlarni tahrirlash, qo'shish va o'chirish huquqini berish</label>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input name="is_create_masala" class="form-check-input" type="checkbox" role="switch" id="is_create_masala" {% if profile.is_create_masala %}checked{% endif %}>
+                        <label class="form-check-label" for="is_create_masala">Masalalarni tahrirlash, qo'shish va o'chirish huquqini berish</label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input name="is_create_yechim" class="form-check-input" type="checkbox" role="switch" id="is_create_yechim" {% if profile.is_create_yechim %}checked{% endif %}>
+                        <label class="form-check-label" for="is_create_yechim">Olimpiada masalalarni tahrirlash, qo'shish va o'chirish huquqini berish</label>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <div class="form-check form-switch">
+                        <input name="is_create_bsb" class="form-check-input" type="checkbox" role="switch" id="is_create_bsb" {% if profile.is_create_bsb %}checked{% endif %}>
+                        <label class="form-check-label" for="is_create_bsb">Nazorat ishlarini tahrirlash, qo'shish va o'chirish huquqini berish</label>
+                    </div>
+                </div>
+
+                <button class="btn btn-outline-success"><i class="fa fa-save"></i> Saqlash</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script>
+    const status = document.querySelector('.user-status');
+
+    const now = new Date('Avg 23, 14:47:23');
+    function checkOnlineStatus() {
+        fetch('/users/profile/{{profile.username}}/check_user_status/')
+            .then(response => response.json())
+            .then(data => {
+                if (data.is_online) {
+                    status.innerHTML = '<p style="color: green !important;">Online</p>'
+                } else {
+                    status.innerHTML = `<p style="color: rgb(230,10,10) !important;">${data.time}</p>`
+                }
+            })
+            .catch(error => console.log(error));
+    }
+    checkOnlineStatus();
+    setInterval(checkOnlineStatus, 5000);
+
+    document.addEventListener('keydown', e=>{
+        if (e.ctrlKey && e.key=='s'){
+            e.preventDefault();
+            const myRegex = /^[\w_]+\Z/;
+            document.querySelector('form').submit();
+            
+        }
+    });
+</script>
+{% endblock %}

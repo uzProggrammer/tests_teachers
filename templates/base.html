@@ -103,15 +103,13 @@
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="/chats/"><i class="fa fa-comment"></i> Suhbatlar</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            {% if user.is_staff or user.is_teacher %}
-                            <li><a class="dropdown-item" href="/informatics/problems/add/"><i class="fa fa-plus"></i> Masala Qo'shish</a></li>
-                            <li><a class="dropdown-item" href="/assignments/add/"><i class="fa fa-plus"></i> Dars qo'shish</a></li>
-                            <li><a class="dropdown-item" href="/controls/create/"><i class="fa fa-plus"></i> Nazorat Qo'shish</a></li>
-                            <li><a class="dropdown-item" href="/tests/add/"><i class="fa fa-plus "></i> Test Qo'shish</a></li>
-                            <li><a class="dropdown-item" href="/courses/add/"><i class="fa fa-plus "></i> Kurs Qo'shish</a></li>
-                            <li><a class="dropdown-item" href="/olympiad-solutions/add/"><i class="fa fa-plus "></i>Yechim Qo'shish</a></li>
-                            <li><a class="dropdown-item" href="/users/add-super-user"><i class="fa fa-plus "></i> Admin Qo'shish</a></li>
-                            {% endif %}
+                            {% if user.is_create_masala %}<li><a class="dropdown-item" href="/informatics/problems/add/"><i class="fa fa-plus"></i> Masala Qo'shish</a></li>{% endif %}
+                            {% if user.is_create_ass %}<li><a class="dropdown-item" href="/assignments/add/"><i class="fa fa-plus"></i> Dars qo'shish</a></li>{% endif %}
+                            {% if user.is_create_bsb %}<li><a class="dropdown-item" href="/controls/create/"><i class="fa fa-plus"></i> Nazorat Qo'shish</a></li>{% endif %}
+                            {% if user.is_create_test %}<li><a class="dropdown-item" href="/tests/add/"><i class="fa fa-plus "></i> Test Qo'shish</a></li>{% endif %}
+                            {% if user.is_create_course %}<li><a class="dropdown-item" href="/courses/add/"><i class="fa fa-plus "></i> Kurs Qo'shish</a></li>{% endif %}
+                            {% if user.is_create_yechim %}<li><a class="dropdown-item" href="/olympiad-solutions/add/"><i class="fa fa-plus "></i>Yechim Qo'shish</a></li>{% endif %}
+                            {% if user.is_staff %}<li><a class="dropdown-item" href="/users/add-super-user"><i class="fa fa-plus "></i> Admin Qo'shish</a></li>{% endif %}
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item text-danger" href="/users/logout/"><i class="fa fa-arrow-left"></i> Chiqib ketish</a></li>
                         </ul>

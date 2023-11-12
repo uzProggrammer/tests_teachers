@@ -7,13 +7,13 @@
 
 {% block breadcrumb %}
     <li class="breadcrumb-item"><a href="/">Bosh sahifa</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Kurslar</li>
+    <li class="breadcrumb-item bg-dark" aria-current="page">Kurslar</li>
 {% endblock breadcrumb %}
 
 {% block content %}
 <div class="row">
     {% for course in courses %}
-    {% if course.is_public or user == course.author or user.is_staff %}
+    {% if course.is_public or user == course.author or user.is_staff or user.is_create_course %}
         <div class="col-md-6 mb-3">
             <a href="course/{{course.id}}/" class="card bg-dark">
                 <img src="/static/logo/courses.png" class="card-img-top course-img" alt="Courses.png">

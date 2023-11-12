@@ -29,7 +29,7 @@
                 href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/attempts/"><i
                     class="fab fa-strava"></i> Urinishlar</a>
         </li>
-        {% if masala.have_yechim or user == masala.author or user.is_staff %}
+        {% if masala.have_yechim or user == masala.author or user.is_staff or user.is_create_masala %}
             <li class="nav-item">
                 <a class="nav-link" href="/informatics/problems/{% if not masala.is_archived %}un{% endif %}problem/{{masala.slug}}/solve/"><i class="fa fa-pen"></i> Yechim</a>
             </li>
@@ -49,7 +49,7 @@
                 </li>
             </ul>
         </li>
-        {% if user.is_staff or user == masala.author %}
+        {% if user.is_staff or user == masala.author or user.is_create_masala %}
         <li class="nav-item">
             <a class="nav-link bg-primary text-light" href="{% if masala.is_archived %}/informatics/problems/problem/{{masala.slug}}/testcases{% else %}/informatics/problems/unproblem/{{masala.slug}}/testcases{% endif %}"><i class="fa fa-question"></i> Testcaselar</a>
         </li>
@@ -57,12 +57,12 @@
             <a href="{% if masala.is_archived %}/informatics/problems/problem/{{masala.slug}}/edit/{% else %}/informatics/problems/unproblem/{{masala.slug}}/edit/{% endif %}" class="nav-link"><i class="bx bx-pen"></i> Tahriralsh</a>
         </li>
         {% endif %}
-        {% if user.is_staff and not masala.is_archived %}
+        {% if user.is_staff and not masala.is_archived or user.is_create_masala %}
         <li class="nav-item">
             <a class="nav-link" href="/informatics/problems/unproblem/{{masala.slug}}/to-archive/"><i class="fa fa-check"></i> Ommaviy qilish</a>
         </li>
         {% endif %}
-        {% if not masala.have_yechim and masala.yechim and user.is_staff %}
+        {% if not masala.have_yechim and masala.yechim and user.is_staff or user.is_create_masala %}
         <li class="nav-item">
             <a class="nav-link" href="/informatics/problems/unproblem/{{masala.slug}}/add-solve/"><i class="fa fa-check"></i> Javobini ko'rsatish</a>
         </li>
@@ -153,6 +153,7 @@
         var tbody = document.querySelector('tbody');
         input_count = 0
         testcase_add.addEventListener('click', ()=>{
+            testcase_add.classList.add('disabled');
             var html = `
             <td id='key-container-${input_count}'><input class="bg-dark form-control" name="key-${input_count}" id="key-${input_count}" required placeholder="Kirvuchi oqim"></td>
             <td id='value-container-${input_count}' class="input-group"><input class="bg-dark form-control" name="value-${input_count}" id="value-${input_count}" required placeholder="Chiquvchi oqim"><button data-c-one='key-container-${input_count}' data-c-two='value-container-${input_count}' data-key="key-${input_count}" data-value="value-${input_count}" class="test-saver form-group-text btn btn-primary"><i class="fa fa-plus"></i></button></td>
@@ -168,6 +169,7 @@
                 var key = document.querySelector('#'+el.getAttribute('data-key')).value;
                 var value = document.querySelector('#'+el.getAttribute('data-value')).value;
                 if(key!=='' || value!==''){
+                    testcase_add.classList.remove('disabled');
                     $.ajax(
                         {
                             method: 'POST',
@@ -188,6 +190,7 @@
         });
         document.querySelectorAll('button.test_edit_btn').forEach(el=>{
             el.addEventListener('click', ()=>{
+                testcase_add.classList.add('disabled');
                 var tr = document.getElementById(el.getAttribute('data-tr'));
                 var key = document.getElementById(el.getAttribute('data-td')).innerHTML;
                 var value = document.getElementById(el.getAttribute('data-td1')).innerHTML;
@@ -200,6 +203,7 @@
                 document.querySelectorAll('.test_editer').forEach(
                     el=>{
                         el.addEventListener('click', ()=>{
+                            testcase_add.classList.remove('disabled');
                             var key5 = document.getElementById('key34-'+tr.getAttribute('data-id').toString()).value;
                             var value5 = document.getElementById('value34-'+tr.getAttribute('data-id').toString()).value;
                             $.ajax(

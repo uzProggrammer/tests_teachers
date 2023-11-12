@@ -15,7 +15,7 @@
         <li class="nav-item">
             <a class="nav-link" href="/assignments/assignment/{{ass.id}}/"><i class='fa fa-person-chalkboard'></i> Dars</a>
         </li>
-        {% if user.is_staff or user.is_teacher %}
+        {% if user.is_staff or user.is_teacher or user.is_create_ass %}
         <li class="nav-item">
             <a class="nav-link bg-primary text-white" aria-current="page"><i class='fa fa-pen'></i> Tahrirlash</a>
         </li>
@@ -28,7 +28,7 @@
             <a class="nav-link" href="/assignments/assignment/{{ass.id}}/my-answer/"><i class='fa fa-file-pen'></i> Mening javobim</a>
         </li>
         {% endif %}
-        {% if now > assignment.qachongacha or user.is_staff or user.is_teacher %}
+        {% if now > assignment.qachongacha or user.is_staff or user.is_teacher or user.is_create_ass %}
         <li class="nav-item">
             <a class="nav-link" href="/assignments/assignment/{{ass.id}}/answers/"><i class='fa fa-check'></i> Javoblar</a>
         </li>

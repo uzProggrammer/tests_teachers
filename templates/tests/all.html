@@ -13,7 +13,7 @@
 
 {% block content %}
 {% for test in page_obj.object_list %}
-    {% if test.is_public or user.is_staff or user == test.author %}
+    {% if test.is_public or user.is_staff or user == test.author or user.is_create_test %}
     <a href="/tests/test/{{test.id }}/" class="card mb-3 p-3 bg-dark" style="display: flex !important;justify-content: space-between !important;flex-direction: row;align-items: center;">
         <div class="mb-2">
             <h4>{{test.title}}</h4>
